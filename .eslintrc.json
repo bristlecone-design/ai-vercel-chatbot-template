@@ -12,10 +12,17 @@
     "tailwindcss/classnames-order": "off"
   },
   "settings": {
+    "tailwindcss": {
+      "callees": ["cn", "cva"],
+      "config": "tailwind.config.js"
+    },
     "import/resolver": {
       "typescript": {
         "alwaysTryTypes": true
       }
+    },
+    "next": {
+      "rootDir": ["./*/"]
     }
   },
   "ignorePatterns": ["**/components/ui/**"]
