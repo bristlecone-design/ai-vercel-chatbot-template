@@ -1,17 +1,17 @@
 'use client';
 
+import { useState } from 'react';
 import type { Attachment, Message } from 'ai';
 import { useChat } from 'ai/react';
 import { AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 import { useWindowSize } from 'usehooks-ts';
 
+import type { Vote } from '@/lib/db/schema';
+import { fetcher } from '@/lib/utils';
 import { ChatHeader } from '@/components/chat-header';
 import { PreviewMessage, ThinkingMessage } from '@/components/message';
 import { useScrollToBottom } from '@/components/use-scroll-to-bottom';
-import type { Vote } from '@/lib/db/schema';
-import { fetcher } from '@/lib/utils';
 
 import { Block, type UIBlock } from './block';
 import { BlockStreamHandler } from './block-stream-handler';
@@ -66,7 +66,7 @@ export function Chat({
 
   const { data: votes } = useSWR<Array<Vote>>(
     `/api/vote?chatId=${id}`,
-    fetcher,
+    fetcher
   );
 
   const [messagesContainerRef, messagesEndRef] =
@@ -76,11 +76,11 @@ export function Chat({
 
   return (
     <>
-      <div className="flex flex-col min-w-0 h-dvh bg-background">
+      <div className="flex h-dvh min-w-0 flex-col bg-background">
         <ChatHeader selectedModelId={selectedModelId} />
         <div
           ref={messagesContainerRef}
-          className="flex flex-col min-w-0 gap-6 flex-1 overflow-y-scroll pt-4"
+          className="flex min-w-0 flex-1 flex-col gap-6 overflow-y-scroll pt-4"
         >
           {messages.length === 0 && <Overview />}
 
@@ -108,10 +108,10 @@ export function Chat({
 
           <div
             ref={messagesEndRef}
-            className="shrink-0 min-w-[24px] min-h-[24px]"
+            className="min-h-[24px] min-w-[24px] shrink-0"
           />
         </div>
-        <form className="flex mx-auto px-4 bg-background pb-4 md:pb-6 gap-2 w-full md:max-w-3xl">
+        <form className="mx-auto flex w-full gap-2 bg-background px-4 pb-4 md:max-w-3xl md:pb-6">
           <MultimodalInput
             chatId={id}
             input={input}
