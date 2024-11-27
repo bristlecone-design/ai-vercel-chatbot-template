@@ -326,7 +326,9 @@ export async function POST(request: Request) {
         },
       },
     },
-    onFinish: async ({ responseMessages }) => {
+    onFinish: async (event) => {
+      console.log('onFinish in api/chat/route.ts', event.response);
+      const responseMessages = event.response.messages;
       if (session.user?.id) {
         try {
           const responseMessagesWithoutIncompleteToolCalls =
