@@ -37,10 +37,15 @@ export const message = pgTable('Message', {
     .references(() => chat.id),
   role: varchar('role').notNull(),
   content: json('content').notNull(),
+  attachments: json('attachment').default([]),
   createdAt: timestamp('createdAt').notNull(),
 });
 
 export type Message = InferSelectModel<typeof message>;
+
+export type MessageSave = Omit<Message, 'attachments'> & {
+  attachments?: unknown;
+};
 
 export const vote = pgTable(
   'Vote',

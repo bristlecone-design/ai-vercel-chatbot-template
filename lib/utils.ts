@@ -1,4 +1,5 @@
 import type {
+  Attachment,
   CoreAssistantMessage,
   CoreMessage,
   CoreToolMessage,
@@ -96,6 +97,7 @@ export function convertToUIMessages(
     }
 
     let textContent = '';
+    const contentAttachments: Array<Attachment> = [];
     const toolInvocations: Array<ToolInvocation> = [];
 
     if (typeof message.content === 'string') {
@@ -115,11 +117,17 @@ export function convertToUIMessages(
       }
     }
 
+    // Attachments
+    if (Array.isArray(message.attachments)) {
+      contentAttachments.push(...message.attachments);
+    }
+
     chatMessages.push({
       id: message.id,
       role: message.role as Message['role'],
       content: textContent,
       toolInvocations,
+      experimental_attachments: contentAttachments,
     });
 
     return chatMessages;
@@ -201,6 +209,14 @@ export function sanitizeUIMessages(messages: Array<Message>): Array<Message> {
 export function getMostRecentUserMessage(messages: Array<CoreMessage>) {
   const userMessages = messages.filter((message) => message.role === 'user');
   return userMessages.at(-1);
+}
+
+export function getMostRecentUserMessageAttachments(
+  messages: Array<Message>,
+): Array<Attachment> {
+  const userMessages = messages.filter((message) => message.role === 'user');
+  const mostRecentUserMessage = userMessages.at(-1);
+  return mostRecentUserMessage?.experimental_attachments || [];
 }
 
 export function getDocumentTimestampByIndex(

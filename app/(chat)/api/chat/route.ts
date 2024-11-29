@@ -24,6 +24,7 @@ import type { Suggestion } from '@/lib/db/schema';
 import {
   generateUUID,
   getMostRecentUserMessage,
+  getMostRecentUserMessageAttachments,
   sanitizeResponseMessages,
 } from '@/lib/utils';
 
@@ -74,6 +75,8 @@ export async function POST(request: Request) {
     return new Response('No user message found', { status: 400 });
   }
 
+  const userMessageAttachments = getMostRecentUserMessageAttachments(messages);
+
   const chat = await getChatById({ id });
 
   if (!chat) {
@@ -83,13 +86,19 @@ export async function POST(request: Request) {
 
   await saveMessages({
     messages: [
-      { ...userMessage, id: generateUUID(), createdAt: new Date(), chatId: id },
+      {
+        ...userMessage,
+        id: generateUUID(),
+        createdAt: new Date(),
+        chatId: id,
+        attachments: userMessageAttachments,
+      },
     ],
   });
 
   const streamingData = new StreamData();
 
-  const result = await streamText({
+  const result = streamText({
     model: customModel(model.apiIdentifier),
     system: systemPrompt,
     messages: coreMessages,
@@ -135,7 +144,7 @@ export async function POST(request: Request) {
             content: '',
           });
 
-          const { fullStream } = await streamText({
+          const { fullStream } = streamText({
             model: customModel(model.apiIdentifier),
             system:
               'Write about the given topic. Markdown is supported. Use headings wherever appropriate.',
@@ -199,7 +208,7 @@ export async function POST(request: Request) {
             content: document.title,
           });
 
-          const { fullStream } = await streamText({
+          const { fullStream } = streamText({
             model: customModel(model.apiIdentifier),
             system:
               'You are a helpful writing assistant. Based on the description, please update the piece of writing.',
@@ -272,7 +281,7 @@ export async function POST(request: Request) {
             Omit<Suggestion, 'userId' | 'createdAt' | 'documentCreatedAt'>
           > = [];
 
-          const { elementStream } = await streamObject({
+          const { elementStream } = streamObject({
             model: customModel(model.apiIdentifier),
             system:
               'You are a help writing assistant. Given a piece of writing, please offer suggestions to improve the piece of writing and describe the change. It is very important for the edits to contain full sentences instead of just words. Max 5 suggestions.',
@@ -327,7 +336,6 @@ export async function POST(request: Request) {
       },
     },
     onFinish: async (event) => {
-      console.log('onFinish in api/chat/route.ts', event.response);
       const responseMessages = event.response.messages;
       if (session.user?.id) {
         try {
@@ -363,7 +371,7 @@ export async function POST(request: Request) {
       streamingData.close();
     },
     experimental_telemetry: {
-      isEnabled: true,
+      isEnabled: false,
       functionId: 'stream-text',
     },
   });

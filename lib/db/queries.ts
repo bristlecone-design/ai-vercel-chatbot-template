@@ -6,14 +6,14 @@ import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 
 import {
-  user,
-  chat,
-  type User,
-  document,
+  type MessageSave,
   type Suggestion,
-  suggestion,
-  type Message,
+  type User,
+  chat,
+  document,
   message,
+  suggestion,
+  user,
   vote,
 } from './schema';
 
@@ -103,7 +103,9 @@ export async function getChatById({ id }: { id: string }) {
   }
 }
 
-export async function saveMessages({ messages }: { messages: Array<Message> }) {
+export async function saveMessages({
+  messages,
+}: { messages: Array<MessageSave> }) {
   try {
     return await db.insert(message).values(messages);
   } catch (error) {
