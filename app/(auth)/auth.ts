@@ -29,7 +29,7 @@ export const {
       allowDangerousEmailAccountLinking: true,
       // redirectProxyUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/auth`
       async profile(profile = {} as GitHubProfile) {
-        console.log('github profile::', profile);
+        // console.log('github profile::', profile);
         // Map the profile to the expected schema in the database
         const username = profile.login;
         const avatar = profile.avatar_url;
@@ -60,7 +60,7 @@ export const {
       allowDangerousEmailAccountLinking: true,
       // redirectProxyUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/auth`
       async profile(profile = {} as GoogleProfile) {
-        console.log('google profile::', profile);
+        // console.log('google profile::', profile);
         // Map the profile to the expected schema in the database
         const username = profile.email?.split('@')[0];
         const dbUser = {
@@ -97,7 +97,7 @@ export const {
   callbacks: {
     ...authConfig.callbacks,
     async jwt({ token, user }) {
-      console.log('jwt callback::', { token, user });
+      // console.log('jwt callback::', { token, user });
       if (user) {
         token.id = user.id;
         token.picture = user.image || null;
@@ -115,7 +115,7 @@ export const {
       user: User;
       token: any;
     }) {
-      console.log('session callback::', { session, token, user });
+      // console.log('session callback::', { session, token, user });
       if (session.user) {
         session.user.id = token.id as string;
       }
