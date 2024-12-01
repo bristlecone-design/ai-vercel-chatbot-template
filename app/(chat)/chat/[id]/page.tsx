@@ -6,7 +6,7 @@ import { getChatById, getMessagesByChatId } from '@/lib/db/queries';
 import { convertToUIMessages } from '@/lib/utils';
 import { Chat as PreviewChat } from '@/components/chat';
 
-import { auth } from '@/app/(auth)/auth-edge';
+import { auth } from '@/app/(auth)/auth';
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
