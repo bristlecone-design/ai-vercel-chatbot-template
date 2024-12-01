@@ -1,5 +1,3 @@
-export const runtime = 'edge';
-
 import {
   type Message,
   StreamData,
@@ -32,7 +30,9 @@ import {
 
 import { generateTitleFromUserMessage } from '../../actions';
 
-export const maxDuration = 60;
+export const maxDuration = 300;
+
+export const runtime = 'edge';
 
 type AllowedTools =
   | 'createDocument'
