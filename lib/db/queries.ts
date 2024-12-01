@@ -2,9 +2,8 @@ import 'server-only';
 
 import { genSaltSync, hashSync } from 'bcrypt-ts';
 import { and, asc, desc, eq, gt } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
 
+import { db } from './connect';
 import {
   type MessageSave,
   type Suggestion,
@@ -13,7 +12,7 @@ import {
   document,
   message,
   suggestion,
-  user,
+  users,
   vote,
 } from './schema';
 
@@ -22,14 +21,14 @@ import {
 // https://authjs.dev/reference/adapter/drizzle
 
 // biome-ignore lint: Forbidden non-null assertion.
-const client = postgres(process.env.POSTGRES_URL!);
-const db = drizzle(client);
+// const client = postgres(process.env.POSTGRES_URL!);
+// const db = drizzle(client);
 
 export async function getUser(email: string): Promise<Array<User>> {
   try {
-    return await db.select().from(user).where(eq(user.email, email));
+    return await db.select().from(users).where(eq(users.email, email));
   } catch (error) {
-    console.error('Failed to get user from database');
+    console.error('Failed to get user from database', error);
     throw error;
   }
 }
@@ -39,7 +38,7 @@ export async function createUser(email: string, password: string) {
   const hash = hashSync(password, salt);
 
   try {
-    return await db.insert(user).values({ email, password: hash });
+    return await db.insert(users).values({ email, password: hash, salt });
   } catch (error) {
     console.error('Failed to create user in database');
     throw error;

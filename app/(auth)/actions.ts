@@ -15,7 +15,15 @@ export interface LoginActionState {
   status: 'idle' | 'in_progress' | 'success' | 'failed' | 'invalid_data';
 }
 
-export const login = async (
+export const loginGitHub = async () => {
+  await signIn('github');
+};
+
+export const loginGoogle = async () => {
+  await signIn('google');
+};
+
+export const loginCredentials = async (
   _: LoginActionState,
   formData: FormData,
 ): Promise<LoginActionState> => {
@@ -62,6 +70,7 @@ export const register = async (
     });
 
     const [user] = await getUser(validatedData.email);
+    console.log('user', user);
 
     if (user) {
       return { status: 'user_exists' } as RegisterActionState;
