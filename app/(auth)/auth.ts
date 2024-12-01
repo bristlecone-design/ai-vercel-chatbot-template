@@ -20,7 +20,7 @@ export const {
   ...authConfig,
   experimental: { enableWebAuthn: true },
   adapter: drizzleAdapter,
-  session: { strategy: 'jwt' },
+  // session: { strategy: 'jwt' },
   providers: [
     GitHub({
       checks: ['none'],
