@@ -32,7 +32,7 @@ import { generateTitleFromUserMessage } from '../../actions';
 
 export const maxDuration = 300;
 
-export const runtime = 'edge';
+// export const runtime = 'edge';
 
 type AllowedTools =
   | 'createDocument'
