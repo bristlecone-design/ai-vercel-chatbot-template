@@ -2,7 +2,8 @@
 
 import { startTransition, useMemo, useOptimistic, useState } from 'react';
 
-import { saveModelId } from '@/app/(chat)/actions';
+import { models } from '@/lib/ai/models';
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -10,8 +11,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { models } from '@/lib/ai/models';
-import { cn } from '@/lib/utils';
+
+import { saveModelId } from '@/app/(chat)/actions';
 
 import { CheckCirclFillIcon, ChevronDownIcon } from './icons';
 
@@ -27,7 +28,7 @@ export function ModelSelector({
 
   const selectModel = useMemo(
     () => models.find((model) => model.id === optimisticModelId),
-    [optimisticModelId],
+    [optimisticModelId]
   );
 
   return (
@@ -36,10 +37,10 @@ export function ModelSelector({
         asChild
         className={cn(
           'w-fit data-[state=open]:bg-accent data-[state=open]:text-accent-foreground',
-          className,
+          className
         )}
       >
-        <Button variant="outline" className="md:px-2 md:h-[34px]">
+        <Button variant="outline" className="gap-1.5 md:h-[34px] md:px-2">
           {selectModel?.label}
           <ChevronDownIcon />
         </Button>
@@ -56,10 +57,10 @@ export function ModelSelector({
                 saveModelId(model.id);
               });
             }}
-            className="gap-4 group/item flex flex-row justify-between items-center"
+            className="group/item flex flex-row items-center justify-between gap-4"
             data-active={model.id === optimisticModelId}
           >
-            <div className="flex flex-col gap-1 items-start">
+            <div className="flex flex-col items-start gap-1">
               {model.label}
               {model.description && (
                 <div className="text-xs text-muted-foreground">
@@ -67,7 +68,7 @@ export function ModelSelector({
                 </div>
               )}
             </div>
-            <div className="text-primary dark:text-primary-foreground opacity-0 group-data-[active=true]/item:opacity-100">
+            <div className="text-primary opacity-0 group-data-[active=true]/item:opacity-100 dark:text-primary-foreground">
               <CheckCirclFillIcon />
             </div>
           </DropdownMenuItem>
