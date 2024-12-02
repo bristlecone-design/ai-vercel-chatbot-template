@@ -44,7 +44,7 @@ export default function Page() {
   };
 
   return (
-    <div className="flex h-dvh w-screen items-start justify-center bg-background/75 pt-12 md:items-center md:pt-0">
+    <div className="flex h-dvh w-screen items-start justify-center bg-background/65 pt-12 md:items-center md:pt-0">
       <DiscoveryRandomBgImage className="" />
       <div className="flex w-full max-w-xl flex-col gap-8 overflow-hidden rounded-3xl bg-background/95 p-8">
         <div className="flex flex-col items-center justify-center gap-2 px-4 text-center sm:px-16">
