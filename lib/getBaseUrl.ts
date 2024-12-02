@@ -20,7 +20,7 @@ export const IS_LOCAL_DEVELOPMENT = !IS_PRODUCTION;
 
 // User-facing domain, potential site title
 const SITE_DOMAIN =
-  process.env.NEXT_PUBLIC_SITE_DOMAIN ||
+  process.env.NEXT_PUBLIC_APP_URL ||
   VERCEL_PRODUCTION_URL ||
   VERCEL_PROJECT_URL ||
   VERCEL_DEPLOYMENT_URL;

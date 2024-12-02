@@ -1,4 +1,3 @@
-import type { Metadata } from 'next';
 import { GeistMono } from 'geist/font/mono';
 import { GeistSans } from 'geist/font/sans';
 import { Toaster } from 'sonner';
@@ -9,11 +8,7 @@ import { TailwindIndicator } from '@/components/tailwind-indicator';
 
 import '@/styles/globals.css';
 
-export const metadata: Metadata = {
-  metadataBase: new URL('https://chat.vercel.ai'),
-  title: 'Next.js Chatbot Template',
-  description: 'Next.js chatbot template using the AI SDK.',
-};
+export { metadata } from '@/config/site-meta';
 
 export const viewport = {
   maximumScale: 1, // Disable auto-zoom on mobile Safari

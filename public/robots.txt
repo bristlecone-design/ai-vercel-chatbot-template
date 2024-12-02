@@ -1,0 +1,14 @@
+# Manny Becerra
+# https://mannyb.io
+# https://moz.com/learn/seo/robotstxt
+# Allowing all web crawlers access to all content
+
+User-agent: *
+Sitemap: https://experience.nv.guide/sitemap.xml
+Sitemap: https://experience.nv.guide/prompts/stories/sitemap.xml
+Sitemap: https://experience.nv.guide/users/sitemap.xml
+
+# Block access to the following directories
+
+Disallow: /assets/*
+Disallow: /api/*
