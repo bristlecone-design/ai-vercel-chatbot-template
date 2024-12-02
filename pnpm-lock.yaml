@@ -50,6 +50,9 @@ importers:
       '@radix-ui/react-visually-hidden':
         specifier: 1.1.0
         version: 1.1.0(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@19.0.0-rc-7670501b-20241124(react@19.0.0-rc-7670501b-20241124))(react@19.0.0-rc-7670501b-20241124)
+      '@tailwindcss/container-queries':
+        specifier: 0.1.1
+        version: 0.1.1(tailwindcss@3.4.15)
       '@vercel/analytics':
         specifier: 1.4.1
         version: 1.4.1(next@15.0.4-canary.33(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-7670501b-20241124(react@19.0.0-rc-7670501b-20241124))(react@19.0.0-rc-7670501b-20241124))(react@19.0.0-rc-7670501b-20241124)
@@ -158,12 +161,6 @@ importers:
       swr:
         specifier: 2.2.5
         version: 2.2.5(react@19.0.0-rc-7670501b-20241124)
-      tailwind-merge:
-        specifier: 2.5.5
-        version: 2.5.5
-      tailwindcss-animate:
-        specifier: 1.0.7
-        version: 1.0.7(tailwindcss@3.4.15)
       usehooks-ts:
         specifier: 3.1.0
         version: 3.1.0(react@19.0.0-rc-7670501b-20241124)
@@ -225,9 +222,15 @@ importers:
       prettier-plugin-tailwindcss:
         specifier: 0.6.9
         version: 0.6.9(@ianvs/prettier-plugin-sort-imports@4.4.0(prettier@3.4.1))(prettier@3.4.1)
+      tailwind-merge:
+        specifier: 2.5.5
+        version: 2.5.5
       tailwindcss:
         specifier: 3.4.15
         version: 3.4.15
+      tailwindcss-animate:
+        specifier: 1.0.7
+        version: 1.0.7(tailwindcss@3.4.15)
       tsx:
         specifier: 4.19.2
         version: 4.19.2
@@ -1514,6 +1517,11 @@ packages:
 
   '@swc/helpers@0.5.13':
     resolution: {integrity: sha512-UoKGxQ3r5kYI9dALKJapMmuK+1zWM/H17Z1+iwnNmzcJRnfFuevZs375TA5rW31pu4BS4NoSy1fRsexDXfWn5w==}
+
+  '@tailwindcss/container-queries@0.1.1':
+    resolution: {integrity: sha512-p18dswChx6WnTSaJCSGx6lTmrGzNNvm2FtXmiO6AuA1V4U5REyoqwmT6kgAsIMdjo07QdAfYXHJ4hnMtfHzWgA==}
+    peerDependencies:
+      tailwindcss: '>=3.2.0'
 
   '@tailwindcss/typography@0.5.15':
     resolution: {integrity: sha512-AqhlCXl+8grUz8uqExv5OTtgpjuVIwFTSXTrh8y9/pw6q2ek7fJ+Y8ZEVw7EB2DCcuCOtEjf9w3+J3rzts01uA==}
@@ -4901,6 +4909,10 @@ snapshots:
   '@swc/helpers@0.5.13':
     dependencies:
       tslib: 2.8.0
+
+  '@tailwindcss/container-queries@0.1.1(tailwindcss@3.4.15)':
+    dependencies:
+      tailwindcss: 3.4.15
 
   '@tailwindcss/typography@0.5.15(tailwindcss@3.4.15)':
     dependencies:

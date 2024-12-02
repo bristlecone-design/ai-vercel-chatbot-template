@@ -1,9 +1,13 @@
 import type { Metadata } from 'next';
+import { GeistMono } from 'geist/font/mono';
+import { GeistSans } from 'geist/font/sans';
 import { Toaster } from 'sonner';
 
-import { ThemeProvider } from '@/components/theme-provider';
+import { cn } from '@/lib/utils';
+import { Providers } from '@/components/providers';
+import { TailwindIndicator } from '@/components/tailwind-indicator';
 
-import './globals.css';
+import '@/styles/globals.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://chat.vercel.ai'),
@@ -56,8 +60,8 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased">
-        <ThemeProvider
+      <body className={cn(GeistSans.variable, GeistMono.variable)}>
+        <Providers
           attribute="class"
           defaultTheme="system"
           enableSystem
@@ -65,7 +69,8 @@ export default async function RootLayout({
         >
           <Toaster position="top-center" />
           {children}
-        </ThemeProvider>
+          <TailwindIndicator />
+        </Providers>
       </body>
     </html>
   );

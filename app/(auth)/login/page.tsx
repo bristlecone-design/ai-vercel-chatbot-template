@@ -5,7 +5,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
+import { Separator } from '@/components/ui/separator';
 import { AuthForm } from '@/components/auth-form';
+import { DiscoveryRandomBgImage } from '@/components/bg-image-random-client';
 import { SubmitButton } from '@/components/submit-button';
 
 import { loginCredentials, type LoginActionState } from '../actions';
@@ -42,30 +44,42 @@ export default function Page() {
   };
 
   return (
-    <div className="flex h-dvh w-screen items-start justify-center bg-background pt-12 md:items-center md:pt-0">
-      <div className="flex w-full max-w-md flex-col gap-12 overflow-hidden rounded-2xl">
+    <div className="flex h-dvh w-screen items-start justify-center bg-background/75 pt-12 md:items-center md:pt-0">
+      <DiscoveryRandomBgImage className="" />
+      <div className="flex w-full max-w-xl flex-col gap-8 overflow-hidden rounded-3xl bg-background/95 p-8">
         <div className="flex flex-col items-center justify-center gap-2 px-4 text-center sm:px-16">
-          <h3 className="text-xl font-semibold dark:text-zinc-50">Sign In</h3>
-          <p className="text-sm text-gray-500 dark:text-zinc-400">
+          <h2 className="text-2xl font-semibold">
+            Sign In to Experience Nevada
+          </h2>
+        </div>
+        <div className="flex w-full flex-col items-stretch gap-2">
+          <div className="flex w-full flex-row items-center justify-center gap-4">
+            <SignInGithub />
+            <SignInGoogle />
+          </div>
+        </div>
+
+        <div className="flex items-center justify-center gap-2">
+          <Separator className="max-w-[15%]" />
+          <span className="uppercase">Or</span>
+          <Separator className="max-w-[15%]" />
+        </div>
+
+        <div className="flex w-full max-w-xl flex-col items-center gap-6">
+          <p className="text-muted-foreground">
             Use your email and password to sign in
           </p>
+          <AuthForm action={handleSubmit} defaultEmail={email}>
+            <SubmitButton isSuccessful={isSuccessful}>Sign in</SubmitButton>
+            <p className="text-center text-sm text-muted-foreground">
+              {"Don't have an account? "}
+              <Link href="/register" className="font-semibold hover:underline">
+                Sign up
+              </Link>
+              {' for free.'}
+            </p>
+          </AuthForm>
         </div>
-        <SignInGithub />
-        <SignInGoogle />
-
-        <AuthForm action={handleSubmit} defaultEmail={email}>
-          <SubmitButton isSuccessful={isSuccessful}>Sign in</SubmitButton>
-          <p className="mt-4 text-center text-sm text-gray-600 dark:text-zinc-400">
-            {"Don't have an account? "}
-            <Link
-              href="/register"
-              className="font-semibold text-gray-800 hover:underline dark:text-zinc-200"
-            >
-              Sign up
-            </Link>
-            {' for free.'}
-          </p>
-        </AuthForm>
       </div>
     </div>
   );

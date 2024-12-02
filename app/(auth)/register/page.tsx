@@ -1,14 +1,18 @@
 'use client';
 
+import { useActionState, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useActionState, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { Separator } from '@/components/ui/separator';
 import { AuthForm } from '@/components/auth-form';
+import { DiscoveryRandomBgImage } from '@/components/bg-image-random-client';
 import { SubmitButton } from '@/components/submit-button';
 
 import { register, type RegisterActionState } from '../actions';
+import { SignInGithub } from '../login/providers/github-signin';
+import { SignInGoogle } from '../login/providers/google-signin';
 
 export default function Page() {
   const router = useRouter();
@@ -20,7 +24,7 @@ export default function Page() {
     register,
     {
       status: 'idle',
-    },
+    }
   );
 
   useEffect(() => {
@@ -43,27 +47,53 @@ export default function Page() {
   };
 
   return (
-    <div className="flex h-dvh w-screen items-start pt-12 md:pt-0 md:items-center justify-center bg-background">
-      <div className="w-full max-w-md overflow-hidden rounded-2xl gap-12 flex flex-col">
+    <div className="flex h-dvh w-screen items-start justify-center bg-background/75 pt-12 md:items-center md:pt-0">
+      <DiscoveryRandomBgImage className="" />
+      <div className="flex w-full max-w-xl flex-col gap-8 overflow-hidden rounded-3xl bg-background/95 p-8">
         <div className="flex flex-col items-center justify-center gap-2 px-4 text-center sm:px-16">
-          <h3 className="text-xl font-semibold dark:text-zinc-50">Sign Up</h3>
-          <p className="text-sm text-gray-500 dark:text-zinc-400">
+          <h2 className="text-2xl font-semibold">
+            Sign Up for Experience Nevada
+          </h2>
+        </div>
+        <div className="flex w-full flex-col items-stretch gap-2">
+          <div className="flex w-full flex-row items-center justify-center gap-4">
+            <SignInGithub
+              btnProps={{
+                textPrefix: '',
+              }}
+            />
+            <SignInGoogle
+              btnProps={{
+                textPrefix: '',
+              }}
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center justify-center gap-2">
+          <Separator className="max-w-[15%]" />
+          <span className="uppercase">Or</span>
+          <Separator className="max-w-[15%]" />
+        </div>
+
+        <div className="flex w-full max-w-xl flex-col items-center gap-6">
+          <p className="text-muted-foreground">
             Create an account with your email and password
           </p>
+          <AuthForm action={handleSubmit} defaultEmail={email}>
+            <SubmitButton isSuccessful={isSuccessful}>Sign Up</SubmitButton>
+            <p className="text-center text-sm text-muted-foreground">
+              {'Already have an account? '}
+              <Link
+                href="/login"
+                className="font-semibold text-gray-800 hover:underline dark:text-zinc-200"
+              >
+                Sign in
+              </Link>
+              {' instead.'}
+            </p>
+          </AuthForm>
         </div>
-        <AuthForm action={handleSubmit} defaultEmail={email}>
-          <SubmitButton isSuccessful={isSuccessful}>Sign Up</SubmitButton>
-          <p className="text-center text-sm text-gray-600 mt-4 dark:text-zinc-400">
-            {'Already have an account? '}
-            <Link
-              href="/login"
-              className="font-semibold text-gray-800 hover:underline dark:text-zinc-200"
-            >
-              Sign in
-            </Link>
-            {' instead.'}
-          </p>
-        </AuthForm>
       </div>
     </div>
   );

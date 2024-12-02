@@ -11,12 +11,14 @@ interface SignInButtonProps extends ButtonProps {
   variant?: ButtonProps['variant'];
   iconClassName?: string;
   callbackUrl?: string;
+  textPrefix?: string;
   text?: string;
 }
 
 export function SignInButtonGoogle({
   size = 'lg',
-  text = 'Login with Google',
+  textPrefix = 'Login with',
+  text = 'Google',
   callbackUrl = '/',
   showIcon = true,
   variant = 'outline',
@@ -34,7 +36,10 @@ export function SignInButtonGoogle({
         signIn('google', { callbackUrl });
       }}
       disabled={isLoading}
-      className={cn('flex items-center gap-1.5', className)}
+      className={cn(
+        'flex items-center gap-1.5 duration-75 hover:bg-primary hover:text-primary-foreground',
+        className
+      )}
       {...props}
     >
       {isLoading ? (
@@ -42,6 +47,7 @@ export function SignInButtonGoogle({
       ) : showIcon ? (
         <IconGoogle className={iconClassName} />
       ) : null}
+      {textPrefix && <span className="hidden sm:inline">{textPrefix} </span>}
       {text}
     </Button>
   );

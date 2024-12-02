@@ -7,16 +7,20 @@ import { IconGitHub, IconSpinner } from '@/components/ui/icons';
 
 interface LoginButtonProps extends ButtonProps {
   showIcon?: boolean;
+  noTextPrefix?: boolean;
   size?: ButtonProps['size'];
   variant?: ButtonProps['variant'];
   iconClassName?: string;
   callbackUrl?: string;
+  textPrefix?: string;
   text?: string;
 }
 
 export function SignInButtonGitHub({
   size = 'lg',
-  text = 'Login with GitHub',
+  noTextPrefix = false,
+  textPrefix = 'Login with',
+  text = 'GitHub',
   callbackUrl = '/',
   showIcon = true,
   variant = 'outline',
@@ -34,7 +38,10 @@ export function SignInButtonGitHub({
         signIn('github', { callbackUrl });
       }}
       disabled={isLoading}
-      className={cn('flex items-center gap-1.5', className)}
+      className={cn(
+        'flex items-center gap-1.5 duration-75 hover:bg-primary hover:text-primary-foreground',
+        className
+      )}
       {...props}
     >
       {isLoading ? (
@@ -42,6 +49,7 @@ export function SignInButtonGitHub({
       ) : showIcon ? (
         <IconGitHub className={iconClassName} />
       ) : null}
+      {textPrefix && <span className="hidden sm:inline">{textPrefix} </span>}
       {text}
     </Button>
   );

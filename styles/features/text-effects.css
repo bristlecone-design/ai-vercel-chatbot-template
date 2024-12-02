@@ -1,0 +1,102 @@
+.shaded-text {
+  --bg-size: 300%;
+
+  display: inline-block;
+  background: linear-gradient(
+      to right,
+      rgb(75, 143, 245),
+      #9333ea,
+      #6b03ea,
+      #9333ea,
+      rgb(35, 120, 246),
+      rgb(3, 79, 194),
+      #7d15f5,
+      #8204a2,
+      #7503bc,
+      rgb(14, 81, 180),
+      rgb(35, 120, 246)
+        /* rgb(2, 40, 96),
+      rgb(10, 2, 96),
+      rgb(32, 2, 96),
+      rgb(51, 2, 96) */
+        /* #a20478,
+      #c00202,
+      #db2777 */
+    )
+    0 0 / var(--bg-size) 400%;
+
+  background-clip: text;
+  color: transparent;
+}
+
+:root.dark .spectrum {
+  --color-one: rgb(244, 135, 52);
+  --color-two: rgb(246, 181, 52);
+  --color-three: rgb(238, 246, 83);
+  --color-four: rgb(170, 246, 83);
+  --color-five: rgb(83, 246, 184);
+  --color-six: rgb(83, 192, 246);
+  --color-seven: rgb(6, 81, 242);
+  --color-eight: rgb(99, 83, 246);
+  --color-nine: rgb(175, 83, 246);
+}
+
+.spectrum {
+  --bg-size: 300%;
+  --color-one: rgb(131, 191, 62);
+  --color-two: rgb(250, 184, 51);
+  --color-three: rgb(186, 196, 4);
+  --color-four: rgb(247, 138, 49);
+  --color-five: rgb(2, 191, 119);
+  --color-six: rgb(8, 151, 223);
+  --color-seven: rgb(3, 63, 192);
+  --color-eight: rgb(67, 51, 214);
+  --color-nine: rgb(133, 24, 217);
+
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+
+  background: linear-gradient(
+      90deg,
+      var(--color-three),
+      var(--color-two),
+      var(--color-three),
+      var(--color-two),
+      var(--color-four),
+      var(--color-one),
+      var(--color-two),
+      var(--color-one),
+      var(--color-three),
+      var(--color-two),
+      var(--color-four),
+      var(--color-three),
+      var(--color-five),
+      var(--color-six),
+      var(--color-three)
+        /*var(--color-five),
+        var(--color-seven),
+        var(--color-eight),
+        var(--color-seven),
+        var(--color-nine),
+        var(--color-one) */
+    )
+    0 0 / var(--bg-size) 200%;
+}
+
+/* Apply animation only to users who are okay with motion */
+@media (prefers-reduced-motion: no-preference) {
+  .spectrum {
+    --duration: 210s;
+    animation: spectrum-shift-bg var(--duration) linear infinite;
+  }
+  .shaded-text {
+    --duration: 160s;
+    animation: spectrum-shift-bg var(--duration) infinite linear;
+  }
+  @keyframes spectrum-shift-bg {
+    to {
+      background-position: var(--bg-size) 0;
+    }
+  }
+}

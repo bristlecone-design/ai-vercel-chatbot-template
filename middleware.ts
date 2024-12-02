@@ -30,6 +30,6 @@ export default auth((req) => {
 
 export const config = {
   matcher: [
-    '/((?!api|static|share|reset|public|waitlist|fonts|_next/static|sitemap|robots|manifest|favicon|apple-icon|apple-touch|opengraph-image|twitter-image|.*\\.png$).*)',
+    '/((?!api|static|share|reset|public|assets|waitlist|fonts|_next/static|sitemap|robots|manifest|favicon|apple-icon|apple-touch|opengraph-image|twitter-image|.*\\.png$).*)',
   ],
 };
