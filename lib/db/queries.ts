@@ -5,13 +5,13 @@ import { and, asc, desc, eq, gt } from 'drizzle-orm';
 
 import { db } from './connect';
 import {
+  type DocSuggestion,
   type MessageSave,
-  type Suggestion,
   type User,
   chat,
+  docSuggestion,
   document,
   message,
-  suggestion,
   users,
   vote,
 } from './schema';
@@ -231,11 +231,11 @@ export async function deleteDocumentsByIdAfterTimestamp({
 }) {
   try {
     await db
-      .delete(suggestion)
+      .delete(docSuggestion)
       .where(
         and(
-          eq(suggestion.documentId, id),
-          gt(suggestion.documentCreatedAt, timestamp),
+          eq(docSuggestion.documentId, id),
+          gt(docSuggestion.documentCreatedAt, timestamp),
         ),
       );
 
@@ -253,12 +253,12 @@ export async function deleteDocumentsByIdAfterTimestamp({
 export async function saveSuggestions({
   suggestions,
 }: {
-  suggestions: Array<Suggestion>;
+  suggestions: Array<DocSuggestion>;
 }) {
   try {
-    return await db.insert(suggestion).values(suggestions);
+    return await db.insert(docSuggestion).values(suggestions);
   } catch (error) {
-    console.error('Failed to save suggestions in database');
+    console.error('Failed to save doc suggestions in database');
     throw error;
   }
 }
@@ -271,11 +271,11 @@ export async function getSuggestionsByDocumentId({
   try {
     return await db
       .select()
-      .from(suggestion)
-      .where(and(eq(suggestion.documentId, documentId)));
+      .from(docSuggestion)
+      .where(and(eq(docSuggestion.documentId, documentId)));
   } catch (error) {
     console.error(
-      'Failed to get suggestions by document version from database',
+      'Failed to get doc suggestions by document version from database',
     );
     throw error;
   }
