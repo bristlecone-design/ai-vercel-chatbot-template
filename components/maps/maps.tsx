@@ -14,7 +14,6 @@ import {
   GoogleMapsProvider,
   useGoogleMap,
 } from '@ubilabs/google-maps-react-hooks';
-import google from 'next-auth/providers/google';
 
 import { getErrorMessage } from '@/lib/errors';
 import { cn } from '@/lib/utils';
