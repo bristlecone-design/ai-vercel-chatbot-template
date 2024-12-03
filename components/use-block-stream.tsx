@@ -1,14 +1,14 @@
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import type { JSONValue } from 'ai';
-import { type Dispatch, type SetStateAction, useEffect, useState } from 'react';
 import { useSWRConfig } from 'swr';
 
-import type { Suggestion } from '@/lib/db/schema';
+import type { DocSuggestion } from '@/lib/db/schema';
 
 import type { UIBlock } from './block';
 
 type StreamingDelta = {
   type: 'text-delta' | 'title' | 'id' | 'suggestion' | 'clear' | 'finish';
-  content: string | Suggestion;
+  content: string | DocSuggestion;
 };
 
 export function useBlockStream({
@@ -20,7 +20,7 @@ export function useBlockStream({
 }) {
   const { mutate } = useSWRConfig();
   const [optimisticSuggestions, setOptimisticSuggestions] = useState<
-    Array<Suggestion>
+    Array<DocSuggestion>
   >([]);
 
   useEffect(() => {
@@ -68,7 +68,7 @@ export function useBlockStream({
           setTimeout(() => {
             setOptimisticSuggestions((currentSuggestions) => [
               ...currentSuggestions,
-              delta.content as Suggestion,
+              delta.content as DocSuggestion,
             ]);
           }, 0);
 

@@ -20,7 +20,7 @@ import {
   saveMessages,
   saveSuggestions,
 } from '@/lib/db/queries';
-import type { Suggestion } from '@/lib/db/schema';
+import type { DocSuggestion } from '@/lib/db/schema';
 import {
   generateUUID,
   getMostRecentUserMessage,
@@ -280,7 +280,7 @@ export async function POST(request: Request) {
           }
 
           const suggestions: Array<
-            Omit<Suggestion, 'userId' | 'createdAt' | 'documentCreatedAt'>
+            Omit<DocSuggestion, 'userId' | 'createdAt' | 'documentCreatedAt'>
           > = [];
 
           const { elementStream } = streamObject({
