@@ -239,6 +239,9 @@ importers:
       react-geolocated:
         specifier: 4.2.0
         version: 4.2.0(react@19.0.0-rc-1b1283ad-20241203)
+      react-hook-form:
+        specifier: 7.53.2
+        version: 7.53.2(react@19.0.0-rc-1b1283ad-20241203)
       react-markdown:
         specifier: 9.0.1
         version: 9.0.1(@types/react@18.3.12)(react@19.0.0-rc-1b1283ad-20241203)
@@ -272,6 +275,9 @@ importers:
       usehooks-ts:
         specifier: 3.1.0
         version: 3.1.0(react@19.0.0-rc-1b1283ad-20241203)
+      vaul:
+        specifier: 1.1.1
+        version: 1.1.1(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@19.0.0-rc-1b1283ad-20241203(react@19.0.0-rc-1b1283ad-20241203))(react@19.0.0-rc-1b1283ad-20241203)
       zod:
         specifier: 3.23.8
         version: 3.23.8
@@ -301,7 +307,7 @@ importers:
         specifier: '18'
         version: 18.3.1
       '@types/react-syntax-highlighter':
-        specifier: ^15.5.13
+        specifier: 15.5.13
         version: 15.5.13
       drizzle-kit:
         specifier: 0.29.0
@@ -3984,6 +3990,12 @@ packages:
     peerDependencies:
       react: '>= 16.8.0 < 19.0.0'
 
+  react-hook-form@7.53.2:
+    resolution: {integrity: sha512-YVel6fW5sOeedd1524pltpHX+jgU2u3DSDtXEaBORNdqiNrsX/nUI/iGXONegttg0mJVnfrIkiV0cmTU6Oo2xw==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18 || ^19
+
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
@@ -4489,6 +4501,12 @@ packages:
 
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
+
+  vaul@1.1.1:
+    resolution: {integrity: sha512-+ejzF6ffQKPcfgS7uOrGn017g39F8SO4yLPXbBhpC7a0H+oPqPna8f1BUfXaz8eU4+pxbQcmjxW+jWBSbxjaFg==}
+    peerDependencies:
+      react: ^16.8 || ^17.0 || ^18.0 || ^19.0
+      react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0
 
   vfile-message@4.0.2:
     resolution: {integrity: sha512-jRDZ1IMLttGj41KcZvlrYAaI3CfqpLpfpf+Mfig13viT6NKvRzWZ+lXz0Y5D60w6uJIBAOGq9mSHf0gktF0duw==}
@@ -8253,6 +8271,10 @@ snapshots:
     dependencies:
       react: 19.0.0-rc-1b1283ad-20241203
 
+  react-hook-form@7.53.2(react@19.0.0-rc-1b1283ad-20241203):
+    dependencies:
+      react: 19.0.0-rc-1b1283ad-20241203
+
   react-is@16.13.1: {}
 
   react-markdown@9.0.1(@types/react@18.3.12)(react@19.0.0-rc-1b1283ad-20241203):
@@ -8921,6 +8943,15 @@ snapshots:
       react: 19.0.0-rc-1b1283ad-20241203
 
   util-deprecate@1.0.2: {}
+
+  vaul@1.1.1(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@19.0.0-rc-1b1283ad-20241203(react@19.0.0-rc-1b1283ad-20241203))(react@19.0.0-rc-1b1283ad-20241203):
+    dependencies:
+      '@radix-ui/react-dialog': 1.1.2(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@19.0.0-rc-1b1283ad-20241203(react@19.0.0-rc-1b1283ad-20241203))(react@19.0.0-rc-1b1283ad-20241203)
+      react: 19.0.0-rc-1b1283ad-20241203
+      react-dom: 19.0.0-rc-1b1283ad-20241203(react@19.0.0-rc-1b1283ad-20241203)
+    transitivePeerDependencies:
+      - '@types/react'
+      - '@types/react-dom'
 
   vfile-message@4.0.2:
     dependencies:
