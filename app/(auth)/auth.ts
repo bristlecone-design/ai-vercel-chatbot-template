@@ -7,9 +7,6 @@ import Credentials from 'next-auth/providers/credentials';
 import GitHub, { type GitHubProfile } from 'next-auth/providers/github';
 import Google, { type GoogleProfile } from 'next-auth/providers/google';
 import { authConfig } from './auth.config';
-interface ExtendedSession extends Session {
-  user: User;
-}
 
 export const {
   handlers: { GET, POST },
@@ -111,7 +108,7 @@ export const {
       user,
       token,
     }: {
-      session: ExtendedSession;
+      session: Session;
       user: User;
       token: any;
     }) {
