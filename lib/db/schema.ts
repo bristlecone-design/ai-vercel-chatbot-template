@@ -372,12 +372,12 @@ export const authenticatorSchema = createInsertSchema(authenticators);
  * Chats, Messages and Votes
  */
 
-export const chatRoles = pgEnum('ChatRole', [
-  'system',
-  'user',
-  'assistant',
-  'tool',
-]);
+// export const chatRoles = pgEnum('ChatRole', [
+//   'system',
+//   'user',
+//   'assistant',
+//   'tool',
+// ]);
 
 export const chat = pgTable('Chat', {
   id: text('id')
