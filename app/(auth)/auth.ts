@@ -3,6 +3,7 @@ import { getUser } from '@/lib/db/queries';
 import type { User as DbUser } from '@/lib/db/schema';
 import { compare } from 'bcrypt-ts';
 import NextAuth, { type Session, type User } from 'next-auth';
+import type { Adapter } from 'next-auth/adapters';
 import Credentials from 'next-auth/providers/credentials';
 import GitHub, { type GitHubProfile } from 'next-auth/providers/github';
 import Google, { type GoogleProfile } from 'next-auth/providers/google';
@@ -16,7 +17,7 @@ export const {
 } = NextAuth({
   ...authConfig,
   experimental: { enableWebAuthn: true },
-  adapter: drizzleAdapter,
+  adapter: drizzleAdapter as Adapter,
   // session: { strategy: 'jwt' },
   providers: [
     GitHub({
