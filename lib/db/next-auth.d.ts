@@ -1,4 +1,4 @@
-import type { User } from 'next-auth';
+import type { User as BaseAuthUser } from 'next-auth';
 
 import 'next-auth/jwt';
 
@@ -27,7 +27,7 @@ export interface EmailFormUser
 }
 
 export interface AppUser
-  extends User,
+  extends BaseAuthUser,
     Pick<
       USER_PROFILE_MODEL,
       | 'id'
@@ -89,7 +89,7 @@ declare module 'next-auth' {
 
   interface Session {
     id: AppUser['id'];
-    user: AppUser;
+    user: BaseAuthUser;
     image?: UserImage;
     allowed?: UserAllowed;
     blocked?: UserBlocked;
