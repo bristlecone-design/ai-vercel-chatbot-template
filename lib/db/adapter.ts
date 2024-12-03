@@ -34,8 +34,8 @@ export const drizzleAdapter = {
   getUser: async (id) => {
     const [user] = await db.select().from(users).where(eq(users.id, id));
 
-    console.log('getUser in adapter::', { id, user });
-    return user as AdapterUser;
+    // console.log('getUser in adapter::', { id, user });
+    return user as unknown as AdapterUser;
   },
 
   // createUser: async (user) => {
