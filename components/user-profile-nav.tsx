@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { ChevronDown } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
 
@@ -8,11 +9,14 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { SidebarMenuButton } from '@/components/ui/sidebar';
 
 import { BlockSkeleton } from './ui/skeleton';
+
+import { getBaseConfigKey } from '@/config/site-base';
 
 export function UserProfileNav() {
   const session = useSession();
@@ -51,15 +55,17 @@ export function UserProfileNav() {
         side="top"
         className="w-[--radix-popper-anchor-width]"
       >
-        {/* <DropdownMenuItem
+        <DropdownMenuItem
           className="cursor-pointer"
           onSelect={(event) => {
-            console.log('onSelect menu item 1', event);
+            // console.log('onSelect invoked', event);
           }}
         >
-          Menu Item 1
+          <Link href="/" className="font-medium">
+            {getBaseConfigKey('shortTitle')}
+          </Link>
         </DropdownMenuItem>
-        <DropdownMenuSeparator /> */}
+        <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <button
             type="button"

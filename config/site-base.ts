@@ -1,3 +1,5 @@
+import type { ValueOf } from 'next/dist/shared/lib/constants';
+
 export const siteConfig = {
   title: 'Experience NV Platform',
   shortTitle: 'Experience NV',
@@ -41,3 +43,8 @@ export const siteConfig = {
     },
   },
 };
+
+export function getBaseConfigKey(key: keyof typeof siteConfig) {
+  const kv = siteConfig[key];
+  return kv as ValueOf<typeof kv>;
+}
