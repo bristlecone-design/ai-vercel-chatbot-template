@@ -1,6 +1,7 @@
 'use client';
-import { ChevronUp } from 'lucide-react';
+
 import Image from 'next/image';
+import { ChevronUp } from 'lucide-react';
 import type { User } from 'next-auth';
 import { signOut } from 'next-auth/react';
 import { useTheme } from 'next-themes';
@@ -21,14 +22,17 @@ import {
 export function SidebarUserNav({ user }: { user: User }) {
   const { setTheme, theme } = useTheme();
 
+  const userAvatarPath =
+    user?.image ?? `https://avatar.vercel.sh/${user.email}`;
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <SidebarMenuButton className="data-[state=open]:bg-sidebar-accent bg-background data-[state=open]:text-sidebar-accent-foreground h-10">
+            <SidebarMenuButton className="h-10 bg-background data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
               <Image
-                src={`https://avatar.vercel.sh/${user.email}`}
+                src={userAvatarPath}
                 alt={user.email ?? 'User Avatar'}
                 width={24}
                 height={24}
