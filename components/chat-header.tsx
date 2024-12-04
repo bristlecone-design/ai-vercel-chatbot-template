@@ -10,11 +10,11 @@ import { SidebarToggle } from '@/components/sidebar-toggle';
 
 import { PlusIcon } from './icons';
 import { useSidebar } from './ui/sidebar';
+import { UserProfileNav } from './user-profile-nav';
 
 export function ChatHeader({ selectedModelId }: { selectedModelId: string }) {
   const router = useRouter();
   const { open } = useSidebar();
-
   const { width: windowWidth } = useWindowSize();
 
   return (
@@ -43,7 +43,9 @@ export function ChatHeader({ selectedModelId }: { selectedModelId: string }) {
           className="order-1 md:order-2"
         />
       </div>
-      <div> </div>
+      <div>
+        <UserProfileNav />
+      </div>
     </header>
   );
 }
