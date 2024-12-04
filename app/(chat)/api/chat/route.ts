@@ -28,6 +28,7 @@ import {
   sanitizeResponseMessages,
 } from '@/lib/utils';
 
+import { genId } from '@/lib/id';
 import { generateTitleFromUserMessage } from '../../actions';
 
 export const maxDuration = 300;
@@ -79,7 +80,7 @@ export async function POST(request: Request) {
 
   const userMessageAttachments = getMostRecentUserMessageAttachments(messages);
 
-  const chat = await getChatById({ id });
+  const [chat] = await getChatById({ id });
 
   if (!chat) {
     const title = await generateTitleFromUserMessage({ message: userMessage });
@@ -90,7 +91,7 @@ export async function POST(request: Request) {
     messages: [
       {
         ...userMessage,
-        id: generateUUID(),
+        id: genId('msg'),
         createdAt: new Date(),
         chatId: id,
         attachments: userMessageAttachments,

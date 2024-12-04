@@ -23,6 +23,10 @@ export function UserProfileNav() {
   const userImagePath = user?.image ?? null;
   const isLoading = status === 'loading';
 
+  if (!user && !isLoading) {
+    return null;
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

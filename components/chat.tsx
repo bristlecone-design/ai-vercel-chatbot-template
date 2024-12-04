@@ -22,10 +22,12 @@ export function Chat({
   id,
   initialMessages,
   selectedModelId,
+  disabled = false,
 }: {
   id: string;
   initialMessages: Array<Message>;
   selectedModelId: string;
+  disabled?: boolean;
 }) {
   const { mutate } = useSWRConfig();
 
@@ -115,6 +117,7 @@ export function Chat({
           <MultimodalInput
             chatId={id}
             input={input}
+            disabled={disabled}
             setInput={setInput}
             handleSubmit={handleSubmit}
             isLoading={isLoading}

@@ -11,7 +11,7 @@ import { auth } from '@/app/(auth)/auth';
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const { id } = params;
-  const chat = await getChatById({ id });
+  const [chat] = await getChatById({ id, includeUser: true });
 
   if (!chat) {
     notFound();
@@ -19,13 +19,39 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
 
   const session = await auth();
 
-  if (!session || !session.user) {
-    return notFound();
+  const user = session?.user;
+
+  let disabledActions = false;
+
+  // Check if the user is the owner of the chat or the chat is public
+  if (user) {
+    // Logged in but not the owner of the chat
+    const isOwner = chat.userId === user.id;
+    if (!isOwner && !chat.public) {
+      return notFound();
+    }
+
+    if (!isOwner) {
+      disabledActions = true;
+    }
+  } else if (!user) {
+    if (!chat.public) {
+      return notFound();
+    }
+
+    // Disable actions for public chats
+    disabledActions = true;
   }
 
-  if (session.user.id !== chat.userId) {
-    return notFound();
-  }
+  //
+
+  // if (!session || !session.user) {
+  //   return notFound();
+  // }
+
+  // if (session.user.id !== chat.userId) {
+  //   return notFound();
+  // }
 
   const messagesFromDb = await getMessagesByChatId({
     id,
@@ -40,6 +66,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
   return (
     <PreviewChat
       id={chat.id}
+      disabled={disabledActions}
       initialMessages={convertToUIMessages(messagesFromDb)}
       selectedModelId={selectedModelId}
     />

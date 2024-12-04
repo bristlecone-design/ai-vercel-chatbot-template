@@ -3,8 +3,10 @@ import 'server-only';
 import { genSaltSync, hashSync } from 'bcrypt-ts';
 import { and, asc, desc, eq, gt } from 'drizzle-orm';
 
+import type { UserChat } from '@/types/chat-msgs';
 import { db } from './connect';
 import {
+  type Chat,
   type DocSuggestion,
   type MessageSave,
   type User,
@@ -54,6 +56,7 @@ export async function saveChat({
   userId: string;
   title: string;
 }) {
+  console.log('saveChat', id, userId, title);
   try {
     return await db.insert(chat).values({
       id,
@@ -92,10 +95,46 @@ export async function getChatsByUserId({ id }: { id: string }) {
   }
 }
 
-export async function getChatById({ id }: { id: string }) {
+export async function getChatById({
+  id,
+  includeUser,
+}: { id: string; includeUser?: boolean }): Promise<Array<UserChat>> {
   try {
+    if (includeUser) {
+      const [selectedChat] = await db
+        .select({
+          Chat: chat,
+          User: {
+            id: users.id,
+            name: users.name,
+            email: users.email,
+            image: users.image,
+            bio: users.bio,
+            url: users.url,
+            company: users.company,
+            public: users.public,
+            waitlist: users.waitlist,
+          },
+        })
+        .from(chat)
+        .fullJoin(users, eq(chat.userId, users.id))
+        .where(eq(chat.id, id));
+
+      if (!selectedChat) {
+        return [];
+      }
+
+      const userChat = {
+        ...(selectedChat.Chat as Chat),
+        User: selectedChat.User as User,
+      } as UserChat;
+
+      return [userChat];
+    }
+
     const [selectedChat] = await db.select().from(chat).where(eq(chat.id, id));
-    return selectedChat;
+
+    return [selectedChat];
   } catch (error) {
     console.error('Failed to get chat by id from database');
     throw error;

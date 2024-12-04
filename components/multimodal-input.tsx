@@ -54,9 +54,11 @@ export function MultimodalInput({
   append,
   handleSubmit,
   className,
+  disabled = false,
 }: {
   chatId: string;
   input: string;
+  disabled?: boolean;
   setInput: (value: string) => void;
   isLoading: boolean;
   stop: () => void;
@@ -267,6 +269,7 @@ export function MultimodalInput({
         placeholder="Send a message..."
         value={input}
         onChange={handleInput}
+        disabled={disabled || isLoading}
         className={cx(
           'max-h-[calc(75dvh)] min-h-[24px] resize-none overflow-hidden rounded-xl bg-muted text-base',
           className
@@ -294,6 +297,7 @@ export function MultimodalInput({
             stop();
             setMessages((messages) => sanitizeUIMessages(messages));
           }}
+          disabled={disabled}
         >
           <StopIcon size={14} />
         </Button>
@@ -317,7 +321,7 @@ export function MultimodalInput({
           fileInputRef.current?.click();
         }}
         variant="outline"
-        disabled={isLoading}
+        disabled={disabled || isLoading}
       >
         <PaperclipIcon size={14} />
       </Button>
