@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronDown } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
@@ -15,6 +14,7 @@ import {
 import { SidebarMenuButton } from '@/components/ui/sidebar';
 
 import { BlockSkeleton } from './ui/skeleton';
+import { UserAvatar } from './user-avatar';
 
 import { getBaseConfigKey } from '@/config/site-base';
 
@@ -36,11 +36,9 @@ export function UserProfileNav() {
       <DropdownMenuTrigger asChild>
         <SidebarMenuButton className="h-10 bg-background data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
           {userImagePath && (
-            <Image
+            <UserAvatar
               src={userImagePath}
               alt={userEmail ?? 'User Avatar'}
-              width={24}
-              height={24}
               className="rounded-full"
             />
           )}

@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { ChevronUp } from 'lucide-react';
 import type { User } from 'next-auth';
 import { signOut } from 'next-auth/react';
@@ -19,6 +18,8 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 
+import { UserAvatar } from './user-avatar';
+
 export function SidebarUserNav({ user }: { user: User }) {
   const { setTheme, theme } = useTheme();
 
@@ -31,12 +32,11 @@ export function SidebarUserNav({ user }: { user: User }) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton className="h-10 bg-background data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
-              <Image
+              <UserAvatar
                 src={userAvatarPath}
                 alt={user.email ?? 'User Avatar'}
-                width={24}
-                height={24}
                 className="rounded-full"
+                sizeClassName="size-6"
               />
               <span className="truncate">{user?.email}</span>
               <ChevronUp className="ml-auto" />
