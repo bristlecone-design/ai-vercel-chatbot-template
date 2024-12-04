@@ -912,6 +912,7 @@ export const media = pgTable(
     creditLink: text('creditLink'),
     creditLinkText: text('creditLinkText'),
     language: text('language').default('en'),
+    order: integer('order').default(0),
 
     staffPick: boolean('staffPick').default(false),
     featured: boolean('featured').default(false),

@@ -1,6 +1,8 @@
 import type { Media } from '@/lib/db/schema';
 import type { PhotoThumbnail } from './photo';
 
+export interface MediaModel extends Media {}
+
 export interface CreateMediaModel
   extends Omit<Media, 'id' | 'createdAt' | 'updatedAt'> {}
 
@@ -23,8 +25,8 @@ export interface MediaAudioTextToSpeech
     MediaAudio,
     | 'id'
     // | 'createdAt'
-    // | 'updatedAt'
-    // | 'order'
+    | 'updatedAt'
+    | 'order'
     | 'url'
     | 'urlOriginal'
     | 'language'
