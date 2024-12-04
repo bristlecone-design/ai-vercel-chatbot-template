@@ -17,6 +17,10 @@ export function genId(pfx: string) {
   return [pfx, nanoid()].join('_');
 }
 
+export function genChatId(size = 16) {
+  return nanoid(size);
+}
+
 /**
  * Generates a random 6-digit number as a string.
  * @returns A 6-digit string representation of a random number.

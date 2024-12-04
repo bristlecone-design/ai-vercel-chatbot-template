@@ -16,7 +16,7 @@ import {
   vector,
 } from 'drizzle-orm/pg-core';
 
-import { genId } from '@/lib/id';
+import { genChatId, genId } from '@/lib/id';
 import type { AdapterAccount } from 'next-auth/adapters';
 
 // https://orm.drizzle.team/docs/zod
@@ -383,7 +383,7 @@ export const chat = pgTable('Chat', {
   id: text('id')
     .primaryKey()
     .notNull()
-    .$defaultFn(() => genId('chat')),
+    .$defaultFn(() => genChatId()),
   createdAt: timestamp('createdAt').notNull(),
   title: text('title').notNull(),
   userId: text('userId')

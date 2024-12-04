@@ -54,6 +54,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   experimental: {
     ppr: true,
+    // dynamicIO: true,
 
     // https://nextjs.org/docs/app/api-reference/next-config-js/serverComponentsHmrCache
     serverComponentsHmrCache: IS_LOCAL_DEVELOPMENT,
