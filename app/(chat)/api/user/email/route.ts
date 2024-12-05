@@ -1,6 +1,6 @@
-import { NextResponse, type NextRequest } from 'next/server';
-import { getUserByEmail } from '@/actions/user-db';
+// import { getUserByEmail } from '@/actions/user-db';
 import { StatusCodes } from 'http-status-codes';
+import { type NextRequest, NextResponse } from 'next/server';
 
 import type { USER_MODEL } from '@/types/user';
 
@@ -20,7 +20,7 @@ type UserSaveParamTypes = {
  */
 const handler = async (request: NextRequest) => {
   const userEmail = request.nextUrl.searchParams.get(
-    'email'
+    'email',
   ) as UserSaveParamTypes['email'];
   console.log(`**** userEmail in api/user/email/route`, userEmail);
 
@@ -32,7 +32,7 @@ const handler = async (request: NextRequest) => {
     });
   }
 
-  const user = await getUserByEmail(userEmail);
+  const user = {}; // await getUserByEmail(userEmail);
 
   // 2. All done!
   return NextResponse.json({
