@@ -7,6 +7,12 @@ config({
   path: '.env',
 });
 
+/**
+ * For more information on migrations, see the Drizzle documentation:
+ *
+ * @see https://orm.drizzle.team/docs/migrations
+ */
+
 const runMigrate = async () => {
   if (!process.env.POSTGRES_URL) {
     throw new Error('POSTGRES_URL is not defined');

@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "tsx lib/db/migrate && next build",
+    "build": "next build",
+    "build:migrate": "tsx lib/db/migrate && next build",
     "db:check": "dotenv -e .env -- drizzle-kit check",
     "db:generate": "dotenv -e .env -- drizzle-kit generate",
     "db:migrate": "dotenv -e .env -- npx tsx lib/db/migrate.ts",
