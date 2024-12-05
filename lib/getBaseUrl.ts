@@ -1,4 +1,4 @@
-import { makeUrlAbsolute } from './urls';
+import { makeUrlAbsolute, shortenUrl } from './urls';
 
 const VERCEL_ENV = process.env.NEXT_PUBLIC_VERCEL_ENV;
 const VERCEL_PRODUCTION_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL;
@@ -19,11 +19,15 @@ export const IS_PRODUCTION =
 export const IS_LOCAL_DEVELOPMENT = !IS_PRODUCTION;
 
 // User-facing domain, potential site title
-const SITE_DOMAIN =
+export const SITE_DOMAIN =
   process.env.NEXT_PUBLIC_APP_URL ||
   VERCEL_PRODUCTION_URL ||
   VERCEL_PROJECT_URL ||
   VERCEL_DEPLOYMENT_URL;
+
+const SITE_DOMAIN_SHORT = shortenUrl(SITE_DOMAIN);
+
+export const SITE_DOMAIN_OR_TITLE = SITE_DOMAIN_SHORT || SITE_TITLE;
 
 export const BASE_URL = makeUrlAbsolute(
   process.env.NODE_ENV === 'production' && VERCEL_ENV !== 'preview'
