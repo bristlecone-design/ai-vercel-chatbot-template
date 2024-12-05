@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
-import { generateTranslatedTextFromEnglish } from '@/actions/experience-prompts';
+// import { generateTranslatedTextFromEnglish } from '@/actions/experience-prompts';
 import { textToSpeech } from '@/actions/speech';
+import { NextResponse } from 'next/server';
 import type { SpeechCreateParams } from 'openai/resources/audio/speech';
 
 import { getErrorMessage } from '@/lib/errors';
@@ -50,20 +50,20 @@ export async function POST(request: Request) {
 
     const voice = (formData.get('voice') ?? 'nova') as PostData['voice'];
 
-    let textToConvert = text;
+    const textToConvert = text;
 
-    if (language && language !== 'en') {
-      // console.log('Translating text from English');
-      const { translation } = await generateTranslatedTextFromEnglish(
-        text,
-        language
-      );
-      // console.log('Translation:', { translation });
+    // if (language && language !== 'en') {
+    //   // console.log('Translating text from English');
+    //   const { translation } = await generateTranslatedTextFromEnglish(
+    //     text,
+    //     language
+    //   );
+    //   // console.log('Translation:', { translation });
 
-      if (translation.translated && translation.translatedText) {
-        textToConvert = translation.translatedText;
-      }
-    }
+    //   if (translation.translated && translation.translatedText) {
+    //     textToConvert = translation.translatedText;
+    //   }
+    // }
 
     return textToSpeech(textToConvert as string, model, voice);
   } catch (error) {

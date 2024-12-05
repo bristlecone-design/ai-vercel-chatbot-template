@@ -1,10 +1,13 @@
-import { NextResponse } from 'next/server';
 import {
   ACCEPTED_PHOTO_FILE_TYPES,
   MAX_PHOTO_UPLOAD_SIZE_IN_BYTES,
-} from '@/photo';
-import { revalidateAdminPaths, revalidatePhotosKey } from '@/photo/cache';
-import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
+} from '@/features/photo';
+import {
+  revalidateAdminPaths,
+  revalidatePhotosKey,
+} from '@/features/photo/cache';
+import { type HandleUploadBody, handleUpload } from '@vercel/blob/client';
+import { NextResponse } from 'next/server';
 
 import { getUserSession } from '@/lib/session';
 import { isUploadPathnameValid } from '@/lib/storage';
@@ -43,7 +46,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   } catch (error) {
     return NextResponse.json(
       { error: (error as Error).message },
-      { status: 400 }
+      { status: 400 },
     );
   }
 }

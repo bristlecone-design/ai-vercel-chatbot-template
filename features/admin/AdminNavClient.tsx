@@ -1,0 +1,118 @@
+'use client';
+
+import { useEffect, useMemo, useState } from 'react';
+import { usePathname } from 'next/navigation';
+import { useAppState } from '@/state/app-state';
+import clsx from 'clsx';
+import { differenceInMinutes } from 'date-fns';
+import { Link } from 'lucide-react';
+import { BiCog } from 'react-icons/bi';
+import { FaRegClock } from 'react-icons/fa';
+
+import SiteGrid from '@/components/site-grid';
+
+import {
+  checkPathPrefix,
+  isPathAdminConfiguration,
+  isPathTopLevelAdmin,
+  PATH_ADMIN_CONFIGURATION,
+} from '@/config/site-paths';
+
+// Updates considered recent if they occurred in past 5 minutes
+const areTimesRecent = (dates: Date[]) =>
+  dates.some((date) => differenceInMinutes(new Date(), date) < 5);
+
+export default function AdminNavClient({
+  items,
+  mostRecentPhotoUpdateTime,
+}: {
+  items: {
+    label: string;
+    href: string;
+    count: number;
+  }[];
+  mostRecentPhotoUpdateTime?: Date;
+}) {
+  const pathname = usePathname();
+
+  const { adminUpdateTimes = [] } = useAppState();
+
+  const updateTimes = useMemo(
+    () =>
+      (mostRecentPhotoUpdateTime ? [mostRecentPhotoUpdateTime] : []).concat(
+        adminUpdateTimes
+      ),
+    [mostRecentPhotoUpdateTime, adminUpdateTimes]
+  );
+
+  const [hasRecentUpdates, setHasRecentUpdates] = useState(
+    areTimesRecent(updateTimes)
+  );
+
+  useEffect(() => {
+    // Check every 5 seconds if update times are recent
+    setHasRecentUpdates(areTimesRecent(updateTimes));
+    const interval = setInterval(
+      () => setHasRecentUpdates(areTimesRecent(updateTimes)),
+      5_000
+    );
+    return () => clearInterval(interval);
+  }, [updateTimes]);
+
+  const shouldShowBanner = hasRecentUpdates && isPathTopLevelAdmin(pathname);
+
+  return (
+    <SiteGrid
+      contentMain={
+        <div className="space-y-5">
+          <div
+            className={clsx(
+              'flex gap-2 md:gap-4',
+              'border-b border-gray-200 pb-3 dark:border-gray-800'
+            )}
+          >
+            <div
+              className={clsx(
+                'flex gap-2 md:gap-4',
+                'flex-grow overflow-x-auto'
+              )}
+            >
+              {items.map(({ label, href, count }) => (
+                <Link
+                  key={label}
+                  href={href}
+                  className={clsx(
+                    'flex gap-0.5',
+                    checkPathPrefix(pathname, href) ? 'font-bold' : 'text-dim'
+                  )}
+                  prefetch={false}
+                >
+                  <span>{label}</span>
+                  {count > 0 && <span>({count})</span>}
+                </Link>
+              ))}
+            </div>
+            <Link
+              href={PATH_ADMIN_CONFIGURATION}
+              className={
+                isPathAdminConfiguration(pathname) ? 'font-bold' : 'text-dim'
+              }
+            >
+              <BiCog
+                size={18}
+                className="inline-block"
+                aria-label="App Configuration"
+              />
+            </Link>
+          </div>
+          {shouldShowBanner && (
+            <Banner icon={<FaRegClock className="flex-shrink-0" />}>
+              Photo updates detected—they may take several minutes to show up
+              for visitors
+            </Banner>
+          )}
+        </div>
+      }
+    />
+  );
+}

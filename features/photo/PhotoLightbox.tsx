@@ -1,0 +1,55 @@
+import Link from 'next/link';
+import { clsx } from 'clsx';
+
+import { Photo } from '.';
+import PhotoGrid from './PhotoGrid';
+
+export default function PhotoLightbox({
+  count,
+  photos,
+  maxPhotosToShow = 6,
+  moreLink,
+}: {
+  count: number;
+  photos: Photo[];
+  maxPhotosToShow?: number;
+  moreLink: string;
+}) {
+  const photoCountToShow =
+    maxPhotosToShow < count ? maxPhotosToShow - 1 : maxPhotosToShow;
+
+  const countNotShown = count - photoCountToShow;
+
+  const showOverageTile = countNotShown > 0;
+
+  return (
+    <div
+      className={clsx(
+        'rounded-md border p-1.5 dark:border-gray-800 lg:p-2',
+        'bg-gray-50 dark:bg-gray-950'
+      )}
+    >
+      <PhotoGrid
+        photos={photos.slice(0, photoCountToShow)}
+        animate={false}
+        additionalTile={
+          showOverageTile ? (
+            <Link
+              href={moreLink}
+              className={clsx(
+                'flex flex-col items-center justify-center',
+                'gap-0.5 lg:gap-1'
+              )}
+            >
+              <div className="text-[1.1rem] lg:text-[1.5rem]">
+                +{countNotShown}
+              </div>
+              <div className="text-dim">More</div>
+            </Link>
+          ) : undefined
+        }
+        small
+      />
+    </div>
+  );
+}
