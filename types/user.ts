@@ -6,6 +6,8 @@ import type {
 } from '@/lib/db/schema';
 import { z } from 'zod';
 
+export type { User } from '@/lib/db/schema';
+
 export const investorSchema = z.object({
   interested: z.boolean().optional(),
   confirmed: z.boolean().optional(),
@@ -37,6 +39,9 @@ export interface USER_MODEL extends z.infer<typeof userSelectSchema> {
   notes?: string;
   // User's dynamic profile path, e.g. /u/username
   path?: string;
+
+  // Overrides
+  // interests?: string[];
 }
 
 export interface UserFollowingModel

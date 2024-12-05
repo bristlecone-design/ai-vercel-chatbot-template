@@ -6,11 +6,11 @@ import cx from 'classnames';
 import { motion } from 'framer-motion';
 
 import type { Vote } from '@/lib/db/schema';
+import { Markdown } from '@/components/content/markdown-legacy';
 
 import type { UIBlock } from './block';
 import { DocumentToolCall, DocumentToolResult } from './document';
 import { SparklesIcon } from './icons';
-import { Markdown } from './markdown';
 import { MessageActions } from './message-actions';
 import { PreviewAttachment } from './preview-attachment';
 import { Weather } from './weather';

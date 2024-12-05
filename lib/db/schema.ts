@@ -387,6 +387,7 @@ export const chat = pgTable('Chat', {
   createdAt: timestamp('createdAt').notNull(),
   title: text('title').notNull(),
   public: boolean('public').default(false),
+  sharePath: text('sharePath'),
   userId: text('userId')
     .notNull()
     .references(() => users.id),
