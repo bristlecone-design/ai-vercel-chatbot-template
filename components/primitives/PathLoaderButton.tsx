@@ -1,11 +1,9 @@
 'use client';
 
-import { ReactNode, useEffect, useState, useTransition } from 'react';
+import { useEffect, useState, useTransition, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 
 import LoaderButton from '@/components/primitives/LoaderButton';
-
-import { SpinnerColor } from '../spinner';
 
 export default function PathLoaderButton({
   path,
@@ -14,7 +12,6 @@ export default function PathLoaderButton({
   loaderDelay = 100,
   shouldScroll = true,
   shouldReplace,
-  spinnerColor,
   shouldPreventDefault,
   styleAs,
   hideTextOnMobile,
@@ -27,7 +24,6 @@ export default function PathLoaderButton({
   loaderDelay?: number;
   shouldScroll?: boolean;
   shouldReplace?: boolean;
-  spinnerColor?: SpinnerColor;
   shouldPreventDefault?: boolean;
   styleAs?: 'button' | 'link' | 'link-without-hover';
   hideTextOnMobile?: boolean;
@@ -72,7 +68,6 @@ export default function PathLoaderButton({
       }}
       shouldPreventDefault={shouldPreventDefault}
       isLoading={shouldShowLoader}
-      spinnerColor={spinnerColor}
       styleAs={styleAs}
       hideTextOnMobile={hideTextOnMobile}
     >

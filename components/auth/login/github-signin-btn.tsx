@@ -1,16 +1,12 @@
-import * as React from 'react';
+import type * as React from 'react';
 import { signIn } from 'next-auth/react';
 
 import { cn } from '@/lib/utils';
-import { Button, type ButtonProps } from '@/components/ui/button';
-import { IconGitHub, IconSpinner } from '@/components/ui/icons';
+import { IconGitHub } from '@/components/ui/icons';
+import { LoaderButton } from '@/components/loader-btn';
 
-interface LoginButtonProps extends ButtonProps {
+interface LoginButtonProps extends React.ComponentProps<typeof LoaderButton> {
   showIcon?: boolean;
-  noTextPrefix?: boolean;
-  size?: ButtonProps['size'];
-  variant?: ButtonProps['variant'];
-  iconClassName?: string;
   callbackUrl?: string;
   textPrefix?: string;
   text?: string;
@@ -18,7 +14,6 @@ interface LoginButtonProps extends ButtonProps {
 
 export function SignInButtonGitHub({
   size = 'lg',
-  noTextPrefix = false,
   textPrefix = 'Login with',
   text = 'GitHub',
   callbackUrl = '/',
@@ -28,31 +23,24 @@ export function SignInButtonGitHub({
   className,
   ...props
 }: LoginButtonProps) {
-  const [isLoading, setIsLoading] = React.useState(false);
   return (
-    <Button
+    <LoaderButton
       size={size}
       variant={variant}
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        setIsLoading(true);
         signIn('github', { redirectTo: callbackUrl });
       }}
-      disabled={isLoading}
       className={cn(
         'flex items-center gap-1.5 duration-75 hover:bg-primary hover:text-primary-foreground',
         className
       )}
+      icon={showIcon ? IconGitHub : undefined}
       {...props}
     >
-      {isLoading ? (
-        <IconSpinner className={cn('animate-spin', iconClassName)} />
-      ) : showIcon ? (
-        <IconGitHub className={iconClassName} />
-      ) : null}
       {textPrefix && <span className="hidden sm:inline">{textPrefix} </span>}
       {text}
-    </Button>
+    </LoaderButton>
   );
 }
