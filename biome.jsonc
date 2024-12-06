@@ -73,6 +73,7 @@
         "noUselessElse": "off", // Stylistic opinion
       },
       "suspicious": {
+        "noImplicitAnyLet": "off", // We trust Vercelians to use any only when necessary
         "noExplicitAny": "off", // We trust Vercelians to use any only when necessary
       },
       "nursery": {

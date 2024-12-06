@@ -25,8 +25,9 @@ export async function getLocationFromLatLong(lat: string, long: string) {
   const data = await result.json();
 
   // Get the first result then the address components then the long name from the locality field
-  const city = data.results[0].address_components.find((component) =>
-    component.types.includes('locality'),
+  const city = data.results[0].address_components.find(
+    (component: { types: string | string[] }) =>
+      component.types.includes('locality'),
   ).long_name;
 
   return city;
