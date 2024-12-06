@@ -15,9 +15,9 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
-import { UserTMCCProfileForm } from '../../profile/user-tmcc-profile-form';
+// import { UserTMCCProfileForm } from '../../profile/user-tmcc-profile-form';
 
-import { USER_MODEL } from '@/types/user';
+import type { USER_MODEL } from '@/types/user';
 
 export type DialogOnboardTMCCUserProps = {
   user: USER_MODEL;
@@ -87,7 +87,7 @@ export function DialogOnboardTMCCUser({
           </div>
         </AlertDialogHeader>
         <div className="py-6">
-          <UserTMCCProfileForm noTitle userId={user.id!} />
+          {/* <UserTMCCProfileForm noTitle userId={user.id!} /> */}
         </div>
         <AlertDialogFooter className="items-center">
           <AlertDialogAction
