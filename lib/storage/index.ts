@@ -1,4 +1,4 @@
-import { generateNanoid } from '@/lib/utils';
+import { generateNanoid } from '@/lib/id';
 
 import {
   AWS_S3_BASE_URL,

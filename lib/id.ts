@@ -1,5 +1,7 @@
 import { customAlphabet } from 'nanoid';
 
+const DEFAULT_ID_LENGTH = 16;
+
 /**
  * General nano ID generator and wrapper.
  */
@@ -17,8 +19,12 @@ export function genId(pfx: string) {
   return [pfx, nanoid()].join('_');
 }
 
-export function genChatId(size = 16) {
+export function generateNanoid(size = DEFAULT_ID_LENGTH) {
   return nanoid(size);
+}
+
+export function genChatId(size = DEFAULT_ID_LENGTH) {
+  return generateNanoid(size);
 }
 
 /**
