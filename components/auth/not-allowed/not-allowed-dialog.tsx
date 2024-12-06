@@ -15,7 +15,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
-import { UserProfileOnboardingTabs } from '../profile/user-profile-onboarding-tabs';
+// import { UserProfileOnboardingTabs } from '../profile/user-profile-onboarding-tabs';
 
 import type { PhotoBasicExifData } from '@/types/photo';
 import type { USER_MODEL } from '@/types/user';
@@ -99,10 +99,10 @@ export function DialogUserNotAllowed({
           </div>
         </AlertDialogHeader>
         <div className="py-6">
-          <UserProfileOnboardingTabs
+          {/* <UserProfileOnboardingTabs
             uploadedAssets={uploadedAssets}
             user={user}
-          />
+          /> */}
         </div>
         <AlertDialogFooter className="items-center">
           <AlertDialogAction
