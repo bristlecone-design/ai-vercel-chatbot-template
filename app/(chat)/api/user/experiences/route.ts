@@ -1,4 +1,6 @@
-// import { NextResponse, type NextRequest } from 'next/server';
+import { getErrorMessage } from '@/lib/errors';
+import { StatusCodes } from 'http-status-codes';
+import { type NextRequest, NextResponse } from 'next/server';
 // import {
 //   getCachedSingleUserExperienceForFrontend,
 //   getCachedUserExperiences,
@@ -30,74 +32,73 @@
 // /**
 //  * Handles getting a single or all user experience(s)
 //  */
-// const getHandler = async (request: NextRequest) => {
-//   try {
-//     const userId =
-//       (request.nextUrl.searchParams.get('userId') as string) || null;
+const getHandler = async (request: NextRequest) => {
+  try {
+    // const userId =
+    //   (request.nextUrl.searchParams.get('userId') as string) || null;
 
-//     if (!userId) {
-//       const statusText = 'User ID for experiences not provided';
-//       return new Response(statusText, {
-//         status: StatusCodes.BAD_REQUEST,
-//         statusText,
-//       });
-//     }
+    // if (!userId) {
+    //   const statusText = 'User ID for experiences not provided';
+    //   return new Response(statusText, {
+    //     status: StatusCodes.BAD_REQUEST,
+    //     statusText,
+    //   });
+    // }
 
-//     const dataType = (request.nextUrl.searchParams.get('type') ||
-//       'raw') as DataType;
+    // const dataType = (request.nextUrl.searchParams.get('type') ||
+    //   'raw') as DataType;
 
-//     const actionType = (request.nextUrl.searchParams.get('action') ||
-//       'all') as ActionType;
+    // const actionType = (request.nextUrl.searchParams.get('action') ||
+    //   'all') as ActionType;
 
-//     // All experiences
-//     if (actionType === 'all') {
-//       const experiences =
-//         (await (dataType === 'raw'
-//           ? getCachedUserExperiences(userId)
-//           : getCachedUserProfileExperiencesForFrontend(userId))) || [];
+    // // All experiences
+    // if (actionType === 'all') {
+    //   const experiences =
+    //     (await (dataType === 'raw'
+    //       ? getCachedUserExperiences(userId)
+    //       : getCachedUserProfileExperiencesForFrontend(userId))) || [];
 
-//       return NextResponse.json({
-//         userId,
-//         dataType,
-//         count: experiences.length || 0,
-//         experiences,
-//       });
-//     }
+    return NextResponse.json({
+      // userId,
+      // dataType,
+      // count: experiences.length || 0,
+      // experiences,
+    });
 
-//     const expId = (request.nextUrl.searchParams.get('expId') as string) || null;
-//     if (!expId) {
-//       const statusText = 'Experience ID not provided';
-//       return new Response(statusText, {
-//         status: StatusCodes.BAD_REQUEST,
-//         statusText,
-//       });
-//     }
+    //     const expId = (request.nextUrl.searchParams.get('expId') as string) || null;
+    //     if (!expId) {
+    //       const statusText = 'Experience ID not provided';
+    //       return new Response(statusText, {
+    //         status: StatusCodes.BAD_REQUEST,
+    //         statusText,
+    //       });
+    //     }
 
-//     // Single experience
-//     const experience = await (dataType === 'raw'
-//       ? getSingleExperience(expId)
-//       : getCachedSingleUserExperienceForFrontend(expId, {
-//           media: true,
-//           mediaThumbnail: true,
-//           bookmarks: true,
-//           likes: true,
-//         }));
+    //     // Single experience
+    //     const experience = await (dataType === 'raw'
+    //       ? getSingleExperience(expId)
+    //       : getCachedSingleUserExperienceForFrontend(expId, {
+    //           media: true,
+    //           mediaThumbnail: true,
+    //           bookmarks: true,
+    //           likes: true,
+    //         }));
 
-//     return NextResponse.json({
-//       expId,
-//       found: Boolean(experience),
-//       record: experience,
-//     });
-//   } catch (error) {
-//     const errMsg = getErrorMessage(error);
-//     const baseErrMsg = 'Failed to get user experience(s)';
-//     console.log(baseErrMsg, error);
-//     return new Response(`${baseErrMsg}: ${errMsg}`, {
-//       status: StatusCodes.INTERNAL_SERVER_ERROR,
-//       statusText: errMsg,
-//     });
-//   }
-// };
+    //     return NextResponse.json({
+    //       expId,
+    //       found: Boolean(experience),
+    //       record: experience,
+    //     });
+  } catch (error) {
+    const errMsg = getErrorMessage(error);
+    const baseErrMsg = 'Failed to get user experience(s)';
+    console.log(baseErrMsg, error);
+    return new Response(`${baseErrMsg}: ${errMsg}`, {
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
+      statusText: errMsg,
+    });
+  }
+};
 
 // /**
 //  * Delete a user's experience
