@@ -1,13 +1,14 @@
 'use client';
 
 import type { LegacyRef } from 'react';
-import type { AnnotatedTag, FieldSetType } from '@/features/photo/form';
 import { useFormStatus } from 'react-dom';
 
 import { cn } from '@/lib/utils';
 
 import { Spinner } from './spinner';
 import TagInput from './tag-input';
+
+import type { AnnotatedTag, FieldSetType } from '@/types/photo';
 
 export default function FieldSetWithStatus({
   id,

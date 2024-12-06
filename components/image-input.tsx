@@ -69,7 +69,7 @@ export function ImageInput({
           >
             <span className="mr-1 inline-flex w-4 items-center">
               {loading ? (
-                <Spinner color="text" className="translate-y-[0.5px]" />
+                <Spinner className="translate-y-[0.5px]" />
               ) : (
                 <FiUploadCloud
                   size={17}

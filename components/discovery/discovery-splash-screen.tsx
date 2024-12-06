@@ -1,4 +1,4 @@
-import { getWaitlistCount as getWaitlistCountDb } from '@/actions/user-db';
+// import { getWaitlistCount as getWaitlistCountDb } from '@/actions/user-db';
 
 import {
   DialogDiscoverSplashScreen,
@@ -9,9 +9,7 @@ export async function ExperienceSplashScreen({
   waitlistCount: waitlistCountProp,
   ...rest
 }: DialogDiscoverSplashScreenProps) {
-  const waitlistCount = waitlistCountProp
-    ? waitlistCountProp
-    : await getWaitlistCountDb();
+  const waitlistCount = waitlistCountProp ? waitlistCountProp : 0; //await getWaitlistCountDb();
 
   return <DialogDiscoverSplashScreen waitlistCount={waitlistCount} {...rest} />;
 }

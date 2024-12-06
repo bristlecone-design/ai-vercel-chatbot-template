@@ -14,7 +14,7 @@ import { AboutPlatform } from '@/components/about/about-platform';
 
 import { SignInButtonGitHub } from '../auth/login/github-signin-btn';
 import { SignInButtonGoogle } from '../auth/login/google-signin-btn';
-import { SignupEmailForm } from '../auth/signup/email-signup-form';
+import { RegisterEmailForm } from '../auth/register/register-form-email';
 import { Separator } from '../ui/separator';
 
 /**
@@ -74,7 +74,7 @@ export function DialogNotAuthedRecommendation({
               <span>OR</span>
               <Separator className="max-w-[15%]" />
             </div>
-            <SignupEmailForm
+            <RegisterEmailForm
               redirectPath={redirectPath}
               title="Signup with email"
               className="sm:mx-auto sm:max-w-[84%]"

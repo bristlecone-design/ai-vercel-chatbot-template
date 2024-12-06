@@ -1,7 +1,6 @@
 import { mergeAttributes, Node, nodePasteRule } from '@tiptap/core';
 import {
   NodeViewWrapper,
-  ReactNodeViewRenderer,
   type ReactNodeViewRendererOptions,
 } from '@tiptap/react';
 import { Tweet } from 'react-tweet';
@@ -15,11 +14,13 @@ export const isValidTwitterUrl = (url: string) => {
   return url.match(TWITTER_REGEX);
 };
 
-const TweetComponent = ({
-  node,
-}: {
-  node: Partial<ReactNodeViewRendererOptions>;
-}) => {
+type NodeType = Partial<ReactNodeViewRendererOptions> & {
+  attrs: {
+    src: string;
+  };
+};
+
+const TweetComponent = ({ node }: { node: NodeType }) => {
   const url = node?.attrs?.src;
   const tweetId = url?.split('/').pop();
 
@@ -94,11 +95,11 @@ export const Twitter = Node.create<TwitterOptions>({
     };
   },
 
-  addNodeView() {
-    return ReactNodeViewRenderer(TweetComponent, {
-      attrs: this.options.HTMLAttributes,
-    });
-  },
+  // addNodeView() {
+  //   return ReactNodeViewRenderer(TweetComponent, {
+  //     attrs: this.options.HTMLAttributes,
+  //   });
+  // },
 
   inline() {
     return this.options.inline;

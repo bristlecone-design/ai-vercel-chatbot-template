@@ -14,8 +14,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
-import { UserJoinLink } from '../auth/login/join-link';
 import { LinkCta } from '../cta-link';
+import { UserJoinLink } from '../link-join';
 import { RefreshView } from '../refresh-view';
 import { buttonVariants } from '../ui/button';
 import { IconImages } from '../ui/icons';

@@ -5,6 +5,8 @@ import { useAppState } from '@/state/app-state';
 import clsx from 'clsx';
 import { BiTrash } from 'react-icons/bi';
 
+import { SubmitButtonWithStatus } from '@/components/submit-button-with-status';
+
 export default function DeleteButton(
   props: ComponentProps<typeof SubmitButtonWithStatus> & {
     clearLocalState?: boolean;
@@ -31,8 +33,7 @@ export default function DeleteButton(
     <SubmitButtonWithStatus
       {...rest}
       title="Delete"
-      icon={<BiTrash size={16} />}
-      spinnerColor="text"
+      icon={BiTrash}
       className={clsx(
         className,
         '!text-red-500 dark:!text-red-600',

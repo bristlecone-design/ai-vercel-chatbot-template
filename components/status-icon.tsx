@@ -6,7 +6,7 @@ import {
 
 import { Spinner } from '@/components/spinner';
 
-export default function StatusIcon({
+export function StatusIcon({
   type,
   loading,
 }: {

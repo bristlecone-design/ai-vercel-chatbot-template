@@ -1,17 +1,17 @@
 'use client';
 
-import { ComponentProps, useMemo } from 'react';
+import { useMemo, type ComponentProps } from 'react';
 import { usePathname } from 'next/navigation';
-import { deleteConfirmationTextForPhoto, Photo } from '@/photo';
-import { deletePhotoAction, toggleFavoritePhotoAction } from '@/photo/actions';
-import { RevalidatePhoto } from '@/photo/InfinitePhotoScroll';
-import { useAppState } from '@/state/AppState';
-import { isPathFavs, isPhotoFav } from '@/tag';
+import { useAppState } from '@/state/app-state';
 import { BiTrash } from 'react-icons/bi';
 import { FaRegEdit, FaRegStar, FaStar } from 'react-icons/fa';
 
-import MoreMenu, { MoreMenuItem } from '@/components/more/MoreMenu';
+import { deleteConfirmationTextForPhoto } from '../photo';
+import { deletePhotoAction, toggleFavoritePhotoAction } from '../photo/actions';
+import type { RevalidatePhoto } from '../photo/InfinitePhotoScroll';
+import { isPathFavs, isPhotoFav } from '../photo/tag';
 
+import type { Photo } from '@/types/photo';
 import { pathForAdminPhotoEdit, pathForPhoto } from '@/config/site-paths';
 
 export default function AdminPhotoMenuClient({

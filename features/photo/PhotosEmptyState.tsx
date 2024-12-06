@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import AdminCTA from '@/admin/AdminCTA';
+import AdminCTA from '@/features/admin/AdminCTA';
 import { clsx } from 'clsx';
 import { HiOutlinePhotograph } from 'react-icons/hi';
 
 import SiteChecklist from '@/components/checklist/site-checklist';
-import InfoBlock from '@/components/InfoBlock';
+import { InfoBlock } from '@/components/info-block';
 import SiteGrid from '@/components/site-grid';
 
 import { PATH_ADMIN_CONFIGURATION } from '@/config/site-paths';

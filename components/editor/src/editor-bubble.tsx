@@ -46,6 +46,7 @@ export const EditorBubble = forwardRef<HTMLDivElement, EditorBubbleProps>(
 
       return {
         shouldShow,
+        editor: currentEditor,
         tippyOptions: {
           onCreate: (val) => {
             instanceRef.current = val;

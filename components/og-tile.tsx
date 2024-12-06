@@ -73,7 +73,7 @@ export default function OGTile({
               'flex items-center justify-center'
             )}
           >
-            <Spinner size={40} />
+            <Spinner />
           </div>
         )}
         {loadingState === 'failed' && (

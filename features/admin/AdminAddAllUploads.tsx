@@ -18,6 +18,7 @@ import {
 } from '@/lib/datesAndTimes';
 import ErrorNote from '@/components/error-note';
 import FieldSetWithStatus from '@/components/field-with-status';
+import { InfoBlock } from '@/components/info-block';
 import LoaderButton from '@/components/primitives/LoaderButton';
 
 import { PATH_ADMIN_PHOTOS } from '@/config/site-paths';

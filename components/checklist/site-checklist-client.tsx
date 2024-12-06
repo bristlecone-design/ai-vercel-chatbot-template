@@ -1,6 +1,6 @@
 'use client';
 
-import { ComponentProps, ReactNode, useTransition } from 'react';
+import { useTransition, type ComponentProps, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { clsx } from 'clsx';
 import {
@@ -13,16 +13,16 @@ import {
 } from 'react-icons/bi';
 import { FiExternalLink } from 'react-icons/fi';
 import { HiSparkles } from 'react-icons/hi';
+import { toast } from 'sonner';
 
 import { labelForStorage } from '@/lib/storage';
 import Checklist from '@/components/checklist/checklist';
 import ChecklistRow from '@/components/checklist/checklist-row';
-import InfoBlock from '@/components/InfoBlock';
+import { InfoBlock } from '@/components/info-block';
 import LoaderButton from '@/components/primitives/LoaderButton';
-import StatusIcon from '@/components/status-icon';
-import { toastSuccess } from '@/components/toast';
+import { StatusIcon } from '@/components/status-icon';
 
-import { ConfigChecklistStatus } from '@/config/site-settings';
+import type { ConfigChecklistStatus } from '@/config/site-settings';
 
 export default function SiteChecklistClient({
   hasDatabase,
@@ -107,7 +107,7 @@ export default function SiteChecklistClient({
       )}
       onClick={() => {
         navigator.clipboard.writeText(text);
-        toastSuccess(`${label} copied to clipboard`);
+        toast(`${label} copied to clipboard`);
       }}
       styleAs="link"
     />
@@ -258,7 +258,6 @@ export default function SiteChecklistClient({
                       icon={<BiRefresh size={18} />}
                       onClick={refreshSecret}
                       isLoading={isPendingSecret}
-                      spinnerColor="text"
                       styleAs="link"
                     />
                   </div>

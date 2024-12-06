@@ -1,4 +1,4 @@
-import { generateAuthSecret } from '@/lib/auth/edge-auth';
+import { generateAuthSecret } from '@/app/(auth)/auth-edge';
 
 import SiteChecklistClient from './site-checklist-client';
 

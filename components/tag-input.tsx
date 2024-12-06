@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { AnnotatedTag } from '@/features/photo/form';
 
 import { convertStringToArray, parameterize } from '@/lib/strings';
 import { cn } from '@/lib/utils';
+
+import type { AnnotatedTag } from '@/types/photo';
 
 const KEY_KEYDOWN = 'keydown';
 const CREATE_LABEL = 'Create';

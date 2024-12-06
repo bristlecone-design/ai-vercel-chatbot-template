@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { clsx } from 'clsx';
 
 import ExperimentalBadge from '@/components/experimental-badge';
-import StatusIcon from '@/components/status-icon';
+import { StatusIcon } from '@/components/status-icon';
 
 export default function ChecklistRow({
   title,
