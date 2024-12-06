@@ -1,5 +1,5 @@
-import { expirePath } from 'next/cache';
-import { NextResponse, type NextRequest } from 'next/server';
+import { unstable_expirePath as expirePath } from 'next/cache';
+import { type NextRequest, NextResponse } from 'next/server';
 
 import { getErrorMessage } from '@/lib/errors';
 
