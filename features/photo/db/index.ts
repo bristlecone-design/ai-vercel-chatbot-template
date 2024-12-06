@@ -1,9 +1,8 @@
-import { Camera } from '@/camera';
-import { FilmSimulation } from '@/simulation';
-
-import { parameterize } from '@/lib/string';
+import { parameterize } from '@/lib/strings';
 
 import { PRIORITY_ORDER_ENABLED } from '@/config/site-settings';
+import type { Camera } from '@/features/camera';
+import type { FilmSimulation } from '@/features/simulation';
 
 export const GENERATE_STATIC_PARAMS_LIMIT = 1000;
 export const PHOTO_DEFAULT_LIMIT = 100;
@@ -24,7 +23,7 @@ export type GetPhotosOptions = {
 
 export const getWheresFromOptions = (
   options: GetPhotosOptions,
-  initialValuesIndex = 1
+  initialValuesIndex = 1,
 ) => {
   const {
     hidden = 'exclude',
@@ -61,7 +60,7 @@ export const getWheresFromOptions = (
   if (query) {
     // eslint-disable-next-line max-len
     wheres.push(
-      `CONCAT(title, ' ', caption, ' ', semantic_description) ILIKE $${valuesIndex++}`
+      `CONCAT(title, ' ', caption, ' ', semantic_description) ILIKE $${valuesIndex++}`,
     );
     wheresValues.push(`%${query.toLocaleLowerCase()}%`);
   }
@@ -106,7 +105,7 @@ export const getOrderByFromOptions = (options: GetPhotosOptions) => {
 
 export const getLimitAndOffsetFromOptions = (
   options: GetPhotosOptions,
-  initialValuesIndex = 1
+  initialValuesIndex = 1,
 ) => {
   const { limit = PHOTO_DEFAULT_LIMIT, offset = 0 } = options;
 

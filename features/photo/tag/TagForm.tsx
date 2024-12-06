@@ -1,13 +1,14 @@
 'use client';
 
-import { ReactNode, useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import Link from 'next/link';
-import { renamePhotoTagGloballyAction } from '@/photo/actions';
-import { useAppState } from '@/state/AppState';
+import { useAppState } from '@/state/app-state';
 
-import { parameterize } from '@/lib/string';
+import { parameterize } from '@/lib/strings';
 import FieldSetWithStatus from '@/components/field-with-status';
-import SubmitButtonWithStatus from '@/components/submit-button-with-status';
+import { SubmitButtonWithStatus } from '@/components/submit-button-with-status';
+
+import { renamePhotoTagGloballyAction } from '../actions';
 
 import { PATH_ADMIN_TAGS } from '@/config/site-paths';
 
