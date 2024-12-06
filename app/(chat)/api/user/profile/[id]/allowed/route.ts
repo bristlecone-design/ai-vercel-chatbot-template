@@ -16,11 +16,9 @@ type UserSaveParamTypes = {
 };
 
 // https://beta.nextjs.org/docs/routing/route-handlers#dynamic-route-handlers
-const postHandler = async (
-  request: NextRequest,
-  { params }: { params: { id: UserSaveParamTypes['userId'] } },
-) => {
-  const userId = params.id;
+const postHandler = async (request: NextRequest) => {
+  const params = request.nextUrl.searchParams as unknown as UserSaveParamTypes;
+  const userId = params.userId;
 
   if (!userId) {
     const statusText = 'User ID not provided';
