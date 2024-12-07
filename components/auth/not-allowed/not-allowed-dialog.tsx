@@ -52,7 +52,7 @@ export function DialogUserNotAllowed({
     const nextState = typeof ns === 'boolean' ? ns : !isOpen;
     setIsOpen(nextState);
     signOut({
-      callbackUrl: pathname,
+      redirectTo: pathname,
     });
     router.refresh();
   };

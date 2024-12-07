@@ -45,7 +45,7 @@ export function DialogOnboardTMCCUser({
     const nextState = typeof ns === 'boolean' ? ns : !isOpen;
     setIsOpen(nextState);
     signOut({
-      callbackUrl: pathname,
+      redirectTo: pathname,
     });
     router.refresh();
   };
