@@ -1,9 +1,13 @@
 import { Suspense } from 'react';
 import { cookies } from 'next/headers';
+import { getCachedUserWaitlistCount } from '@/actions/user';
 
 import { DEFAULT_MODEL_NAME, models } from '@/lib/ai/models';
 import { genChatId } from '@/lib/id';
+import { getUserSession } from '@/lib/session';
+import { DiscoveryRandomBgImage } from '@/components/bg-image-random-client';
 import { Chat } from '@/components/chat';
+import { ExperienceSplashScreen } from '@/components/discovery/discovery-splash-screen';
 
 async function DynamicChatView() {
   const id = genChatId();
@@ -25,10 +29,23 @@ async function DynamicChatView() {
   );
 }
 
+async function DynamicUnauthenticatedSplashView() {
+  const waitlistCount = await getCachedUserWaitlistCount();
+  return (
+    <div className="relative flex h-dvh w-screen flex-col">
+      <DiscoveryRandomBgImage className="" />
+      <ExperienceSplashScreen waitlistCount={waitlistCount} />
+    </div>
+  );
+}
+
 export default async function Page() {
+  const session = await getUserSession();
+
   return (
     <Suspense fallback={'...'}>
-      <DynamicChatView />
+      {session && <DynamicChatView />}
+      {!session && <DynamicUnauthenticatedSplashView />}
     </Suspense>
   );
 }

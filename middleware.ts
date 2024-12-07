@@ -17,7 +17,7 @@ export default auth((req) => {
 
   // Redirect to login path if user is not logged in and tries to access root path
   if (!isLoggedIn && isRootPath) {
-    return Response.redirect(new URL(loginPath, nextUrl));
+    // return Response.redirect(new URL(loginPath, nextUrl));
   }
 
   // Redirect to root path if user is logged in and tries to access login or register pages

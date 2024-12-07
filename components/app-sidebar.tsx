@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import type { User } from 'next-auth';
@@ -20,9 +21,21 @@ import { PlusIcon } from '@/components/icons';
 import { SidebarHistory } from '@/components/sidebar-history';
 import { SidebarUserNav } from '@/components/sidebar-user-nav';
 
-export function AppSidebar({ user }: { user: User | undefined }) {
+export function AppSidebar({
+  user,
+  closeSidebarOnMount,
+}: {
+  user: User | undefined;
+  closeSidebarOnMount?: boolean;
+}) {
   const router = useRouter();
-  const { setOpenMobile } = useSidebar();
+  const { setOpenMobile, setOpen } = useSidebar();
+
+  React.useEffect(() => {
+    if (closeSidebarOnMount) {
+      setOpen(false);
+    }
+  }, [closeSidebarOnMount]);
 
   return (
     <Sidebar className="group-data-[side=left]:border-r-0">

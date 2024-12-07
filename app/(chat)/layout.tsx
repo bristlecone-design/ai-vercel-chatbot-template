@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
 
+import { cn } from '@/lib/utils';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/app-sidebar';
 
@@ -15,10 +16,18 @@ export default async function Layout({
   const [session, cookieStore] = await Promise.all([auth(), cookies()]);
   const isCollapsed = cookieStore.get('sidebar:state')?.value !== 'true';
 
+  const isAuthenticated = !!session?.user;
+
   return (
     <SidebarProvider defaultOpen={!isCollapsed}>
-      <AppSidebar user={session?.user} />
-      <SidebarInset>{children}</SidebarInset>
+      <AppSidebar closeSidebarOnMount={!isAuthenticated} user={session?.user} />
+      <SidebarInset
+        className={cn({
+          'bg-background/50': !isAuthenticated,
+        })}
+      >
+        {children}
+      </SidebarInset>
     </SidebarProvider>
   );
 }

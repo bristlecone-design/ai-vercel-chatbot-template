@@ -109,6 +109,11 @@ const nextConfig: NextConfig = {
 
   redirects: async () => [
     {
+      source: '/signup',
+      destination: '/register',
+      permanent: true,
+    },
+    {
       source: '/challenge',
       destination: '/prompts',
       permanent: true,

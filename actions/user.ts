@@ -272,7 +272,7 @@ export async function updateUserUsername(
  * @note This is a count of all users who are on the waitlist
  *
  */
-export async function getUserWaitlistCount(baseCount = 1093): Promise<number> {
+export async function getUserWaitlistCount(baseCount = 1208): Promise<number> {
   try {
     const [result] = await db
       .select({ count: count(users.waitlist) })

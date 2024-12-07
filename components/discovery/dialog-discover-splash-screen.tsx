@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
+import { formatNumber } from '@/lib/datesAndTimes';
 import { cn } from '@/lib/utils';
 // import { useTransitionRouter } from 'next-view-transitions';
 
@@ -70,7 +71,8 @@ export function DialogDiscoverSplashScreen({
   const ctaLabel =
     waitlistCount && !ctaLabelProp ? (
       <span>
-        Join <strong>{waitlistCount}</strong> others
+        Join <strong>{formatNumber(waitlistCount, 'USD', 'decimal')}</strong>{' '}
+        others
       </span>
     ) : ctaLabelProp ? (
       ctaLabelProp
@@ -102,7 +104,7 @@ export function DialogDiscoverSplashScreen({
       }}
     >
       <DialogContent
-        className="max-w-2xl bg-background/95 p-8 sm:p-12 lg:max-w-3xl"
+        className="max-w-2xl bg-background/95 p-8 sm:p-12 md:max-w-3xl xl:max-w-4xl"
         lightOverlay={lightOverlay}
         noCloseBtn={noCloseBtn}
       >
