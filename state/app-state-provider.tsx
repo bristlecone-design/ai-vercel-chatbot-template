@@ -1,8 +1,14 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { clearPathCache, clearTagCache } from '@/actions/cache';
-import { createGeoLocationCookie } from '@/actions/cookies';
-import { getCachedLocationFromLatLong } from '@/actions/geo';
+import {
+  createGeoLocationCookie,
+  getGeoLocationCookie,
+} from '@/actions/cookies';
+import {
+  getCachedLocationFromLatLong,
+  getUserGeoFromHeaders,
+} from '@/actions/geo';
 import { getCachedUserProfileById } from '@/actions/user';
 import { getUserProfilePermalink } from '@/features/experiences/utils/experience-utils';
 import { signIn, signOut } from 'next-auth/react';
@@ -247,12 +253,12 @@ export default function AppStateProvider({
         //   positionError,
         // });
         setIsPreciseLocation(false);
-        // const { success, geo } = await getUserGeoFromHeaders();
-        // if (success && geo) {
-        //   if (geo.city) setUserLocation(geo.city);
-        //   if (geo.latitude) setUserLatitude(String(geo.latitude));
-        //   if (geo.longitude) setUserLongitude(String(geo.longitude));
-        // }
+        const { success, geo } = await getUserGeoFromHeaders();
+        if (success && geo) {
+          if (geo.city) setUserLocation(geo.city);
+          if (geo.latitude) setUserLatitude(String(geo.latitude));
+          if (geo.longitude) setUserLongitude(String(geo.longitude));
+        }
       },
       // In case the user is moving around, we want to debounce the location update
       onSuccess: debouncedOnGeoSuccess,
@@ -273,10 +279,10 @@ export default function AppStateProvider({
     };
 
     const handleSettingGeoUserLocationFromCookies = async () => {
-      // const userCookieLocation = await getGeoLocationCookie();
-      // if (userCookieLocation?.value) {
-      //   setUserLocation(userCookieLocation.value);
-      // }
+      const userCookieLocation = await getGeoLocationCookie();
+      if (userCookieLocation?.value) {
+        setUserLocation(userCookieLocation.value);
+      }
     };
 
     const handleSettingGeoUserLocationToCookies = async (
