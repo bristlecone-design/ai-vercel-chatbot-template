@@ -1,6 +1,7 @@
 // User Profile
 export const CACHE_KEY_USER_PROFILE = 'user-profile';
 export const CACHE_KEY_USER_PROFILES = 'user-profiles';
+export const CACHE_KEY_USER_WAITLIST_PROFILES = 'user-waitlist-profiles';
 export const CACHE_KEY_USER_PROFILE_BY_USERNAME = 'user-profile-by-username';
 
 // Experiences

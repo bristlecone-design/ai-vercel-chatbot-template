@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import type {
+  Story,
   promptCollaboratorSchema,
   promptCollectionSchema,
   promptSchema,
@@ -161,7 +162,7 @@ export type ExperienceUserPromptModel = z.infer<typeof promptSchema> & {
 
   Experiences?: ExperienceModel[];
 
-  Story?: PromptStoryBaseModel | PromptStoryModel;
+  Story?: Story | PromptStoryBaseModel | PromptStoryModel;
   storyId?: string;
 };
 

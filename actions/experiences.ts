@@ -9,25 +9,29 @@ import {
   experiences,
   media,
 } from '@/lib/db/schema';
+import { getErrorMessage } from '@/lib/errors';
 import { isImage, isImageExtension } from '@/lib/media/media-utils';
 import { mapDbUserToClientFriendlyPhotoAuthor } from '@/lib/user/user-utils';
+import type { AIExperienceCallToActionSuggestionModel } from '@/types/experience-prompts';
 import type {
   ExperienceMediaModel,
   ExperienceModel,
 } from '@/types/experiences';
 import type { USER_PROFILE_MODEL } from '@/types/user';
 import { eq } from 'drizzle-orm';
-import { unstable_cache } from 'next/cache';
+import { unstable_expirePath as expirePath, unstable_cache } from 'next/cache';
 import { getCachedAllBookmarksByExpId } from './bookmarks';
 import {
+  CACHE_KEY_USER_EXPERIENCE,
   CACHE_KEY_USER_EXPERIENCE_MEDIA,
   CACHE_KEY_USER_EXPERIENCE_SINGLE_MEDIA,
 } from './cache-keys';
+import type { ExperienceIncludeOpts } from './experience-action-types';
 import { getAndMapUserGeo } from './geo';
 import { getCachedAllLikesByExpId } from './likes';
 import { getCachedAllPromptsByExpId } from './prompts';
 import { getCachedAllStoriesByExpId } from './stories';
-import { getCachedUserById } from './user';
+import { getCachedUserById, getUserById } from './user';
 
 /**
  * Get geo data from headers and map it to an experience record for the user
@@ -47,6 +51,77 @@ export async function getUserGeoforExperience(data: Experience) {
   }
 
   return data;
+}
+
+/**
+ * Get mapped models for an experience
+ */
+export async function getMappedExperienceModels(
+  record: Experience,
+  includeOpts = {} as ExperienceIncludeOpts,
+  cached = false,
+): Promise<ExperienceModel> {
+  const {
+    author = true,
+    media = true,
+    story = true,
+    prompts = true,
+    bookmarks = false,
+    likes = false,
+  } = includeOpts;
+
+  const hasIncludeOpts =
+    author || media || story || prompts || bookmarks || likes;
+
+  if (!hasIncludeOpts) {
+    return record as ExperienceModel;
+  }
+
+  const { authorId } = record;
+
+  const [Author, Media, Prompt, Story, Bookmark, Likes] = await Promise.all([
+    author && authorId
+      ? cached
+        ? getCachedUserById(authorId)
+        : getUserById(authorId)
+      : undefined,
+    media ? getCachedAllExperienceMediaByExpId(record.id) : undefined,
+    prompts ? getCachedAllPromptsByExpId(record.id) : undefined,
+    story ? getCachedAllStoriesByExpId(record.id) : undefined,
+    bookmarks ? getCachedAllBookmarksByExpId(record.id) : undefined,
+    likes ? getCachedAllLikesByExpId(record.id) : undefined,
+  ]);
+
+  return {
+    ...record,
+    Author: Author
+      ? mapDbUserToClientFriendlyPhotoAuthor(
+          Author as unknown as USER_PROFILE_MODEL,
+        )
+      : undefined,
+    Media: Media,
+    Prompt: Prompt,
+    Story: Story,
+    Bookmarks: Bookmark,
+    Likes: Likes,
+  } as ExperienceModel;
+}
+
+/**
+ * Get mapped models for a list of experiences
+ *
+ * @note - This function is used to map a list of experiences to their respective models. It wraps the getMappedExperienceModels function.
+ */
+export async function getMappedExperienceModelsList(
+  records: Experience[],
+  includeOpts = {} as ExperienceIncludeOpts,
+  cached = false,
+): Promise<ExperienceModel[]> {
+  return await Promise.all(
+    records.map(async (record) => {
+      return getMappedExperienceModels(record, includeOpts, cached);
+    }),
+  );
 }
 
 /**
@@ -167,32 +242,14 @@ export async function getCachedAllExperienceMediaByExpId(
   })(expId).then((media) => media);
 }
 
-type ExperienceIncludeOpts = {
-  author?: boolean;
-  media?: boolean;
-  story?: boolean;
-  prompts?: boolean;
-  mediaThumbnail?: boolean;
-  bookmarks?: boolean;
-  likes?: boolean;
-};
-
 /**
  * Get a single experience by ID
  */
 export async function getSingleExperience(
   id: string,
   includeOpts = {} as ExperienceIncludeOpts,
+  cached = false,
 ): Promise<ExperienceModel | null> {
-  const {
-    author = true,
-    media = true,
-    story = true,
-    prompts = true,
-    bookmarks = false,
-    likes = false,
-  } = includeOpts || {};
-
   const [record] = await db
     .selectDistinct()
     .from(experiences)
@@ -200,49 +257,20 @@ export async function getSingleExperience(
 
   if (!record) return null;
 
-  const [Author, Media, Prompt, Story, Bookmark, Likes] = await Promise.all([
-    author && record.authorId ? getCachedUserById(record.authorId) : undefined,
-    media ? getCachedAllExperienceMediaByExpId(record.id) : undefined,
-    prompts ? getCachedAllPromptsByExpId(record.id) : undefined,
-    story ? getCachedAllStoriesByExpId(record.id) : undefined,
-    bookmarks ? getCachedAllBookmarksByExpId(record.id) : undefined,
-    likes ? getCachedAllLikesByExpId(record.id) : undefined,
-  ]);
-
-  return {
-    ...record,
-    Author: Author
-      ? mapDbUserToClientFriendlyPhotoAuthor(
-          Author as unknown as USER_PROFILE_MODEL,
-        )
-      : undefined,
-    Media: Media,
-    Prompt: Prompt,
-    Story: Story,
-    Bookmarks: Bookmark,
-    Likes: Likes,
-  } as ExperienceModel;
+  return getMappedExperienceModels(record, includeOpts, cached);
 }
 
 export async function getCachedSingleExperience(
-  expId: string,
-  includeOpts = {} as ExperienceIncludeOpts,
+  ...args: Parameters<typeof getSingleExperience>
 ): Promise<ExperienceModel | null> {
+  const expId = args[0];
   return unstable_cache(getSingleExperience, [expId], {
     revalidate: 86400, // 24 hours
     tags: [expId],
-  })(expId, includeOpts).then((exp) => exp);
+  })(...args).then((exp) => exp);
 }
 
-type PartialExperienceIncludeOpts = {
-  author?: boolean;
-  //   media?: boolean;
-  //   story?: boolean;
-  //   prompts?: boolean;
-  //   mediaThumbnail?: boolean;
-  //   bookmarks?: boolean;
-  //   likes?: boolean;
-};
+type PartialExperienceIncludeOpts = ExperienceIncludeOpts & {};
 
 /**
  * Get partial experience by ID
@@ -250,6 +278,7 @@ type PartialExperienceIncludeOpts = {
 export async function getPartialExperienceById(
   id: string,
   includeOpts = {} as PartialExperienceIncludeOpts,
+  cached = false,
 ): Promise<ExperienceModel | null> {
   const [record] = await db
     .selectDistinct()
@@ -258,23 +287,20 @@ export async function getPartialExperienceById(
 
   if (!record) return null;
 
-  const [Author] = await Promise.all([
-    includeOpts.author && record.authorId
-      ? getCachedUserById(record.authorId)
-      : undefined,
-  ]);
+  // Include options with defaults
+  const { author = true } = includeOpts;
 
-  return { ...record, Author: Author } as unknown as ExperienceModel;
+  return getMappedExperienceModels(record, { author, ...includeOpts }, cached);
 }
 
 export async function getCachedPartialExperienceById(
-  expId: string,
-  includeOpts = {} as PartialExperienceIncludeOpts,
+  ...args: Parameters<typeof getPartialExperienceById>
 ): Promise<ExperienceModel | null> {
+  const expId = args[0];
   return unstable_cache(getPartialExperienceById, [expId], {
     revalidate: 86400, // 24 hours
     tags: [expId],
-  })(expId, includeOpts).then((exp) => exp);
+  })(...args).then((exp) => exp);
 }
 
 /**
@@ -283,10 +309,11 @@ export async function getCachedPartialExperienceById(
 export async function getExperiencesByIds(
   ids: string[],
   includeOpts = {} as ExperienceIncludeOpts,
+  cached = false,
 ): Promise<ExperienceModel[]> {
   const response = await Promise.all(
     ids.map(async (id) => {
-      return getCachedSingleExperience(id, includeOpts);
+      return getCachedSingleExperience(id, includeOpts, cached);
     }),
   );
 
@@ -294,13 +321,13 @@ export async function getExperiencesByIds(
 }
 
 export async function getCachedExperiencesByIds(
-  ids: string[],
-  includeOpts = {} as ExperienceIncludeOpts,
+  ...args: Parameters<typeof getExperiencesByIds>
 ): Promise<ExperienceModel[]> {
+  const ids = args[0];
   return unstable_cache(getExperiencesByIds, [], {
     revalidate: 86400, // 24 hours
     tags: ids,
-  })(ids, includeOpts).then((experiences) => experiences);
+  })(...args).then((experiences) => experiences);
 }
 
 /**
@@ -316,12 +343,13 @@ export async function getUserExperienceIds(userId: string): Promise<string[]> {
 }
 
 export async function getCachedUserExperienceIds(
-  userId: string,
+  ...args: Parameters<typeof getUserExperienceIds>
 ): Promise<string[]> {
+  const userId = args[0];
   return unstable_cache(getUserExperienceIds, [userId], {
     revalidate: 86400, // 24 hours
     tags: [userId],
-  })(userId).then((ids) => ids);
+  })(...args).then((ids) => ids);
 }
 
 /**
@@ -331,7 +359,82 @@ export async function getCachedUserExperienceIds(
 export async function getSingleUsersExperiences(
   userId: string,
   includeOpts = {} as ExperienceIncludeOpts,
+  cached = false,
 ): Promise<ExperienceModel[]> {
-  const ids = await getUserExperienceIds(userId);
-  return getExperiencesByIds(ids, includeOpts);
+  const ids = await (cached
+    ? getCachedUserExperienceIds(userId)
+    : getUserExperienceIds(userId));
+
+  return getExperiencesByIds(ids, includeOpts, cached);
+}
+
+export async function updateExperience(
+  id: string,
+  data: Partial<Experience>,
+  includeOpts = {} as ExperienceIncludeOpts,
+  expirePathKey = CACHE_KEY_USER_EXPERIENCE,
+): Promise<{ updated: boolean; data: ExperienceModel }> {
+  const dataKeys = Object.keys(data) as (keyof Experience)[];
+  const dataKeysReturning = dataKeys.map((key) => ({
+    [key]: experiences[key],
+  }));
+
+  const updated = await db
+    .update(experiences)
+    .set(data)
+    .where(eq(experiences.id, id))
+    .returning();
+
+  const record = updated[0];
+
+  if (!record) return { updated: false, data: record };
+
+  if (expirePathKey) {
+    expirePath(expirePathKey);
+  }
+
+  // Include options
+  if (includeOpts.media) {
+    expirePath(CACHE_KEY_USER_EXPERIENCE_MEDIA);
+  }
+
+  const mappedRecord = await getMappedExperienceModels(record, includeOpts);
+
+  return { updated: true, data: mappedRecord };
+}
+
+/**
+ * Update an experience with CTAs or remove them
+ */
+export async function updateExperienceCTAs(
+  expId: string,
+  ctas: AIExperienceCallToActionSuggestionModel[] | null,
+) {
+  try {
+    return updateExperience(expId, {
+      ctas: ctas ? ctas : [],
+    });
+  } catch (error) {
+    const errMsg = getErrorMessage(error);
+    console.error('Error updating experience CTAs:', error);
+    return errMsg;
+  }
+}
+
+/**
+ * Get list of experiences by prompt ID
+ */
+export async function getExperiencesByPromptId(
+  promptId: string,
+  includeOpts = {} as ExperienceIncludeOpts,
+  cached = false,
+): Promise<ExperienceModel[] | undefined> {
+  const records = await db
+    .selectDistinct()
+    .from(experiences)
+    .where(eq(experiences.promptId, promptId));
+
+  if (!records || !records.length) return undefined;
+
+  return getMappedExperienceModelsList(records, includeOpts, cached);
 }
