@@ -60,52 +60,52 @@ const DEFAULT_ITEMS: Array<ScrollingItem> = [
   {
     icon: <IconTentTree />,
     label: 'Outdoor Recreation',
-    link: '/signup',
+    link: '/register',
   },
   {
     icon: <IconBadgeDollarSign />,
     label: 'Economic Development',
-    link: '/signup',
+    link: '/register',
   },
   {
     icon: <IconCollaboration />,
     label: 'Collaborations',
-    link: '/signup',
+    link: '/register',
   },
   {
     icon: <IconSparkle />,
     label: 'Arts & Culture',
-    link: '/signup',
+    link: '/register',
   },
   {
     icon: <IconTentTree />,
     label: 'Partnerships',
-    link: '/signup',
+    link: '/register',
   },
   {
     icon: <IconCaravan />,
     label: 'Parks & Trails',
-    link: '/signup',
+    link: '/register',
   },
   {
     icon: <IconSunrise />,
     label: 'Rural Nevada',
-    link: '/signup',
+    link: '/register',
   },
   {
     icon: <IconBatteryCharging />,
     label: 'Charging Stations',
-    link: '/signup',
+    link: '/register',
   },
   {
     icon: <IconTentTree />,
     label: 'Citizen Science',
-    link: '/signup',
+    link: '/register',
   },
   {
     icon: <IconSparkle />,
     label: 'Knowledge Sharing',
-    link: '/signup',
+    link: '/register',
   },
 ];
 
@@ -151,7 +151,7 @@ export function DiscoveryScrollingItems(
         </p>
         <ul
           className={cn(
-            'animate-skew-scroll mx-auto grid h-[140px] w-full grid-cols-1 gap-5 sm:grid-cols-2 md:h-[180px]',
+            'mx-auto grid h-[140px] w-full animate-skew-scroll grid-cols-1 gap-5 sm:grid-cols-2 md:h-[180px]',
             itemClassName
           )}
         >

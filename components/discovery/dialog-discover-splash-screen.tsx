@@ -128,7 +128,7 @@ export function DialogDiscoverSplashScreen({
                 {!isOnChallengesSection && (
                   <UserJoinLink
                     variant="tertiary"
-                    href="/signup"
+                    href="/register"
                     label={ctaLabel}
                     onClick={onCtaLinkClick}
                     disabled={ctaClicked}
@@ -158,7 +158,7 @@ export function DialogDiscoverSplashScreen({
                 )}
                 {isOnChallengesSection && (
                   <UserJoinLink
-                    href="/signup"
+                    href="/register"
                     className={cn(
                       buttonVariants({
                         variant: 'tertiary',
