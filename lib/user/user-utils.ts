@@ -58,7 +58,7 @@ export function mapDbUserToClientFriendlyUser(
 }
 
 export function mapAppUserToClientFriendlyUser(
-  user: AppUser,
+  user: AppUser | User,
 ): UserClientFriendly {
   if (!user) {
     return user;

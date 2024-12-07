@@ -39,7 +39,7 @@ import {
 } from './app-state-constants';
 
 import type { UserAppGeo } from '@/types/geo';
-import type { USER_PROFILE_MODEL } from '@/types/user';
+import type { User, USER_PROFILE_MODEL } from '@/types/user';
 
 export type AppStateProviderProps = {
   children: ReactNode;
@@ -109,7 +109,7 @@ export default function AppStateProvider({
     const userProfileFallback = userProfileProp
       ? mapDbUserToClientFriendlyUser(userProfileProp)
       : userSessionProp
-        ? mapAppUserToClientFriendlyUser(userSessionProp)
+        ? mapAppUserToClientFriendlyUser(userSessionProp as User)
         : DEFAULT_USER_PROFILE_STATE;
 
     const invokeUserProfileReady =
