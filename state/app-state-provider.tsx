@@ -306,7 +306,7 @@ export default function AppStateProvider({
       if (profilePathKey) {
         const profilePath = getUserProfilePermalink(profilePathKey);
         clearPathCache(profilePath);
-        // router.refresh();
+        router.refresh();
       }
     };
 
@@ -376,13 +376,14 @@ export default function AppStateProvider({
       setIsMounted(true);
       // handleRefreshingUserSession();
       // handleRefreshingUserProfile();
+      if (isReady) return;
 
       // Set the user location from cookies on mount
       // Main geo location hook will override this if it has a more precise location and the user has allowed it
       handleSettingGeoUserLocationFromCookies();
 
       setIsReady(true);
-    }, [isMounted, isCurrentPathRouteReady]);
+    }, [isMounted, isReady, isCurrentPathRouteReady]);
 
     // Prepare the context value
     const providerProps = useMemo<AppStateContext>(
@@ -458,6 +459,10 @@ export default function AppStateProvider({
         userLocation,
       ]
     );
+
+    if (!isReady) {
+      return null;
+    }
 
     return (
       <AppStateContext.Provider value={providerProps}>
