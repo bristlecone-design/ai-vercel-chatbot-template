@@ -1,5 +1,5 @@
 import type { AppUser } from '@/types/next-auth';
-import type { USER_PROFILE_MODEL } from '@/types/user';
+import type { USER_PROFILE_MODEL, User } from '@/types/user';
 
 export function getUserInitialsFromName(name: string | undefined) {
   if (!name) return '';
@@ -23,7 +23,7 @@ export function getUsersLastNameFromName(name: string | null | undefined) {
 export type UserClientFriendly = USER_PROFILE_MODEL;
 
 export function mapDbUserToClientFriendlyUser(
-  user: USER_PROFILE_MODEL,
+  user: User | USER_PROFILE_MODEL,
 ): UserClientFriendly {
   return {
     id: user.id,
@@ -51,8 +51,8 @@ export function mapDbUserToClientFriendlyUser(
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
 
-    Following: user.Following,
-    FollowedBy: user.FollowedBy,
+    // Following: user.Following,
+    // FollowedBy: user.FollowedBy,
     followerCount: user.followerCount,
   };
 }

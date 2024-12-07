@@ -1,9 +1,7 @@
-import 'server-only';
-
+import type { UserChat } from '@/types/chat-msgs';
 import { genSaltSync, hashSync } from 'bcrypt-ts';
 import { and, asc, desc, eq, gt } from 'drizzle-orm';
-
-import type { UserChat } from '@/types/chat-msgs';
+import 'server-only';
 import { db } from './connect';
 import {
   type Chat,
@@ -22,7 +20,6 @@ import {
 // use the Drizzle adapter for Auth.js / NextAuth
 // https://authjs.dev/reference/adapter/drizzle
 
-// biome-ignore lint: Forbidden non-null assertion.
 // const client = postgres(process.env.POSTGRES_URL!);
 // const db = drizzle(client);
 

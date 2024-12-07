@@ -16,9 +16,11 @@ export const CACHE_KEY_PHOTOS = 'm-medias';
 export const CACHE_KEY_PHOTO = 'm-media';
 
 // Likes
+export const CACHE_KEY_LIKE = 'likes';
 export const CACHE_KEY_LIKES = 'likes';
 
 // Bookmarks
+export const CACHE_KEY_BOOKMARK = 'bookmark';
 export const CACHE_KEY_BOOKMARKS = 'bookmarks';
 
 // Featured Photos

@@ -857,6 +857,11 @@ export type PromptCollection = InferSelectModel<typeof promptCollection>;
 
 export const promptCollectionSchema = createInsertSchema(promptCollection);
 
+// Alias for PromptCollection
+export type Story = InferSelectModel<typeof promptCollection>;
+
+export const storySchema = createInsertSchema(promptCollection);
+
 export const promptCollaborators = pgTable(
   'PromptCollaborator',
   {
