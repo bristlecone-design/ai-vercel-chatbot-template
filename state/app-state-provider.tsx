@@ -11,6 +11,7 @@ import {
 } from '@/actions/geo';
 import { getCachedUserProfileById } from '@/actions/user';
 import { getUserProfilePermalink } from '@/features/experiences/utils/experience-utils';
+import type { Session } from 'next-auth';
 import { signIn, signOut } from 'next-auth/react';
 import { useGeolocated } from 'react-geolocated';
 import useSWR from 'swr';
@@ -38,12 +39,11 @@ import {
 } from './app-state-constants';
 
 import type { UserAppGeo } from '@/types/geo';
-import type { AppUser } from '@/types/next-auth';
 import type { USER_PROFILE_MODEL } from '@/types/user';
 
 export type AppStateProviderProps = {
   children: ReactNode;
-  userSession?: AppUser;
+  userSession?: Session['user'];
   userProfile?: USER_PROFILE_MODEL;
   userLocation?: string;
 };

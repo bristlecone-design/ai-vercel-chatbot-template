@@ -2,6 +2,7 @@ import { GeistMono } from 'geist/font/mono';
 import { GeistSans } from 'geist/font/sans';
 import { Toaster } from 'sonner';
 
+import { getUserSession } from '@/lib/session';
 import { cn } from '@/lib/utils';
 import { Providers } from '@/components/providers';
 import { TailwindIndicator } from '@/components/tailwind-indicator';
@@ -34,6 +35,27 @@ const THEME_COLOR_SCRIPT = `\
   updateThemeColor();
 })();`;
 
+async function AppContent({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  const session = await getUserSession();
+  return (
+    <Providers
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+      session={session}
+    >
+      <Toaster position="top-center" />
+      {children}
+      <TailwindIndicator />
+    </Providers>
+  );
+}
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -56,16 +78,7 @@ export default async function RootLayout({
         />
       </head>
       <body className={cn(GeistSans.variable, GeistMono.variable)}>
-        <Providers
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Toaster position="top-center" />
-          {children}
-          <TailwindIndicator />
-        </Providers>
+        <AppContent>{children}</AppContent>
       </body>
     </html>
   );
