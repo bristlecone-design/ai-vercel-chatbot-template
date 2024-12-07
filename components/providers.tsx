@@ -1,6 +1,7 @@
 'use client';
 
 import AppStateProvider from '@/state/app-state-provider';
+import { SwrConfigClientProvider } from '@/state/swr-provider';
 import { SessionProvider, type SessionProviderProps } from 'next-auth/react';
 import type { ThemeProviderProps } from 'next-themes';
 
@@ -15,12 +16,14 @@ export type ProvidersProps = ThemeProviderProps & {
 
 export function Providers({ children, session, ...props }: ProvidersProps) {
   return (
-    <SessionProvider session={session}>
-      <ThemeProvider {...props}>
-        <TooltipProvider>
-          <AppStateProvider>{children}</AppStateProvider>
-        </TooltipProvider>
-      </ThemeProvider>
-    </SessionProvider>
+    <SwrConfigClientProvider>
+      <SessionProvider session={session}>
+        <ThemeProvider {...props}>
+          <TooltipProvider>
+            <AppStateProvider>{children}</AppStateProvider>
+          </TooltipProvider>
+        </ThemeProvider>
+      </SessionProvider>
+    </SwrConfigClientProvider>
   );
 }

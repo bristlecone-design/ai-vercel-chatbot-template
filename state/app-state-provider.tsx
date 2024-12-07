@@ -94,6 +94,7 @@ export default function AppStateProvider({
       {
         suspense: false,
         fallbackData: userSessionProp,
+        keepPreviousData: true,
         revalidateOnFocus: false,
         revalidateIfStale: false,
         revalidateOnMount: true,
@@ -129,6 +130,7 @@ export default function AppStateProvider({
       },
       {
         suspense: false,
+        keepPreviousData: true,
         fallbackData: userProfileFallback,
         refreshInterval: 0, //60000,
         revalidateOnFocus: false,
@@ -244,7 +246,7 @@ export default function AppStateProvider({
       },
       watchPosition: true,
       userDecisionTimeout: Number.POSITIVE_INFINITY,
-      suppressLocationOnMount: false,
+      suppressLocationOnMount: true,
       // geolocationProvider: navigator.geolocation,
       isOptimisticGeolocationEnabled: true,
       watchLocationPermissionChange: false,
