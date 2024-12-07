@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { clearPathCache, clearTagCache } from '@/actions/cache';
@@ -83,13 +81,16 @@ export default function AppStateProvider({
       isMounted && isCurrentPathRouteReady
         ? [currentPathname, APP_STATE_USER_SESSION_KEY]
         : null,
-      getUserFromSession,
+      (args) => {
+        // console.log('**** userSessionProp', { args, userSessionProp });
+        return getUserFromSession();
+      },
       {
         suspense: false,
         fallbackData: userSessionProp,
         revalidateOnFocus: false,
         revalidateIfStale: false,
-        revalidateOnMount: false,
+        revalidateOnMount: true,
         revalidateOnReconnect: false,
         refreshInterval: 0,
         shouldRetryOnError: false,
@@ -117,6 +118,7 @@ export default function AppStateProvider({
         : null,
       async (...args) => {
         const [_, userId] = args[0];
+        // console.log('**** userProfileProp', { args, userProfileProp });
         return getCachedUserProfileById(String(userId));
       },
       {
@@ -125,7 +127,7 @@ export default function AppStateProvider({
         refreshInterval: 0, //60000,
         revalidateOnFocus: false,
         revalidateIfStale: false,
-        revalidateOnMount: false,
+        revalidateOnMount: true,
         revalidateOnReconnect: false,
         // shouldRetryOnError: false,
       }

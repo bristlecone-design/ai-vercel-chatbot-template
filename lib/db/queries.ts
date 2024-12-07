@@ -1,7 +1,8 @@
+import 'server-only';
+
 import type { UserChat } from '@/types/chat-msgs';
 import { genSaltSync, hashSync } from 'bcrypt-ts';
 import { and, asc, desc, eq, gt } from 'drizzle-orm';
-import 'server-only';
 import { db } from './connect';
 import {
   type Chat,
