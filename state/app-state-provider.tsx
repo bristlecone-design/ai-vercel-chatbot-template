@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { clearPathCache, clearTagCache } from '@/actions/cache';
 import {
@@ -12,34 +12,33 @@ import {
   getUserGeoFromHeaders,
 } from '@/actions/geo';
 import { saveGeoLatLongLocation } from '@/actions/geo-kv';
-import { getCachedUserProfileDb } from '@/actions/user-db';
+import { getCachedUserProfileById } from '@/actions/user';
+import { getUserProfilePermalink } from '@/features/experiences/utils/experience-utils';
+import { signIn, signOut } from 'next-auth/react';
 import { useGeolocated } from 'react-geolocated';
 import useSWR from 'swr';
 import { useDebouncedCallback } from 'use-debounce';
 
-// import { getPhotosHiddenMetaCachedAction } from '@/photo/actions';
-
-import { signOutAndRedirectAction } from '@/lib/auth/actions';
-import { signIn } from '@/lib/auth/edge-auth';
-import { getUserProfilePermalink } from '@/lib/experiences/experience-utils';
-import { useLocalStorage } from '@/lib/hooks/use-local-storage';
-import usePathnames from '@/lib/hooks/use-pathnames';
 import { getUserFromSession } from '@/lib/session';
 import {
   getUsersFirstNameFromName,
   mapAppUserToClientFriendlyUser,
   mapDbUserToClientFriendlyUser,
 } from '@/lib/user/user-utils';
+// import { getPhotosHiddenMetaCachedAction } from '@/photo/actions';
 
-import {
-  APP_STATE_USER_PROFILE_KEY,
-  APP_STATE_USER_SESSION_KEY,
-} from './app-state-constants';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+import usePathnames from '@/hooks/use-pathnames';
+
 import {
   AppStateContext,
   DEFAULT_USER_PROFILE_STATE,
   type ClearUserProfileCacheType,
-} from './AppState';
+} from './app-state';
+import {
+  APP_STATE_USER_PROFILE_KEY,
+  APP_STATE_USER_SESSION_KEY,
+} from './app-state-constants';
 
 import type { UserAppGeo } from '@/types/geo';
 import type { AppUser } from '@/types/next-auth';
@@ -125,7 +124,7 @@ export default function AppStateProvider({
         : null,
       async (...args) => {
         const [_, userId] = args[0];
-        return getCachedUserProfileDb(String(userId));
+        return getCachedUserProfileById(String(userId));
       },
       {
         suspense: false,
@@ -206,8 +205,8 @@ export default function AppStateProvider({
         if (lat && long) {
           const location = await getCachedLocationFromLatLong(
             lat,
-            long,
-            activeUserId
+            long
+            // activeUserId
           );
 
           if (location) {
@@ -307,7 +306,7 @@ export default function AppStateProvider({
       if (profilePathKey) {
         const profilePath = getUserProfilePermalink(profilePathKey);
         clearPathCache(profilePath);
-        router.refresh();
+        // router.refresh();
       }
     };
 
@@ -359,7 +358,7 @@ export default function AppStateProvider({
     const handleSigningOut = async (redirectTo?: string) => {
       await mutateUserSession(undefined);
       await mutateUserProfile(undefined);
-      signOutAndRedirectAction(redirectTo);
+      await signOut({ redirectTo });
       await mutateUserSession(undefined);
       await mutateUserProfile(undefined);
       return true;
@@ -386,66 +385,79 @@ export default function AppStateProvider({
     }, [isMounted, isCurrentPathRouteReady]);
 
     // Prepare the context value
-    const providerProps: AppStateContext = {
-      isReady,
+    const providerProps = useMemo<AppStateContext>(
+      () => ({
+        isReady,
 
-      // User Session
-      userSession,
-      userId: activeUserId,
+        // User Session
+        userSession,
+        userId: activeUserId,
 
-      // User Geo Location
-      userLocation,
-      userLatitude,
-      userLongitude,
-      isPreciseLocation,
+        // User Geo Location
+        userLocation,
+        userLatitude,
+        userLongitude,
+        isPreciseLocation,
 
-      // Auth User
-      userProfile,
-      userProfileUsername: activeUsername,
-      userDisplayName: profileUserDisplayName,
-      userFirstName: profileUserFirstName,
-      userLastName: profileUserLastName,
-      userAvatar: profileUserAvatar,
-      userProfilePermalink: profilePermalink,
+        // Auth User
+        userProfile,
+        userProfileUsername: activeUsername,
+        userDisplayName: profileUserDisplayName,
+        userFirstName: profileUserFirstName,
+        userLastName: profileUserLastName,
+        userAvatar: profileUserAvatar,
+        userProfilePermalink: profilePermalink,
 
-      isUserAllowed,
-      isAuthenticated,
-      isProfilePublic,
-      isInPrivateBeta,
+        isUserAllowed,
+        isAuthenticated,
+        isProfilePublic,
+        isInPrivateBeta,
 
-      // Core Handlers
-      // User Geo
-      handleGettingUserGeo,
+        // Core Handlers
+        // User Geo
+        handleGettingUserGeo,
 
-      // User Data
-      handleRefreshingUserProfile,
-      handleUpdatingAuthUser: handleUpdatingAuthUserProfile,
-      handleClearingCacheById: handleClearingUserProfileCacheById,
-      handleClearingCacheByUsername: handleClearingUserProfileCacheByUsername,
-      handleClearingCache,
+        // User Data
+        handleRefreshingUserProfile,
+        handleUpdatingAuthUser: handleUpdatingAuthUserProfile,
+        handleClearingCacheById: handleClearingUserProfileCacheById,
+        handleClearingCacheByUsername: handleClearingUserProfileCacheByUsername,
+        handleClearingCache,
 
-      // Navigation and Auth
-      handleNavigateToUserProfile,
-      handleSigningOut,
-      handleSigningIn,
+        // Navigation and Auth
+        handleNavigateToUserProfile,
+        handleSigningOut,
+        handleSigningIn,
 
-      // ADMIN
+        // ADMIN
 
-      // MISC
-      // currentPathname,
-      // previousPathname,
-      // swrTimestamp,
-      shouldRespondToKeyboardCommands,
-      setShouldRespondToKeyboardCommands,
-      isCommandKOpen,
-      setIsCommandKOpen,
+        // MISC
+        // currentPathname,
+        // previousPathname,
+        // swrTimestamp,
+        shouldRespondToKeyboardCommands,
+        setShouldRespondToKeyboardCommands,
+        isCommandKOpen,
+        setIsCommandKOpen,
 
-      // DEBUG
-      shouldDebugImageFallbacks,
-      setShouldDebugImageFallbacks,
-      shouldShowBaselineGrid,
-      setShouldShowBaselineGrid,
-    };
+        // DEBUG
+        shouldDebugImageFallbacks,
+        setShouldDebugImageFallbacks,
+        shouldShowBaselineGrid,
+        setShouldShowBaselineGrid,
+      }),
+      [
+        isReady,
+        isUserAllowed,
+        isAuthenticated,
+        isProfilePublic,
+        isInPrivateBeta,
+        activeUserId,
+        userSession,
+        userProfile,
+        userLocation,
+      ]
+    );
 
     return (
       <AppStateContext.Provider value={providerProps}>

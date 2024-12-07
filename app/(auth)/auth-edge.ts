@@ -1,8 +1,9 @@
 // import { PrismaAdapter } from '@auth/prisma-adapter';
-import NextAuth from 'next-auth';
+import NextAuth, { type Session } from 'next-auth';
 
 // import prisma from '@/lib/prisma/client';
 
+import { PATH_ROOT } from '@/config/site-paths';
 import { authConfig } from './auth.config';
 
 export const {
@@ -38,3 +39,16 @@ export const generateAuthSecret = () =>
   fetch('https://generate-secret.vercel.app/32', { cache: 'no-cache' }).then(
     (res) => res.text(),
   );
+
+export const signOutAndRedirectAction = async (
+  redirectPath: string | undefined = PATH_ROOT,
+  redirect = true,
+) => {
+  return signOut({ redirectTo: redirectPath, redirect });
+};
+
+export const getAuthAction = async () => await auth();
+
+export const logClientAuthUpdate = async (data: Session | null | undefined) => {
+  console.log('Client auth update', data);
+};
