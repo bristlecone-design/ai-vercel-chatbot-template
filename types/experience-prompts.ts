@@ -3,8 +3,8 @@ import { z } from 'zod';
 import type {
   Story,
   promptCollaboratorSchema,
-  promptCollectionSchema,
-  promptSchema,
+  promptCollectionModelSchema,
+  promptModelSchema,
 } from '@/lib/db/schema';
 
 import type { ExperienceModel } from './experiences';
@@ -32,7 +32,7 @@ export type PromptCollaboratorModel = z.infer<
  * Schema for Prompt Collection Records
  */
 export interface PromptStoryBaseModel
-  extends z.infer<typeof promptCollectionSchema> {}
+  extends z.infer<typeof promptCollectionModelSchema> {}
 
 /**
  * Extension of Prompt Collection Model
@@ -40,7 +40,7 @@ export interface PromptStoryBaseModel
 export interface PromptStoryModel extends PromptStoryBaseModel {
   Prompts: ExperienceUserPromptModel[];
   Experiences: ExperienceModel[];
-  PromptCollaborators: PromptCollaboratorModel[];
+  Collaborators: PromptCollaboratorModel[];
 }
 
 /**
@@ -152,17 +152,21 @@ export type AIGeneratedResponseToUserReply =
  * @note This schema is slightly different from the AI generated prompts schema but the AI generated prompts are 99.9% of the time the source of the records.
  */
 
-export type ExperienceUserPromptModel = z.infer<typeof promptSchema> & {
+export type ExperienceUserPromptModel = z.infer<typeof promptModelSchema> & {
+  activities?: string[];
+
+  interests?: string[];
+
   Author?: USER_PROFILE_MODEL;
   // Alias for the user who completed the prompt
-  Collaborator?: USER_PROFILE_MODEL;
+  Collaborator?: USER_PROFILE_MODEL | null;
 
   experienceId?: string;
-  Experience?: ExperienceModel;
+  Experience?: ExperienceModel | null;
 
   Experiences?: ExperienceModel[];
 
-  Story?: Story | PromptStoryBaseModel | PromptStoryModel;
+  Story?: Story | PromptStoryBaseModel | PromptStoryModel | null;
   storyId?: string;
 };
 

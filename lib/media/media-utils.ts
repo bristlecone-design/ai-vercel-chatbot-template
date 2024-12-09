@@ -444,12 +444,22 @@ export function mapMediaRecordToMediaWithExif(photo: Record<string, any>) {
     takenAtNaive: photo.takenAtNaive,
   } as unknown as PhotoBasicExifData['exif'];
 
-  const photoAsset = {
-    ...photo,
-    exif: exif,
-  } as unknown as PhotoBasicExifData;
+  // Iterate through the photo record to create the root-level photo object without any exif keys
+  const photoAsset = {} as Record<string, any>;
 
-  return photoAsset;
+  for (const key in photo) {
+    if (key in exif) {
+      continue;
+    }
+
+    const newKey = key as keyof typeof photo;
+    photoAsset[key] = photo[newKey];
+  }
+
+  // Attach the exif data to the photo object
+  photoAsset.exif = exif;
+
+  return photoAsset as PhotoBasicExifData;
 }
 
 /**

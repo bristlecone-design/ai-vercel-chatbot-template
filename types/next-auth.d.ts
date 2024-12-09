@@ -26,42 +26,43 @@ export interface EmailFormUser
   // Add other properties here as needed
 }
 
+// Alias for the user profile model. Also used to extend the auth user object.
 export interface AppUser
-  extends BaseAuthUser,
-    Pick<
-      USER_PROFILE_MODEL,
-      | 'id'
-      | 'createdAt'
-      | 'updatedAt'
-      | 'active'
-      | 'image'
-      | 'avatar'
-      | 'name'
-      | 'email'
-      | 'username'
-      | 'organization'
-      | 'company'
-      | 'banner'
-      | 'public'
-      | 'bio'
-      | 'role'
-      | 'url'
-      | 'profession'
-      | 'urlSocial'
-      | 'interests'
-      | 'location'
-      | 'onboarded'
-      // | 'password'
-      // | 'salt'
-      // | 'onboarded'
-      | 'privateBeta'
-      | 'allowed'
-      | 'blocked'
-      | 'active'
-      | 'enabled'
-      | 'waitlist'
-      // | 'meta'
-    > {
+  extends Pick<
+    USER_PROFILE_MODEL,
+    | 'id'
+    | 'createdAt'
+    | 'updatedAt'
+    | 'active'
+    | 'image'
+    | 'avatar'
+    | 'name'
+    | 'email'
+    | 'username'
+    | 'organization'
+    | 'company'
+    | 'banner'
+    | 'public'
+    | 'bio'
+    | 'role'
+    | 'url'
+    | 'urlSocial'
+    | 'profession'
+    | 'interests'
+    | 'location'
+    | 'waitlist'
+    | 'privateBeta'
+    | 'onboarded'
+    // | 'password'
+    // | 'salt'
+    // | 'onboarded'
+    | 'allowed'
+    | 'blocked'
+    | 'active'
+    | 'enabled'
+    | 'waitlist'
+    // | 'meta'
+  > {
   // Add other properties here as needed
 }
 
@@ -78,18 +79,21 @@ declare module 'next-auth/jwt' {
 }
 
 declare module 'next-auth' {
-  interface User extends AppUser {
+  /**
+   * Leveraged by session callback's user object (AdapterUser extends User)
+   */
+  export interface User extends BaseAuthUser, AppUser {
     userId?: AppUser['id'];
-    username?: UserName;
-    avatar?: UserImage;
-    blocked?: UserBlocked;
-    domainAllowed?: UserDomainAllowed;
-    emailExcluded?: UserEmailExcluded;
+    // username?: UserName;
+    // avatar?: UserImage;
+    // blocked?: UserBlocked;
+    // domainAllowed?: UserDomainAllowed;
+    // emailExcluded?: UserEmailExcluded;
   }
 
-  interface Session {
+  export interface Session {
     id: AppUser['id'];
-    user: BaseAuthUser;
+    user: AppUser;
     image?: UserImage;
     allowed?: UserAllowed;
     blocked?: UserBlocked;

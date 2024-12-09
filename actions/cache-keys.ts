@@ -37,6 +37,8 @@ export const CACHE_KEY_COMPLETE_PROMPT = 'complete-prompt';
 export const CACHE_KEY_COMPLETE_PROMPTS = 'complete-prompts';
 export const CACHE_KEY_INCOMPLETE_PROMPTS = 'incomplete-prompts';
 
+export const CACHE_KEY_PUBLIC_PROMPTS = 'public-prompts';
+
 export const CACHE_KEY_PROMPT_STORY = 'prompt-story';
 export const CACHE_KEY_PROMPT_STORIES = 'prompt-stories';
 export const CACHE_KEY_COMPLETED_PROMPT_STORY = 'completed-prompt-stories';

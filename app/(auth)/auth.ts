@@ -3,7 +3,7 @@ import { getUser } from '@/lib/db/queries';
 import type { User as DbUser } from '@/lib/db/schema';
 import { compare } from 'bcrypt-ts';
 import NextAuth, { type Session, type User } from 'next-auth';
-import type { Adapter } from 'next-auth/adapters';
+import type { Adapter, AdapterUser } from 'next-auth/adapters';
 import Credentials from 'next-auth/providers/credentials';
 import GitHub, { type GitHubProfile } from 'next-auth/providers/github';
 import Google, { type GoogleProfile } from 'next-auth/providers/google';
@@ -48,7 +48,8 @@ export const {
           privateBeta: false,
           meta: { github: profile },
         } as DbUser;
-        return { ...profile, ...dbUser } as any;
+
+        return { ...profile, ...dbUser } as unknown as AdapterUser;
       },
     }),
     Google({
@@ -77,7 +78,8 @@ export const {
         } as DbUser;
 
         // Create/update the user in the database
-        return { ...profile, ...dbUser } as any;
+        const mappedProfile = { ...profile, ...dbUser } as AdapterUser;
+        return mappedProfile;
       },
     }),
     Credentials({
@@ -100,6 +102,7 @@ export const {
         token.id = user.id;
         token.picture = user.image || null;
         token.name = user.name || null;
+        token.username = user.username || null;
       }
 
       return token;
@@ -116,6 +119,7 @@ export const {
       // console.log('session callback::', { session, token, user });
       if (session.user) {
         session.user.id = token.id as string;
+        session.user.username = token.username as string;
       }
 
       return session;

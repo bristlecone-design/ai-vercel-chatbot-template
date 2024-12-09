@@ -1,13 +1,14 @@
 'use server';
+
 import { db } from '@/lib/db/connect';
 import { type User, users } from '@/lib/db/schema';
 import { getErrorMessage } from '@/lib/errors';
-import { base64ToFile } from '@/lib/images';
+
 import { mapDbUserToClientFriendlyUser } from '@/lib/user/user-utils';
 import type { USER_PROFILE_MODEL } from '@/types/user';
 import { and, count, desc, eq } from 'drizzle-orm';
 import { unstable_expirePath as expirePath, unstable_cache } from 'next/cache';
-import { uploadUserAvatar, uploadUserBanner } from './blob';
+
 import { clearTagCache } from './cache';
 import {
   CACHE_KEY_USER_PROFILE,
@@ -436,71 +437,6 @@ export async function clearUserBanner(userId: string): Promise<boolean> {
 }
 
 /**
- * Upload user banner to file blob store and update the user's profile in the db.
- */
-export async function uploadAndStoreUserBanner(
-  userId: string,
-  banner: File | string | null,
-  contentType?: string,
-): Promise<{
-  blob: boolean;
-  db: boolean;
-}> {
-  try {
-    const xBanner =
-      typeof banner === 'string' && banner.startsWith('data:')
-        ? await base64ToFile(banner, '', contentType)
-        : banner;
-
-    // If banner is not a file, return early
-    if (xBanner !== null && !(xBanner instanceof File)) {
-      return {
-        db: false,
-        blob: false,
-      };
-    }
-
-    let dbUpdated = false;
-    let blobUpdated = false;
-
-    // Save the user's banner
-    if (xBanner) {
-      // Save the user's avatar and banner to the KV store
-      const blobResult = await uploadUserBanner(
-        xBanner,
-        userId,
-        `banner-${new Date().getTime()}`,
-      );
-      blobUpdated = Boolean(blobResult.url);
-
-      if (blobResult.url) {
-        dbUpdated = await updateUserBanner(userId, blobResult.url);
-      }
-    } else {
-      // User wants to remove their banner
-      dbUpdated = await updateUserBanner(userId, '');
-    }
-
-    // Revalidate the user's profile page globally
-    if (dbUpdated && blobUpdated) {
-      // console.log(`**** revalidating user profile page`);
-      expirePath('/');
-    }
-
-    return {
-      db: dbUpdated,
-      blob: blobUpdated,
-    };
-  } catch (error) {
-    console.error('uploadAndStoreUserBanner error', getErrorMessage(error));
-    return {
-      db: false,
-      blob: false,
-    };
-  }
-}
-
-/**
  * Update a user's avatar image
  */
 export async function updateUserAvatar(
@@ -525,69 +461,4 @@ export async function updateUserAvatar(
  */
 export async function clearUserAvatar(userId: string): Promise<boolean> {
   return updateUserAvatar(userId, '');
-}
-
-/**
- * Upload user avatar to file blob store and update the user's profile in the db.
- */
-export async function uploadAndStoreUserAvatar(
-  userId: string,
-  avatar: File | string | null,
-  contentType?: string,
-): Promise<{
-  blob: boolean;
-  db: boolean;
-}> {
-  try {
-    const xAvatar =
-      typeof avatar === 'string' && avatar.startsWith('data:')
-        ? await base64ToFile(avatar, '', contentType)
-        : avatar;
-
-    // If avatar is not a file, return early
-    if (xAvatar !== null && !(xAvatar instanceof File)) {
-      return {
-        db: false,
-        blob: false,
-      };
-    }
-
-    let dbUpdated = false;
-    let blobUpdated = false;
-
-    // Save the user's avatar
-    if (xAvatar) {
-      // Save the user's avatar and banner to the KV store
-      const blobResult = await uploadUserAvatar(
-        xAvatar,
-        userId,
-        `avatar-${new Date().getTime()}`,
-      );
-      blobUpdated = Boolean(blobResult.url);
-
-      if (blobResult.url) {
-        dbUpdated = await updateUserAvatar(userId, blobResult.url);
-      }
-    } else {
-      // User wants to remove their avatar
-      dbUpdated = await updateUserAvatar(userId, '');
-    }
-
-    // Revalidate the user's profile page globally
-    if (dbUpdated && blobUpdated) {
-      // console.log(`**** revalidating user profile page`);
-      expirePath('/');
-    }
-
-    return {
-      db: dbUpdated,
-      blob: blobUpdated,
-    };
-  } catch (error) {
-    console.error('uploadAndStoreUserAvatar error', getErrorMessage(error));
-    return {
-      db: false,
-      blob: false,
-    };
-  }
 }

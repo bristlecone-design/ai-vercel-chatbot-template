@@ -1,5 +1,5 @@
-import { BASE_PHOTO_AUTHOR_KEY_TYPES, PhotoAuthor } from '@/types/photo';
-import { USER_PROFILE_MODEL } from '@/types/user';
+import type { BASE_PHOTO_AUTHOR_KEY_TYPES, PhotoAuthor } from '@/types/photo';
+import type { USER_PROFILE_MODEL } from '@/types/user';
 
 export const BASE_PHOTO_AUTHOR_KEYS: BASE_PHOTO_AUTHOR_KEY_TYPES = [
   'id',
@@ -21,7 +21,7 @@ export const BASE_PHOTO_AUTHOR_KEYS: BASE_PHOTO_AUTHOR_KEY_TYPES = [
 
 export function mapUserToPhotoAuthorObj(
   user: USER_PROFILE_MODEL,
-  profileKeys = BASE_PHOTO_AUTHOR_KEYS
+  profileKeys = BASE_PHOTO_AUTHOR_KEYS,
 ): PhotoAuthor | null {
   if (!user) {
     return null;

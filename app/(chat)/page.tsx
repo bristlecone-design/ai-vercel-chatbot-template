@@ -43,7 +43,7 @@ export default async function Page() {
   const session = await getUserSession();
 
   return (
-    <Suspense fallback={'...'}>
+    <Suspense fallback={''}>
       {session && <DynamicChatView />}
       {!session && <DynamicUnauthenticatedSplashView />}
     </Suspense>

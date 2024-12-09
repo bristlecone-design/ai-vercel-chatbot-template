@@ -1,13 +1,15 @@
+'use server';
+
 import { determineHeight } from '@/lib/images';
-import { getIdFromStorageUrl, getExtensionFromStorageUrl } from '@/lib/storage';
-import type { PhotoFormData, PhotoBasicExifData } from '@/types/photo';
+import { getExtensionFromStorageUrl, getIdFromStorageUrl } from '@/lib/storage';
+import type { PhotoBasicExifData, PhotoFormData } from '@/types/photo';
 import sharp, { type Sharp } from 'sharp';
 import { type ExifData, ExifParserFactory } from 'ts-exif-parser';
 import type { FilmSimulation } from '../simulation';
 import { convertExifToFormData } from './form';
 import {
-  isExifForFujifilm,
   getFujifilmSimulationFromMakerNote,
+  isExifForFujifilm,
 } from './vendors/fujifilm';
 
 const IMAGE_WIDTH_RESIZE = 200;

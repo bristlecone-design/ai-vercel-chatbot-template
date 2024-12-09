@@ -21,7 +21,7 @@ export async function uploadSingleBlob(
   name: string,
   userId: string,
   chatId: string,
-  multipart = false
+  multipart = false,
 ): Promise<Partial<CustomPutBlobResult>> {
   const user = await getUserSession();
   if (!user) {
@@ -62,12 +62,12 @@ export async function uploadMultipleBlobs(
   names: string[],
   userId: string,
   chatId: string,
-  multipart = false
+  multipart = false,
 ): Promise<Partial<CustomPutBlobResult[]>> {
   const results = await Promise.all(
     blobs.map((blob, index) =>
-      uploadSingleBlob(blob, names[index], userId, chatId, multipart)
-    )
+      uploadSingleBlob(blob, names[index], userId, chatId, multipart),
+    ),
   );
 
   return results as Partial<CustomPutBlobResult[]>;
@@ -81,13 +81,13 @@ export async function uploadUserAvatar(
   userId: string,
   fileName = '',
   folder = 'avatar',
-  multipart = false
+  multipart = false,
 ): Promise<Partial<CustomPutBlobResult>> {
   const blobKey = createFileBlobUserAvatarPathKey(
     userId,
     blob,
     fileName,
-    folder
+    folder,
   );
 
   try {
@@ -117,13 +117,13 @@ export async function uploadUserBanner(
   userId: string,
   fileName = '',
   folder = 'banner',
-  multipart = false
+  multipart = false,
 ): Promise<Partial<CustomPutBlobResult>> {
   const blobKey = createFileBlobUserBannerPathKey(
     userId,
     blob,
     fileName,
-    folder
+    folder,
   );
 
   try {
@@ -152,7 +152,7 @@ export async function uploadAudioBlob(
   blob: Blob | File,
   fileName = '',
   folder = 'audio',
-  multipart = false
+  multipart = false,
 ): Promise<Partial<CustomPutBlobResult>> {
   const blobKey = `${folder}/${fileName}`;
 
@@ -182,7 +182,7 @@ export async function uploadAudioBlob(
  */
 export async function uploadExperienceAudioBlob(
   formData: FormData,
-  multipart = false
+  multipart = false,
 ): Promise<Partial<CustomPutBlobResult>> {
   const blob = formData.get('audio') as Blob;
   const expId = formData.get('expId') as string;

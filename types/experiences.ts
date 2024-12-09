@@ -2,11 +2,11 @@ import type { PlaceIconType } from '@/schemas/places/places-schemas';
 import type { z } from 'zod';
 
 import type {
-  audioMediaSchema,
-  bookmarkSchema,
-  experienceLikesSchema,
-  experiencesSchema,
-  mediaSchema,
+  audioMediaModelSchema,
+  bookmarkModelSchema,
+  experienceLikesModelSchema,
+  experienceModelSchema,
+  mediaModelSchema,
 } from '@/lib/db/schema';
 import type {
   AIExperienceCallToActionSuggestionModel,
@@ -16,14 +16,14 @@ import type {
 import type { PhotoThumbnail } from './photo';
 import type { USER_PROFILE_MODEL } from './user';
 
-export type ExperienceBookmarkModel = z.infer<typeof bookmarkSchema>;
+export type ExperienceBookmarkModel = z.infer<typeof bookmarkModelSchema>;
 
-export type ExperienceLikesModel = z.infer<typeof experienceLikesSchema>;
+export type ExperienceLikesModel = z.infer<typeof experienceLikesModelSchema>;
 
 export interface ExperienceAudioMediaModel
-  extends z.infer<typeof audioMediaSchema> {}
+  extends z.infer<typeof audioMediaModelSchema> {}
 
-export interface ExperienceMediaModel extends z.infer<typeof mediaSchema> {
+export interface ExperienceMediaModel extends z.infer<typeof mediaModelSchema> {
   thumbnail?: PhotoThumbnail | PlaceIconType;
   user?: USER_PROFILE_MODEL;
 }
@@ -31,7 +31,7 @@ export interface ExperienceMediaModel extends z.infer<typeof mediaSchema> {
 export interface ExperiencePrompt extends GeneratedExperienceUserPrompt {}
 
 export interface ExperienceModel
-  extends Omit<z.infer<typeof experiencesSchema>, 'ctas'> {
+  extends Omit<z.infer<typeof experienceModelSchema>, 'ctas'> {
   cachedAt?: Date;
   cachedAtTimestamp?: number;
 

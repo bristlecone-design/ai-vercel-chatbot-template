@@ -67,9 +67,9 @@ export function UserJoinLink({
       )}
       onClick={handleOnClick}
     >
-      {icon}
-      <span>{label}</span>
+      {!isClicked && icon}
       {isClicked && <IconSpinner className="animate-spin" />}
+      <span>{label}</span>
     </Link>
   );
 }

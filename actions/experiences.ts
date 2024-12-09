@@ -5,6 +5,7 @@ import { db } from '@/lib/db/connect';
 
 import {
   type Experience,
+  type ExperienceSave,
   type Media,
   experiences,
   media,
@@ -257,7 +258,13 @@ export async function getSingleExperience(
 
   if (!record) return null;
 
-  return getMappedExperienceModels(record, includeOpts, cached);
+  const mappedExperience = await getMappedExperienceModels(
+    record,
+    includeOpts,
+    cached,
+  );
+
+  return mappedExperience;
 }
 
 export async function getCachedSingleExperience(
@@ -370,14 +377,14 @@ export async function getSingleUsersExperiences(
 
 export async function updateExperience(
   id: string,
-  data: Partial<Experience>,
+  data: Partial<ExperienceSave>,
   includeOpts = {} as ExperienceIncludeOpts,
   expirePathKey = CACHE_KEY_USER_EXPERIENCE,
 ): Promise<{ updated: boolean; data: ExperienceModel }> {
-  const dataKeys = Object.keys(data) as (keyof Experience)[];
-  const dataKeysReturning = dataKeys.map((key) => ({
-    [key]: experiences[key],
-  }));
+  // const dataKeys = Object.keys(data) as (keyof Experience)[];
+  // const dataKeysReturning = dataKeys.map((key) => ({
+  //   [key]: experiences[key],
+  // }));
 
   const updated = await db
     .update(experiences)

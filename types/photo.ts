@@ -1,59 +1,42 @@
 import type { Metadata } from 'sharp';
 
-import type { Media } from '@/lib/db/schema';
+import type { Media, MediaInsert } from '@/lib/db/schema';
 import type { USER_PROFILE_MODEL } from '@/types/user';
+import type { MediaExif } from './media';
+
+/**
+ * Photo types are an extension of Media types
+ */
 
 export interface PhotoAuthor extends Partial<USER_PROFILE_MODEL> {}
 
 export type BASE_PHOTO_AUTHOR_KEY_TYPES = Array<keyof PhotoAuthor>;
 
-export interface PhotoExif
-  extends Pick<
-    Media,
-    | 'aspectRatio'
-    | 'make'
-    | 'model'
-    | 'focalLength'
-    | 'focalLength35'
-    | 'fNumber'
-    | 'iso'
-    | 'exposureTime'
-    | 'exposureCompensation'
-    | 'latitude'
-    | 'longitude'
-    | 'filmSimulation'
-    // | 'takenAtNaive'
-    // | 'takenAt'
-  > {
-  takenAtNaive: string;
-  takenAt: string;
-}
-
 // Raw db insert
-export interface PhotoDbInsert extends Media {
+export interface PhotoDbInsert extends MediaInsert {
   // credit?: string;
   // creditLink?: string;
   // creditLinkTitle?: string;
-  semanticDescription?: string;
+  // semanticDescription?: string;
 }
 
 // Raw db response
-export interface PhotoDb extends Omit<PhotoDbInsert, 'takenAt' | 'tags'> {
-  updatedAt: Date;
-  createdAt: Date;
-  takenAt: Date;
-  tags: string[];
+export interface PhotoDb extends Omit<Media, 'takenAt' | 'tags'> {
+  // updatedAt: Date;
+  // createdAt: Date;
+  // takenAt: Date;
+  // tags: string[];
 }
 
 // Parsed db response
 export interface Photo extends PhotoDb {
-  focalLengthFormatted?: string;
-  focalLengthIn35MmFormatFormatted?: string;
-  fNumberFormatted?: string;
-  isoFormatted?: string;
-  exposureTimeFormatted?: string;
-  exposureCompensationFormatted?: string;
-  takenAtNaiveFormatted: string;
+  // focalLengthFormatted?: string;
+  // focalLengthIn35MmFormatFormatted?: string;
+  // fNumberFormatted?: string;
+  // isoFormatted?: string;
+  // exposureTimeFormatted?: string;
+  // exposureCompensationFormatted?: string;
+  // takenAtNaiveFormatted: string;
 }
 
 export type VirtualFields = 'favorite';
@@ -97,6 +80,8 @@ export type PhotoThumbnail = {
   width: string;
   height?: string;
 };
+
+export interface PhotoExif extends MediaExif {}
 
 export type PhotoBasicExifData = Omit<
   PhotoFormData,

@@ -1,4 +1,4 @@
-import { type InferSelectModel, sql } from 'drizzle-orm';
+import { type InferInsertModel, type InferSelectModel, sql } from 'drizzle-orm';
 import {
   boolean,
   doublePrecision,
@@ -25,7 +25,7 @@ import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
 // https://orm.drizzle.team/docs/column-types/pg#enum
-export const entityEnum = pgEnum('EntityType', [
+export const entityEnum = pgEnum('entityType', [
   'place',
   'post',
   'guide',
@@ -43,10 +43,11 @@ export const entityEnum = pgEnum('EntityType', [
  * User
  */
 
-export const userType = pgEnum('UserType', ['user', 'admin', 'system']);
+export const userType = pgEnum('userType', ['user', 'admin', 'system']);
 
-export const users = pgTable('User', {
+export const users = pgTable('user', {
   id: text('id')
+    .notNull()
     .primaryKey()
     .$defaultFn(() => genId('usr')),
   createdAt: timestamp('createdAt', { mode: 'date' }).notNull().defaultNow(),
@@ -77,7 +78,7 @@ export const users = pgTable('User', {
   company: text('company'),
   organization: text('organization'),
   profession: text('profession'),
-  interests: text('interests').array().notNull().default(sql`'{}'::text[]`),
+  interests: text('interests').array().notNull().default(sql`ARRAY[]::text[]`),
   image: text('image'),
   picture: text('picture'), // Alias or fallback for image
   avatar: text('avatar'), // Alias or fallback for image
@@ -97,7 +98,7 @@ export const userInsertSchema = createInsertSchema(users);
 
 export const userSelectSchema = createSelectSchema(users);
 
-export const userProfileSchema = userInsertSchema.pick({
+export const userProfileSchema = userSelectSchema.pick({
   id: true,
   url: true,
   urlSocial: true,
@@ -133,9 +134,10 @@ export const userProfileSchema = userInsertSchema.pick({
  */
 
 export const collaborators = pgTable(
-  'Collaborator',
+  'collaborator',
   {
     id: text('id')
+      .notNull()
       .primaryKey()
       .$defaultFn(() => genId('col')),
     createdAt: timestamp('createdAt').notNull().defaultNow(),
@@ -162,7 +164,7 @@ export const collaboratorSchema = createInsertSchema(collaborators);
  * Bookmarks
  */
 export const bookmarks = pgTable(
-  'Bookmark',
+  'bookmark',
   {
     id: text('id')
       .primaryKey()
@@ -197,11 +199,13 @@ export type Bookmark = InferSelectModel<typeof bookmarks>;
 
 export const bookmarkSchema = createInsertSchema(bookmarks);
 
+export const bookmarkModelSchema = createSelectSchema(bookmarks);
+
 /**
  * Favorites
  */
 export const favorites = pgTable(
-  'Favorites',
+  'favorites',
   {
     userId: text('userId')
       .notNull()
@@ -224,7 +228,7 @@ export const favoritesSchema = createInsertSchema(favorites);
  * Follows
  */
 
-export const follows = pgTable('Follows', {
+export const follows = pgTable('follows', {
   createdAt: timestamp('createdAt').notNull().defaultNow(),
   updatedAt: timestamp('updatedAt').notNull().defaultNow(),
   followedById: text('followedById').notNull(),
@@ -242,7 +246,7 @@ export const followsSelectSchema = createSelectSchema(follows);
  */
 
 export const accounts = pgTable(
-  'Account',
+  'account',
   {
     userId: text('userId')
       .notNull()
@@ -275,7 +279,7 @@ export const accountSchema = createInsertSchema(accounts);
  * Session
  */
 
-export const sessions = pgTable('Session', {
+export const sessions = pgTable('session', {
   sessionToken: text('sessionToken').primaryKey(),
   userId: text('userId')
     .notNull()
@@ -292,7 +296,7 @@ export const sessionSchema = createInsertSchema(sessions);
  */
 
 export const verificationNumberSessions = pgTable(
-  'VerificationNumberSessions',
+  'verificationNumberSessions',
   {
     verificationNumber: text('verificationNumber').notNull(),
     userId: text('userId')
@@ -314,7 +318,7 @@ export type VerificationNumberSession = InferSelectModel<
 >;
 
 export const verificationTokens = pgTable(
-  'VerificationToken',
+  'verificationToken',
   {
     identifier: text('identifier').notNull(),
     token: text('token').notNull(),
@@ -338,7 +342,7 @@ export const verificationTokensSchema = createInsertSchema(verificationTokens);
  */
 
 export const authenticators = pgTable(
-  'Authenticator',
+  'authenticator',
   {
     id: text('id')
       .notNull()
@@ -379,7 +383,7 @@ export const authenticatorSchema = createInsertSchema(authenticators);
 //   'tool',
 // ]);
 
-export const chat = pgTable('Chat', {
+export const chat = pgTable('chat', {
   id: text('id')
     .primaryKey()
     .notNull()
@@ -397,7 +401,7 @@ export type Chat = InferSelectModel<typeof chat>;
 
 export const chatSchema = createInsertSchema(chat);
 
-export const message = pgTable('Message', {
+export const message = pgTable('message', {
   id: text('id')
     .primaryKey()
     .notNull()
@@ -420,7 +424,7 @@ export type MessageSave = Omit<Message, 'attachments'> & {
 export const messageSchema = createInsertSchema(message);
 
 export const vote = pgTable(
-  'Vote',
+  'vote',
   {
     chatId: text('chatId')
       .notNull()
@@ -443,7 +447,7 @@ export const voteSchema = createInsertSchema(vote);
  * Document and Suggestion
  */
 export const document = pgTable(
-  'Document',
+  'document',
   {
     id: text('id')
       .notNull()
@@ -463,7 +467,7 @@ export type Document = InferSelectModel<typeof document>;
 export const documentSchema = createInsertSchema(document);
 
 export const docSuggestion = pgTable(
-  'DocSuggestion',
+  'docSuggestion',
   {
     id: text('id')
       .notNull()
@@ -497,7 +501,7 @@ export const docSuggestionSchema = createInsertSchema(docSuggestion);
  */
 
 export const places = pgTable(
-  'Places',
+  'places',
   {
     id: text('id')
       .primaryKey()
@@ -508,7 +512,7 @@ export const places = pgTable(
     name: text('name').notNull(),
     description: text('description'),
     shortDescription: text('shortDescription'),
-    aliases: text('aliases').array().notNull().default(sql`'{}'::text[]`),
+    aliases: text('aliases').array().notNull().default(sql`ARRAY[]::text[]`),
     address: text('address'),
     formattedAddress: text('formattedAddress'),
     formattedAddressShort: text('formattedAddressShort'),
@@ -531,7 +535,7 @@ export const places = pgTable(
     utcOffset: integer('utcOffset'),
     permanentlyClosed: boolean('permanentlyClosed'),
     businessStatus: text('businessStatus'),
-    types: text('types').array().notNull().default(sql`'{}'::text[]`),
+    types: text('types').array().notNull().default(sql`ARRAY[]::text[]`),
     primaryType: text('primaryType'),
     openingHours: json('openingHours'),
     priceLevel: text('priceLevel'),
@@ -572,7 +576,7 @@ export type Place = InferSelectModel<typeof places>;
 
 // https://orm.drizzle.team/docs/guides/vector-similarity-search
 export const embeddings = pgTable(
-  'Embeddings',
+  'embeddings',
   {
     id: text('id')
       .primaryKey()
@@ -586,7 +590,7 @@ export const embeddings = pgTable(
     description: text('description').notNull(), // A description of the embedding for humans. If defined, this will/can be used to give the AI assistant more context.
     note: text('note').notNull(),
     embedding: vector('embedding', { dimensions: 1536 }),
-    keywords: text('keywords').array().notNull().default(sql`'{}'::text[]`),
+    keywords: text('keywords').array().notNull().default(sql`ARRAY[]::text[]`),
     model: text('model').notNull(), // Model used to generate the embedding
     usage: text('usage').notNull(), // Usage of the embedding
     meta: json('meta').default({}),
@@ -620,7 +624,7 @@ export type Embeddings = InferSelectModel<typeof embeddings>;
  * Post
  */
 
-export const postType = pgEnum('PostType', [
+export const postType = pgEnum('postType', [
   'general',
   'article',
   'collaboration',
@@ -636,7 +640,7 @@ export const postVisibilityType = pgEnum('PostVisibilityType', [
 
 // Create a drizzle table from the prisma Post model above
 export const posts = pgTable(
-  'Post',
+  'post',
   {
     id: text('id')
       .primaryKey()
@@ -678,14 +682,14 @@ export const postsSchema = createInsertSchema(posts);
  * Experience
  */
 
-export const experienceType = pgEnum('ExperienceType', [
+export const experienceType = pgEnum('experienceType', [
   'post',
   'discover',
   'experience',
 ]);
 
 export const experiences = pgTable(
-  'Experience',
+  'experience',
   {
     id: text('id')
       .primaryKey()
@@ -704,6 +708,7 @@ export const experiences = pgTable(
     public: boolean('public').default(false),
     blocked: boolean('blocked').default(false),
     removed: boolean('removed').default(false),
+    published: boolean('published').default(true),
     visibility: postVisibilityType().default('public'),
     views: integer('views').default(0),
     upVoted: integer('upVoted').default(0),
@@ -737,13 +742,17 @@ export const experiences = pgTable(
 
 export type Experience = InferSelectModel<typeof experiences>;
 
+export type ExperienceSave = InferInsertModel<typeof experiences>;
+
 export const experiencesSchema = createInsertSchema(experiences);
+
+export const experienceModelSchema = createSelectSchema(experiences);
 
 /**
  * Experience Likes
  */
 export const experienceLikes = pgTable(
-  'ExperienceLikes',
+  'experienceLikes',
   {
     id: text('id')
       .primaryKey()
@@ -772,9 +781,11 @@ export type ExperienceLikes = InferSelectModel<typeof experienceLikes>;
 
 export const experienceLikesSchema = createInsertSchema(experienceLikes);
 
+export const experienceLikesModelSchema = createSelectSchema(experienceLikes);
+
 // Create a drizzle schema from the prisma Prompt model above
 export const prompt = pgTable(
-  'Prompt',
+  'prompt',
   {
     id: text('id')
       .primaryKey()
@@ -785,8 +796,14 @@ export const prompt = pgTable(
     content: text('content'),
     prompt: text('prompt').notNull(),
     location: text('location'),
-    activities: text('activities').array().notNull().default(sql`'{}'::text[]`),
-    interests: text('interests').array().notNull().default(sql`'{}'::text[]`),
+    activities: text('activities')
+      .array()
+      .notNull()
+      .default(sql`ARRAY[]::text[]`),
+    interests: text('interests')
+      .array()
+      .notNull()
+      .default(sql`ARRAY[]::text[]`),
     model: text('model').notNull(),
     pinned: boolean('pinned').default(false),
     featured: boolean('featured').default(false),
@@ -820,10 +837,13 @@ export type Prompt = InferSelectModel<typeof prompt>;
 
 export const promptSchema = createInsertSchema(prompt);
 
+export const promptModelSchema = createSelectSchema(prompt);
+
 export const promptCollection = pgTable(
-  'PromptCollection',
+  'promptCollection',
   {
     id: text('id')
+      .notNull()
       .primaryKey()
       .$defaultFn(() => genId('prm')),
     createdAt: timestamp('createdAt').notNull().defaultNow(),
@@ -857,13 +877,15 @@ export type PromptCollection = InferSelectModel<typeof promptCollection>;
 
 export const promptCollectionSchema = createInsertSchema(promptCollection);
 
+export const promptCollectionModelSchema = createSelectSchema(promptCollection);
+
 // Alias for PromptCollection
 export type Story = InferSelectModel<typeof promptCollection>;
 
 export const storySchema = createInsertSchema(promptCollection);
 
 export const promptCollaborators = pgTable(
-  'PromptCollaborator',
+  'promptCollaborator',
   {
     id: text('id')
       .primaryKey()
@@ -900,15 +922,17 @@ export const promptCollaboratorSchema = createInsertSchema(promptCollaborators);
  */
 
 export const media = pgTable(
-  'Media',
+  'media',
   {
     id: text('id')
       .primaryKey()
       .$defaultFn(() => genId('med')),
+    blobId: text('blobId'),
     createdAt: timestamp('createdAt').notNull().defaultNow(),
     updatedAt: timestamp('updatedAt').notNull().defaultNow(),
     title: text('title').notNull(),
     description: text('description'),
+    semanticDescription: text('semanticDescription'),
     url: text('url').notNull(),
     urlOriginal: text('urlOriginal'),
     urlDownload: text('urlDownload'),
@@ -939,16 +963,22 @@ export const media = pgTable(
     aspectRatio: real('aspectRatio'),
     make: text('make'),
     model: text('model'),
-    tags: text('tags').array().notNull().default(sql`'{}'::text[]`),
+    tags: text('tags').array().notNull().default(sql`ARRAY[]::text[]`),
     focalLength: text('focalLength'),
+    focalLengthFormatted: text('focalLengthFormatted'),
     focalLength35: text('focalLength35'),
+    focalLengthIn35MmFormatFormatted: text('focalLengthIn35MmFormatFormatted'),
     aperture: text('aperture'),
     iso: integer('iso'),
+    isoFormatted: text('isoFormatted'),
     fNumber: integer('fNumber'),
+    fNumberFormatted: text('fNumberFormatted'),
     lensMake: text('lensMake'),
     lensModel: text('lensModel'),
     exposureTime: text('exposureTime'),
+    exposureTimeFormatted: text('exposureTimeFormatted'),
     exposureCompensation: text('exposureCompensation'),
+    exposureCompensationFormatted: text('exposureCompensationFormatted'),
     locationName: text('locationName'),
     latitude: doublePrecision('latitude'),
     longitude: doublePrecision('longitude'),
@@ -956,6 +986,7 @@ export const media = pgTable(
     priorityOrder: doublePrecision('priorityOrder'),
     takenAt: timestamp('takenAt'),
     takenAtNaive: text('takenAtNaive'),
+    takenAtNaiveFormatted: text('takenAtNaiveFormatted'),
     blurData: text('blurData'),
     meta: json('meta').default({}),
     storagePath: text('storagePath'),
@@ -985,12 +1016,18 @@ export type Media = InferSelectModel<typeof media>;
 
 export const mediaSchema = createInsertSchema(media);
 
+export const mediaModelSchema = createSelectSchema(media);
+
+export type MediaInsert = InferInsertModel<typeof media>;
+
+export const mediaInsertSchema = createInsertSchema(media);
+
 /**
  * Media Likes
  */
 
 export const mediaLikes = pgTable(
-  'MediaLike',
+  'mediaLike',
   {
     id: text('id')
       .primaryKey()
@@ -1022,7 +1059,7 @@ export const mediaLikeSchema = createInsertSchema(mediaLikes);
  */
 
 export const collaboratorMedia = pgTable(
-  'CollaboratorMedia',
+  'collaboratorMedia',
   {
     id: text('id')
       .primaryKey()
@@ -1053,7 +1090,7 @@ export const collaboratorMediaSchema = createInsertSchema(collaboratorMedia);
  * Media Audio
  */
 export const audioMedia = pgTable(
-  'AudioMedia',
+  'audioMedia',
   {
     id: text('id')
       .primaryKey()
@@ -1081,6 +1118,10 @@ export const audioMedia = pgTable(
   ],
 );
 
+export type AudioMediaInsert = InferInsertModel<typeof audioMedia>;
+
 export type AudioMedia = InferSelectModel<typeof audioMedia>;
 
 export const audioMediaSchema = createInsertSchema(audioMedia);
+
+export const audioMediaModelSchema = createSelectSchema(audioMedia);
