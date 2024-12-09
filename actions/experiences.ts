@@ -4,34 +4,48 @@ import { getImageThumbnailBase64 } from '@/features/photo/server';
 import { db } from '@/lib/db/connect';
 
 import {
+  type Bookmark,
   type Experience,
+  type ExperienceLikes,
   type ExperienceSave,
   type Media,
+  type Prompt,
+  type Story,
   experiences,
   media,
 } from '@/lib/db/schema';
 import { getErrorMessage } from '@/lib/errors';
 import { isImage, isImageExtension } from '@/lib/media/media-utils';
-import { mapDbUserToClientFriendlyPhotoAuthor } from '@/lib/user/user-utils';
+import { mapDbUserToClientFriendlyUser } from '@/lib/user/user-utils';
 import type { AIExperienceCallToActionSuggestionModel } from '@/types/experience-prompts';
 import type {
   ExperienceMediaModel,
   ExperienceModel,
 } from '@/types/experiences';
-import type { USER_PROFILE_MODEL } from '@/types/user';
+import type { USER_PROFILE_MODEL, User } from '@/types/user';
 import { eq } from 'drizzle-orm';
 import { unstable_expirePath as expirePath, unstable_cache } from 'next/cache';
-import { getCachedAllBookmarksByExpId } from './bookmarks';
+import {
+  getAllBookmarksByExpId,
+  getCachedAllBookmarksByExpId,
+} from './bookmarks';
 import {
   CACHE_KEY_USER_EXPERIENCE,
   CACHE_KEY_USER_EXPERIENCE_MEDIA,
   CACHE_KEY_USER_EXPERIENCE_SINGLE_MEDIA,
 } from './cache-keys';
-import type { ExperienceIncludeOpts } from './experience-action-types';
+import type {
+  ExperienceIncludeOpts,
+  PartialExperienceModelOpts,
+} from './experience-action-types';
 import { getAndMapUserGeo } from './geo';
-import { getCachedAllLikesByExpId } from './likes';
-import { getCachedAllPromptsByExpId } from './prompts';
-import { getCachedAllStoriesByExpId } from './stories';
+import { getAllLikesByExpId, getCachedAllLikesByExpId } from './likes';
+import {
+  getCachedSinglePromptByExpId,
+  getCachedSinglePromptCollectionById,
+  getSinglePromptByExpId,
+  getSinglePromptCollectionById,
+} from './prompts';
 import { getCachedUserById, getUserById } from './user';
 
 /**
@@ -55,7 +69,82 @@ export async function getUserGeoforExperience(data: Experience) {
 }
 
 /**
- * Get mapped models for an experience
+ * Get the mapped relationship models by experience ID
+ */
+export async function getMappedExperienceModelsById(
+  expId: string,
+  authorId?: string | null,
+  includeOpts = {} as ExperienceIncludeOpts,
+  cached = true,
+): Promise<{
+  Author?: USER_PROFILE_MODEL;
+  Prompt?: Prompt | null;
+  Story?: Story | null;
+  Media?: Media[];
+  Bookmarks?: Bookmark[];
+  Likes?: ExperienceLikes[];
+}> {
+  const {
+    author: includeAuthor = true,
+    media: includeMedia = true,
+    story: includeStory = true,
+    prompts: includePrompt = true,
+    bookmarks: includeBookmarks = false,
+    likes: includeLikes = false,
+  } = includeOpts;
+
+  const [Author, Media, Prompt, Story, Bookmarks, Likes] = await Promise.all([
+    includeAuthor && authorId
+      ? cached
+        ? getCachedUserById(authorId)
+        : getUserById(authorId)
+      : undefined,
+
+    includeMedia
+      ? cached
+        ? getCachedAllExperienceMediaByExpId(expId)
+        : getCachedAllExperienceMediaByExpId(expId)
+      : undefined,
+
+    includePrompt
+      ? cached
+        ? getCachedSinglePromptByExpId(expId)
+        : getSinglePromptByExpId(expId)
+      : undefined,
+
+    includeStory
+      ? cached
+        ? getCachedSinglePromptCollectionById(expId)
+        : getSinglePromptCollectionById(expId)
+      : undefined,
+
+    includeBookmarks
+      ? cached
+        ? getCachedAllBookmarksByExpId(expId)
+        : getAllBookmarksByExpId(expId)
+      : undefined,
+
+    includeLikes
+      ? cached
+        ? getCachedAllLikesByExpId(expId)
+        : getAllLikesByExpId(expId)
+      : undefined,
+  ]);
+
+  return {
+    Author: Author
+      ? mapDbUserToClientFriendlyUser(Author as unknown as User)
+      : undefined,
+    Media,
+    Prompt,
+    Story,
+    Bookmarks,
+    Likes,
+  };
+}
+
+/**
+ * Get mapped relationship models for a specific experience record
  */
 export async function getMappedExperienceModels(
   record: Experience,
@@ -80,31 +169,21 @@ export async function getMappedExperienceModels(
 
   const { authorId } = record;
 
-  const [Author, Media, Prompt, Story, Bookmark, Likes] = await Promise.all([
-    author && authorId
-      ? cached
-        ? getCachedUserById(authorId)
-        : getUserById(authorId)
-      : undefined,
-    media ? getCachedAllExperienceMediaByExpId(record.id) : undefined,
-    prompts ? getCachedAllPromptsByExpId(record.id) : undefined,
-    story ? getCachedAllStoriesByExpId(record.id) : undefined,
-    bookmarks ? getCachedAllBookmarksByExpId(record.id) : undefined,
-    likes ? getCachedAllLikesByExpId(record.id) : undefined,
-  ]);
+  const mappedModels = await getMappedExperienceModelsById(
+    record.id,
+    authorId,
+    includeOpts,
+    cached,
+  );
 
   return {
     ...record,
-    Author: Author
-      ? mapDbUserToClientFriendlyPhotoAuthor(
-          Author as unknown as USER_PROFILE_MODEL,
-        )
-      : undefined,
-    Media: Media,
-    Prompt: Prompt,
-    Story: Story,
-    Bookmarks: Bookmark,
-    Likes: Likes,
+    Author: mappedModels.Author,
+    Media: mappedModels.Media,
+    Prompt: mappedModels.Prompt,
+    Story: mappedModels.Story,
+    Bookmarks: mappedModels.Bookmarks,
+    Likes: mappedModels.Likes,
   } as ExperienceModel;
 }
 
@@ -277,39 +356,6 @@ export async function getCachedSingleExperience(
   })(...args).then((exp) => exp);
 }
 
-type PartialExperienceIncludeOpts = ExperienceIncludeOpts & {};
-
-/**
- * Get partial experience by ID
- */
-export async function getPartialExperienceById(
-  id: string,
-  includeOpts = {} as PartialExperienceIncludeOpts,
-  cached = false,
-): Promise<ExperienceModel | null> {
-  const [record] = await db
-    .selectDistinct()
-    .from(experiences)
-    .where(eq(experiences.id, id));
-
-  if (!record) return null;
-
-  // Include options with defaults
-  const { author = true } = includeOpts;
-
-  return getMappedExperienceModels(record, { author, ...includeOpts }, cached);
-}
-
-export async function getCachedPartialExperienceById(
-  ...args: Parameters<typeof getPartialExperienceById>
-): Promise<ExperienceModel | null> {
-  const expId = args[0];
-  return unstable_cache(getPartialExperienceById, [expId], {
-    revalidate: 86400, // 24 hours
-    tags: [expId],
-  })(...args).then((exp) => exp);
-}
-
 /**
  * Get list of experiences by an array of IDs
  */
@@ -340,11 +386,17 @@ export async function getCachedExperiencesByIds(
 /**
  * Get a user's list of experience IDs
  */
-export async function getUserExperienceIds(userId: string): Promise<string[]> {
+export async function getUserExperienceIds(
+  userId: string,
+  opts = {} as PartialExperienceModelOpts,
+): Promise<string[]> {
+  const { visibility, numToTake = 100 } = opts;
+
   const records = await db
     .selectDistinct({ id: experiences.id })
     .from(experiences)
-    .where(eq(experiences.authorId, userId));
+    .where(eq(experiences.authorId, userId))
+    .limit(numToTake);
 
   return records.map((record) => record.id);
 }

@@ -3,6 +3,8 @@ import { mapPromptRecordToClientFriendlyVersion } from '@/features/experiences/u
 import { db } from '@/lib/db/connect';
 import {
   type Prompt,
+  type PromptInsert,
+  type Story,
   experiences,
   prompt,
   promptCollaborators,
@@ -13,12 +15,14 @@ import type {
   GeneratedExperienceUserPrompt,
   GeneratedExperienceUserPrompts,
 } from '@/types/experience-prompts';
-import { and, desc, eq, inArray, isNull, or, sql } from 'drizzle-orm';
+import { and, desc, eq, inArray, isNull, not, or, sql } from 'drizzle-orm';
 import { unstable_cache } from 'next/cache';
+import { clearTagCache } from './cache';
 import {
   CACHE_KEY_INCOMPLETE_PROMPTS,
   CACHE_KEY_PROMPT,
   CACHE_KEY_PROMPT_STORIES,
+  CACHE_KEY_PROMPT_STORY,
   CACHE_KEY_PUBLIC_PROMPTS,
 } from './cache-keys';
 import type { PromptCollaboratorIncludeOpts } from './collaborator-action-types';
@@ -57,20 +61,20 @@ export async function getCachedSinglePromptById(
  */
 export async function getSinglePromptByExpId(
   id: string,
-): Promise<Prompt | null> {
+): Promise<Prompt | undefined> {
   const [record] = await db
     .selectDistinct()
     .from(prompt)
     .where(eq(experiences.id, id));
 
-  if (!record) return null;
+  if (!record) return undefined;
 
   return record;
 }
 
 export async function getCachedSinglePromptByExpId(
   ...args: Parameters<typeof getSinglePromptByExpId>
-): Promise<Prompt | null> {
+): Promise<Prompt | undefined> {
   const [expId] = args;
   return unstable_cache(getSinglePromptByExpId, [expId], {
     revalidate: 86400, // 24 hours
@@ -351,4 +355,136 @@ export async function getCachedFeaturedPromptCollections(
     revalidate: 86400, // 24 hours
     tags: [CACHE_KEY_PROMPT_STORIES],
   })(...args).then((prompts) => prompts);
+}
+
+/**
+ * Get single prompt collection by ID
+ */
+export async function getSinglePromptCollectionById(
+  id: string,
+): Promise<Story | undefined> {
+  const [record] = await db
+    .selectDistinct()
+    .from(promptCollection)
+    .where(eq(promptCollection.id, id));
+
+  if (!record) return undefined;
+
+  return record;
+}
+
+// Cached version of getSinglePromptCollectionById
+export async function getCachedSinglePromptCollectionById(
+  ...args: Parameters<typeof getSinglePromptCollectionById>
+) {
+  const [id] = args;
+  return unstable_cache(getSinglePromptCollectionById, [], {
+    revalidate: 86400, // 24 hours
+    tags: [id, CACHE_KEY_PROMPT_STORY],
+  })(...args).then((prompt) => prompt);
+}
+
+/**
+ * Get additional prompts for anonymous (public) guest with the option to exclude certain prompts
+ */
+export async function getAdditionalAnonymousPrompts(
+  excludeIds: string[] = [],
+  take = 15,
+) {
+  const records = await db
+    .selectDistinct({
+      id: prompt.id,
+      model: prompt.model,
+      prompt: prompt.prompt,
+      title: prompt.title,
+      location: prompt.location,
+      authorId: prompt.authorId,
+      content: prompt.content,
+      createdAt: prompt.createdAt,
+      updatedAt: prompt.updatedAt,
+    })
+    .from(prompt)
+    .where(
+      and(
+        or(eq(prompt.location, 'public'), isNull(prompt.location)),
+        not(inArray(prompt.id, excludeIds)),
+      ),
+    )
+    .orderBy(desc(prompt.createdAt))
+    .limit(take);
+
+  return records;
+}
+
+/**
+ * Get additional user prompts with the option to exclude certain prompts
+ */
+export async function getAdditionalUserPrompts(
+  userId: string,
+  excludeIds: string[] = [],
+  take = 15,
+) {
+  const records = await db
+    .selectDistinct({
+      id: prompt.id,
+      model: prompt.model,
+      prompt: prompt.prompt,
+      title: prompt.title,
+      location: prompt.location,
+      authorId: prompt.authorId,
+      content: prompt.content,
+      createdAt: prompt.createdAt,
+      updatedAt: prompt.updatedAt,
+    })
+    .from(prompt)
+    .where(
+      and(eq(prompt.authorId, userId), not(inArray(prompt.id, excludeIds))),
+    )
+    .orderBy(desc(prompt.createdAt))
+    .limit(take);
+
+  return records;
+}
+
+/**
+ * Save multiple prompts
+ */
+export async function saveMultiplePrompts(
+  data: PromptInsert[],
+  cacheKeys?: string[],
+) {
+  const records = await db.insert(prompt).values(data).returning({
+    id: prompt.id,
+    model: prompt.model,
+    prompt: prompt.prompt,
+    title: prompt.title,
+    location: prompt.location,
+    authorId: prompt.authorId,
+    content: prompt.content,
+    createdAt: prompt.createdAt,
+    updatedAt: prompt.updatedAt,
+  });
+
+  if (cacheKeys) {
+    for await (const ck of cacheKeys) {
+      // console.info('**** Clearing prmpt cache for::', ck, cacheKeys);
+      await clearTagCache(ck);
+    }
+  }
+
+  return records;
+}
+
+/**
+ * Get a list of prompts by values in the prompt field/column
+ */
+export async function getPromptsByValues(promptValues: string[], take = 25) {
+  const records = await db
+    .selectDistinct()
+    .from(prompt)
+    .where(inArray(prompt.prompt, promptValues))
+    .orderBy(desc(prompt.createdAt))
+    .limit(take);
+
+  return records;
 }

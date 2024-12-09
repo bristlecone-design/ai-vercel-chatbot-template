@@ -27,6 +27,8 @@ import {
   saveMultiplePrompts,
 } from './prompts';
 
+import { mapPromptRecordToClientFriendlyVersion } from '@/features/experiences/utils/experience-prompt-utils';
+import type { PromptInsert } from '@/lib/db/schema';
 import {
   AIAutocompleteSuggestionSchema,
   AIGeneratedExperienceCallToActionsSchema,
@@ -34,7 +36,6 @@ import {
   type ExperienceUserPromptModel,
   type GeneratedExperienceUserPrompt,
 } from '@/types/experience-prompts';
-import { mapPromptRecordToClientFriendlyVersion } from '@/features/experiences/utils/experience-prompt-utils';
 import { AIGeneratedExperienceSingleTranslationSchema } from '@/types/experience-translations';
 import { updateExperienceCTAs } from './experiences';
 
@@ -224,26 +225,24 @@ export async function streamPersonalizedUserExperiencePromptsFrontend(
           const userId = userSession?.id;
           const geoLocation = geo?.city || '';
 
-          const createPayload: Prisma.PromptCreateInput[] = object.prompts.map(
-            (prompt) => {
-              return {
-                prompt: prompt.prompt,
-                title: prompt.title,
-                model: 'gpt-4o-mini',
-                location: geoLocation ? geoLocation : undefined,
-                activities: prompt.activities ? prompt.activities : undefined,
-                interests: prompt.interests ? prompt.interests : undefined,
-                meta: {
-                  input: inputToUse,
-                  system: systemInstructions,
-                  geo: JSON.stringify(geo),
-                  // municipalities: prompt.municipalities,
-                  // activities: prompt.activities,
-                },
-                authorId: userId || undefined,
-              };
-            },
-          );
+          const createPayload: PromptInsert[] = object.prompts.map((prompt) => {
+            return {
+              prompt: prompt.prompt,
+              title: prompt.title,
+              model: 'gpt-4o-mini',
+              location: geoLocation ? geoLocation : undefined,
+              activities: prompt.activities ? prompt.activities : undefined,
+              interests: prompt.interests ? prompt.interests : undefined,
+              meta: {
+                input: inputToUse,
+                system: systemInstructions,
+                geo: JSON.stringify(geo),
+                // municipalities: prompt.municipalities,
+                // activities: prompt.activities,
+              },
+              authorId: userId || undefined,
+            };
+          });
 
           if (createPayload.length) {
             // console.log(
@@ -442,27 +441,25 @@ export async function streamPersonalizedUserExperiencePromptsAPI(
       if (object) {
         const geoLocation = geo?.city || '';
 
-        const createPayload: Prisma.PromptCreateInput[] = object.prompts.map(
-          (prompt) => {
-            return {
-              prompt: prompt.prompt,
-              title: prompt.title,
-              model: 'gpt-4o-mini',
-              location: geoLocation ? geoLocation : undefined,
-              activities: prompt.activities ? prompt.activities : undefined,
-              interests: prompt.interests ? prompt.interests : undefined,
-              Author: userId ? { connect: { id: userId } } : undefined,
-              // authorId: userId || undefined,
-              meta: {
-                input: inputToUse,
-                system: systemInstructions,
-                geo: JSON.stringify(geo),
-                // municipalities: prompt.municipalities,
-                // activities: prompt.activities,
-              },
-            };
-          },
-        );
+        const createPayload: PromptInsert[] = object.prompts.map((prompt) => {
+          return {
+            prompt: prompt.prompt,
+            title: prompt.title,
+            model: 'gpt-4o-mini',
+            location: geoLocation ? geoLocation : undefined,
+            activities: prompt.activities ? prompt.activities : undefined,
+            interests: prompt.interests ? prompt.interests : undefined,
+            Author: userId ? { connect: { id: userId } } : undefined,
+            // authorId: userId || undefined,
+            meta: {
+              input: inputToUse,
+              system: systemInstructions,
+              geo: JSON.stringify(geo),
+              // municipalities: prompt.municipalities,
+              // activities: prompt.activities,
+            },
+          };
+        });
 
         if (createPayload.length) {
           const response = await saveMultiplePrompts(createPayload);
@@ -567,27 +564,25 @@ export async function generatePersonalizedUserExperiencePromptsAPI(
     const { object } = result;
     const geoLocation = geo?.city || '';
 
-    const createPayload: Prisma.PromptCreateInput[] = object.prompts.map(
-      (prompt) => {
-        return {
-          prompt: prompt.prompt,
-          title: prompt.title,
-          model: 'gpt-4o-mini',
-          location: geoLocation ? geoLocation : undefined,
-          activities: prompt.activities ? prompt.activities : undefined,
-          interests: prompt.interests ? prompt.interests : undefined,
-          Author: userId ? { connect: { id: userId } } : undefined,
-          // authorId: userId || undefined,
-          meta: {
-            input: inputToUse,
-            system: systemInstructions,
-            geo: JSON.stringify(geo),
-            // municipalities: prompt.municipalities,
-            // activities: prompt.activities,
-          },
-        };
-      },
-    );
+    const createPayload: PromptInsert[] = object.prompts.map((prompt) => {
+      return {
+        prompt: prompt.prompt,
+        title: prompt.title,
+        model: 'gpt-4o-mini',
+        location: geoLocation ? geoLocation : undefined,
+        activities: prompt.activities ? prompt.activities : undefined,
+        interests: prompt.interests ? prompt.interests : undefined,
+        Author: userId ? { connect: { id: userId } } : undefined,
+        // authorId: userId || undefined,
+        meta: {
+          input: inputToUse,
+          system: systemInstructions,
+          geo: JSON.stringify(geo),
+          // municipalities: prompt.municipalities,
+          // activities: prompt.activities,
+        },
+      };
+    });
 
     if (createPayload.length) {
       const response = await saveMultiplePrompts(createPayload);

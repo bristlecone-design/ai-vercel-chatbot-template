@@ -6,7 +6,7 @@ import cx from 'classnames';
 import { motion } from 'framer-motion';
 
 import type { Vote } from '@/lib/db/schema';
-import { Markdown } from '@/components/content/markdown-legacy';
+import { Markdown } from '@/components/content/md/markdown-legacy';
 
 import type { UIBlock } from './block';
 import { DocumentToolCall, DocumentToolResult } from './document';

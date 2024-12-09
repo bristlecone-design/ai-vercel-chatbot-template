@@ -2,24 +2,15 @@
 
 import { db } from '@/lib/db/connect';
 
-import {
-  type Media,
-  type MediaInsert,
-  audioMedia,
-  media,
-} from '@/lib/db/schema';
+import { type Media, audioMedia, media } from '@/lib/db/schema';
 import { mapMediaRecordToMediaWithExif } from '@/lib/media/media-utils';
 
 import type { MediaAudio, MediaModel, MediaModelWithExif } from '@/types/media';
 import type { PhotoBasicExifData } from '@/types/photo';
 
 import { and, desc, eq, inArray, or } from 'drizzle-orm';
-import { unstable_expirePath as expirePath, unstable_cache } from 'next/cache';
-import {
-  CACHE_KEY_PHOTO,
-  CACHE_KEY_PHOTOS,
-  CACHE_KEY_USER_EXPERIENCE_MEDIA,
-} from '../cache-keys';
+import { unstable_cache } from 'next/cache';
+import { CACHE_KEY_PHOTO, CACHE_KEY_PHOTOS } from '../cache-keys';
 import { getCachedUserProfileById, getUserProfileById } from '../user';
 import { addUserSingleMedia } from './add-core-media';
 import type {
@@ -477,93 +468,6 @@ export async function getUserMultipleMedia(
   const { user: includeUser = true } = includeOpts;
 
   return getMappedMultipleMediaModels(records, { user: includeUser }, cached);
-}
-
-/**
- * Update media image attrs, e.g. Title, Caption, etc.
- */
-export async function updateMediaAttrs(
-  mediaId: string,
-  data: Partial<MediaInsert>,
-  includeOpts = {} as MediaActionIncludeOpts,
-  options = {} as { expirePathKey?: string; cached?: boolean },
-) {
-  const [record] = await db
-    .update(media)
-    .set(data)
-    .where(eq(media.id, mediaId))
-    .returning();
-
-  if (!record) return { updated: false, data: record };
-
-  const { expirePathKey = CACHE_KEY_USER_EXPERIENCE_MEDIA, cached = true } =
-    options;
-
-  if (expirePathKey) {
-    expirePath(expirePathKey);
-  }
-
-  const mappedRecord = await getMappedSingleMediaModels(
-    record,
-    includeOpts,
-    cached,
-  );
-
-  return { updated: true, data: mappedRecord };
-}
-
-/**
- * Update media image visibility status, e.g. hidden, public, etc.
- */
-export async function updateMediaPublicVisibility(
-  mediaId: string,
-  visible: boolean,
-) {
-  const [record] = await db
-    .update(media)
-    .set({
-      public: visible,
-    })
-    .where(eq(media.id, mediaId))
-    .returning();
-
-  return record;
-}
-
-/**
- * Update media image downloadable status
- */
-export async function updateMediaDownloadable(
-  mediaId: string,
-  downloadable: MediaInsert['downloadable'],
-) {
-  const [record] = await db
-    .update(media)
-    .set({
-      downloadable,
-    })
-    .where(eq(media.id, mediaId))
-    .returning();
-
-  return record;
-}
-
-/**
- * Update media image remixable status
- */
-export async function updateMediaRemixable(
-  mediaId: string,
-  remixable: boolean,
-) {
-  const [record] = await db
-    .update(media)
-    .set({
-      remixable,
-    })
-    .where(eq(media.id, mediaId))
-    .returning();
-
-  return record;
 }
 
 /**

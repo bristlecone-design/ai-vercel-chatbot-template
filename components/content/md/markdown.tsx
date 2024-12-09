@@ -7,7 +7,7 @@ import remarkMath from 'remark-math';
 import { isExternalUrl } from '@/lib/media/media-utils';
 import { cn } from '@/lib/utils';
 
-import { CodeBlock } from '../ui/codeblock';
+import { CodeBlock } from '../../ui/codeblock';
 
 export type ReactMarkdownProps = Options & {
   linkClassName?: string;
@@ -68,7 +68,7 @@ export const ReactMarkdownExtended: FC<ReactMarkdownProps> = ({
         },
         code({ node, className, children, ...props }) {
           if (children && typeof children === 'string' && children.length) {
-            if (children[0] == '▍') {
+            if (children[0] === '▍') {
               return (
                 <span className="mt-1 animate-pulse cursor-default">▍</span>
               );
@@ -90,7 +90,7 @@ export const ReactMarkdownExtended: FC<ReactMarkdownProps> = ({
           return (
             <CodeBlock
               key={Math.random()}
-              language={(match && match[1]) || ''}
+              language={match?.[1] || ''}
               value={String(children).replace(/\n$/, '')}
               {...props}
             />

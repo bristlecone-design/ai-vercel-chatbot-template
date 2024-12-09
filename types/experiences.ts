@@ -68,14 +68,17 @@ export interface PartialExperienceModel
     | 'blocked'
   > {
   // Add more properties as needed
-  Author?: USER_PROFILE_MODEL;
-  content?: ExperienceModel['content'];
-  prompt?: ExperienceModel['prompt'];
-  promptId?: ExperienceModel['promptId'];
   title?: ExperienceModel['title'];
-  storyId?: ExperienceModel['storyId'];
-  Story?: ExperienceModel['Story'];
   views?: ExperienceModel['views'];
+  prompt?: ExperienceModel['prompt'];
+  content?: ExperienceModel['content'];
+
+  // Relationships
+  Author?: USER_PROFILE_MODEL;
+  Prompt?: ExperienceModel['Prompt'];
+  promptId?: ExperienceModel['promptId'];
+  Story?: ExperienceModel['Story'];
+  storyId?: ExperienceModel['storyId'];
 }
 
 export type ExperienceType = ExperienceModel['type'];

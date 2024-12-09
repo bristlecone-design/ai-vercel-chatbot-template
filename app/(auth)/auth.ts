@@ -98,7 +98,7 @@ export const {
     ...authConfig.callbacks,
     async jwt({ token, user }) {
       // console.log('jwt callback::', { token, user });
-      if (user) {
+      if (user?.id) {
         token.id = user.id;
         token.picture = user.image || null;
         token.name = user.name || null;

@@ -11,7 +11,7 @@ import { nanoid } from '@/lib/id';
 import { Button } from '@/components/ui/button';
 import { Command, CommandInput } from '@/components/ui/command';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { ReactMarkdownExtended } from '@/components/content/markdown';
+import { ReactMarkdownExtended } from '@/components/content/md/markdown';
 import { Prose } from '@/components/prose';
 
 import { addAIHighlight } from '../extensions';
@@ -140,7 +140,7 @@ export function AISelector({
   };
 
   return (
-    <Command className="md:w-108 w-[350px]">
+    <Command className="w-[350px] md:w-108">
       {completeResponse && (
         <div className="flex max-h-[400px]">
           <ScrollArea>

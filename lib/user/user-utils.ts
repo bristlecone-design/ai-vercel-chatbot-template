@@ -1,3 +1,4 @@
+import type { User as UserDb } from '@/lib/db/schema';
 import type { AppUser } from '@/types/next-auth';
 import type { USER_PROFILE_MODEL, User } from '@/types/user';
 
@@ -23,12 +24,13 @@ export function getUsersLastNameFromName(name: string | null | undefined) {
 export type UserClientFriendly = USER_PROFILE_MODEL;
 
 export function mapDbUserToClientFriendlyUser(
-  user: User | USER_PROFILE_MODEL,
+  user: User | USER_PROFILE_MODEL | UserDb,
 ): UserClientFriendly {
   return {
     id: user.id,
     url: user.url,
     urlSocial: user.urlSocial,
+    urlPay: user.urlPay,
     bio: user.bio,
     name: user.name,
     email: user.email,
@@ -39,6 +41,7 @@ export function mapDbUserToClientFriendlyUser(
     interests: user.interests,
     organization: user.organization,
     username: user.username,
+    location: user.location,
     public: user.public,
     waitlist: user.waitlist,
     privateBeta: user.privateBeta,
@@ -46,6 +49,7 @@ export function mapDbUserToClientFriendlyUser(
     role: user.role,
     active: user.active,
     onboarded: user.onboarded,
+    logins: user.logins,
     blocked: user.blocked,
     allowed: user.allowed,
     createdAt: user.createdAt,

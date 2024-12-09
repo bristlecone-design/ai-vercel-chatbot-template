@@ -287,7 +287,7 @@ export const ExperienceMapClient = ({
               {listingLabel}
               <Badge
                 variant="secondary"
-                className="text-tiny rounded-full px-1 py-0.5"
+                className="rounded-full px-1 py-0.5 text-tiny"
               >
                 {destinations.length}
               </Badge>
@@ -353,7 +353,7 @@ export const ExperienceMapClient = ({
                       <h3 className="flex items-center gap-2 font-semibold leading-snug">
                         <Badge
                           variant="secondary"
-                          className="text-tiny rounded-full px-1.5 py-0.5 font-normal leading-none sm:self-start"
+                          className="rounded-full px-1.5 py-0.5 text-tiny font-normal leading-none sm:self-start"
                         >
                           {i + 1}
                         </Badge>
@@ -399,9 +399,7 @@ export const ExperienceMapClient = ({
                               {evChargeRate && (
                                 <span>
                                   {/* Update to 2 decimal places */}
-                                  {
-                                    evChargeRate
-                                  } kW{' '}
+                                  {evChargeRate} kW{' '}
                                   <span className="sr-only">
                                     Max Charge Rate
                                   </span>
