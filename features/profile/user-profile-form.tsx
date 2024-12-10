@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useActionState, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { updateUser } from '@/actions/user';
 import { useAppState } from '@/state/app-state';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useFormStatus } from 'react-dom';
 import { toast } from 'sonner';
 
 import { shortenUrl } from '@/lib/urls';
@@ -63,8 +63,9 @@ export function UserProfileForm({
     userDisplayName,
     handleUpdatingAuthUser,
   } = useAppState();
+  console.log(`**** userProfile`, userProfile);
 
-  const [result, dispatch] = useFormState(saveUserProfileChanges, undefined);
+  const [result, dispatch] = useActionState(saveUserProfileChanges, undefined);
 
   const [updating, setUpdating] = useState(false);
 

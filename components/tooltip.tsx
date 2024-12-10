@@ -84,7 +84,7 @@ export function BaseTooltip({
         <TooltipTrigger asChild={asChild} className={triggerClassName}>
           {children}
         </TooltipTrigger>
-        <TooltipPortal container={container || document.body}>
+        <TooltipPortal container={container}>
           <TooltipContent
             side={side}
             align={align}

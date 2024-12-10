@@ -28,19 +28,27 @@ export const DEFAULT_USER_PROFILE_STATE = {
   email: '',
   location: '',
   username: '',
+  urlPay: '',
+  organization: '',
+  profession: '',
+  followerCount: 0,
   onboarded: false,
   waitlist: false,
   allowed: false,
   active: false,
   logins: 0,
   company: '',
-  interests: '',
+  interests: [],
   avatar: '',
   image: '',
   banner: '',
+  blocked: false,
+  privateBeta: false,
+  public: false,
+  urlSocial: '',
   createdAt: new Date(),
   updatedAt: new Date(),
-} as USER_PROFILE_MODEL;
+} as unknown as USER_PROFILE_MODEL;
 
 export interface AppStateContext {
   isReady: boolean;

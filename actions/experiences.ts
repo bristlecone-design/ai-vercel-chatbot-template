@@ -25,7 +25,7 @@ import type {
   ExperienceModel,
 } from '@/types/experiences';
 import type { USER_PROFILE_MODEL, User } from '@/types/user';
-import { eq } from 'drizzle-orm';
+import { count, eq } from 'drizzle-orm';
 import { unstable_cache } from 'next/cache';
 import {
   getAllBookmarksByExpId,
@@ -617,4 +617,21 @@ export async function getCachedUserProfileExperiencesForFrontend(
     revalidate: 43200, // 12 hours
     tags: [`${profileId}-${CACHE_KEY_USER_EXPERIENCES}`],
   })(...args).then((experiences) => (experiences ? experiences : undefined));
+}
+
+/**
+ * Get a user's experienc count by ID
+ */
+export async function getUserExperienceCountForFrontend(
+  authorId: string,
+  queryOpts = {} as PartialExperienceModelOpts,
+): Promise<number> {
+  const { visibility, numToTake = 100 } = queryOpts;
+  const [result] = await db
+    .select({ count: count() })
+    .from(experiences)
+    .where(eq(experiences.authorId, authorId))
+    .limit(numToTake);
+
+  return result.count || 0;
 }

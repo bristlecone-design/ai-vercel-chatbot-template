@@ -2,6 +2,9 @@
 
 import React from 'react';
 import type { Metadata, ResolvingMetadata } from 'next';
+import { getUserExperienceCountForFrontend } from '@/actions/experiences';
+import { getPartialUserExperiencesForFrontend } from '@/actions/experiences-partial';
+import { getCachedUserWaitlistCount } from '@/actions/user';
 import { ExperienceCreateMenu } from '@/features/experiences/posts/experience-post-create-menu';
 import { ViewUserProfileLazyPartialExperiences } from '@/features/experiences/posts/experience-posts';
 import { UserExperiencePostsProvider } from '@/features/experiences/posts/experience-posts-provider';
@@ -148,7 +151,7 @@ export async function ExperiencesTabContent({ userName }: ProfileTabProps) {
   // const profileData = await getAndVerifyUserProfileDataAccessByUsername(userName);
   // const { userProfile, authUser, isAuthUserOwnProfile } = profileData;
   // // console.log(`**** retrieved profileData`, profileData);
-  const waitlistCount = await getCachedWaitlistCount();
+  const waitlistCount = await getCachedUserWaitlistCount();
 
   const profileData =
     await getAndVerifyUserProfileDataAccessByUsername(userName);
