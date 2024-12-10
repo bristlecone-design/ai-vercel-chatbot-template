@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { useAppState } from '@/state/AppState';
+import { useAppState } from '@/state/app-state';
 
 import { getEscapePath } from '@/config/site-paths';
 

@@ -7,7 +7,7 @@ import { type NextRequest, NextResponse } from 'next/server';
 //   getCachedUserProfileExperiencesForFrontend,
 //   getSingleExperience,
 //   toggleExperienceRemovedStatus,
-// } from '@/actions/experiences-db';
+// } from '@/actions/experiences';
 // import { StatusCodes } from 'http-status-codes';
 
 // import { getErrorMessage } from '@/lib/errors';

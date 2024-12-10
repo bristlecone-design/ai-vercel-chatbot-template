@@ -1,20 +1,16 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import Link from 'next/link';
-import { useAppState } from '@/state/AppState';
-import { convertTagsForForm, TagsWithMeta } from '@/tag';
-import { clsx } from 'clsx';
+import { useAppState } from '@/state/app-state';
+import clsx from 'clsx';
+import { Link } from 'lucide-react';
 
-import usePreventNavigation from '@/lib/hooks/use-prevent-navigation';
 import { getNextImageUrlForManipulation } from '@/lib/next-image';
-import { getDimensionsFromSize } from '@/lib/size';
+import usePreventNavigation from '@/hooks/use-prevent-navigation';
 import ErrorNote from '@/components/error-note';
 import FieldSetWithStatus from '@/components/field-with-status';
-import ImageWithFallback from '@/components/image/ImageWithFallback';
-import Spinner from '@/components/spinner';
-import SubmitButtonWithStatus from '@/components/submit-button-with-status';
-import { toastSuccess, toastWarning } from '@/components/toast';
+import { Spinner } from '@/components/spinner';
+import { SubmitButtonWithStatus } from '@/components/submit-button-with-status';
 
 import {
   convertFormKeysToLabels,
@@ -26,10 +22,11 @@ import {
 } from '.';
 import { createPhotoAction, updatePhotoAction } from '../actions';
 import AiButton from '../ai/AiButton';
-import { AiContent } from '../ai/useAiImageQueries';
+import type { AiContent } from '../ai/useAiImageQueries';
+import { convertTagsForForm, type TagsWithMeta } from '../tag';
 import UpdateBlurDataButton from '../UpdateBlurDataButton';
 
-import { PhotoDbInsert, PhotoFormData } from '@/types/photo';
+import type { PhotoDbInsert, PhotoFormData } from '@/types/photo';
 import { PATH_ADMIN_PHOTOS, PATH_ADMIN_UPLOADS } from '@/config/site-paths';
 import { BLUR_ENABLED } from '@/config/site-settings';
 

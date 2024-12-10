@@ -1,17 +1,18 @@
 'use client';
 
-import { ReactNode, useCallback, useMemo, useRef } from 'react';
-import { Camera } from '@/camera';
-import { getPhotosAction, getPhotosCachedAction } from '@/photo/actions';
-import { FilmSimulation } from '@/simulation';
-import { useAppState } from '@/state/AppState';
+import { useCallback, useMemo, useRef, type ReactNode } from 'react';
+import { useAppState } from '@/state/app-state';
 import { clsx } from 'clsx';
 import useSwrInfinite from 'swr/infinite';
 
 import SiteGrid from '@/components/site-grid';
-import Spinner from '@/components/spinner';
+import { Spinner } from '@/components/spinner';
 
-import { Photo } from '.';
+import type { Camera } from '../camera';
+import type { FilmSimulation } from '../simulation';
+import { getPhotosAction, getPhotosCachedAction } from './actions';
+
+import type { Photo } from '@/types/photo';
 
 export type RevalidatePhoto = (
   photoId: string,
@@ -45,7 +46,7 @@ export default function InfinitePhotoScroll({
     revalidatePhoto?: RevalidatePhoto;
   }) => ReactNode;
 }) {
-  const { swrTimestamp, isUserSignedIn } = useAppState();
+  const { swrTimestamp, isAuthenticated } = useAppState();
 
   const key = `${swrTimestamp}-${cacheKey}`;
 
@@ -89,8 +90,8 @@ export default function InfinitePhotoScroll({
     useSwrInfinite<Photo[]>(keyGenerator, fetcher, {
       initialSize: 2,
       revalidateFirstPage: false,
-      revalidateOnFocus: Boolean(isUserSignedIn),
-      revalidateOnReconnect: Boolean(isUserSignedIn),
+      revalidateOnFocus: Boolean(isAuthenticated),
+      revalidateOnReconnect: Boolean(isAuthenticated),
     });
 
   const buttonContainerRef = useRef<HTMLDivElement>(null);

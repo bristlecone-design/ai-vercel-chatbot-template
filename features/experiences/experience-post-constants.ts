@@ -1,0 +1,1 @@
+export const NUM_OF_ALLOWED_MEDIA_ATTACHMENTS = 10;

@@ -1,16 +1,17 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Camera } from '@/camera';
-import { getNextPhoto, getPreviousPhoto, Photo } from '@/photo';
-import { FilmSimulation } from '@/simulation';
-import { useAppState } from '@/state/AppState';
+import { useRouter } from 'next/router';
+import { useAppState } from '@/state/app-state';
 
-import { AnimationConfig } from '@/components/animations/animated-items';
+import type { AnimationConfig } from '@/components/animations/animated-items';
 
+import { getNextPhoto, getPreviousPhoto } from '.';
+import type { Camera } from '../camera';
+import type { FilmSimulation } from '../simulation';
 import PhotoLink from './PhotoLink';
 
+import type { Photo } from '@/types/photo';
 import { pathForPhoto } from '@/config/site-paths';
 
 const LISTENER_KEYUP = 'keyup';

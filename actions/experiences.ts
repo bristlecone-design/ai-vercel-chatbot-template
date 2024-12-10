@@ -7,7 +7,6 @@ import {
   type Bookmark,
   type Experience,
   type ExperienceLikes,
-  type ExperienceSave,
   type Media,
   type Prompt,
   type Story,
@@ -15,22 +14,26 @@ import {
   media,
 } from '@/lib/db/schema';
 import { getErrorMessage } from '@/lib/errors';
-import { isImage, isImageExtension } from '@/lib/media/media-utils';
+import {
+  isImage,
+  isImageExtension,
+  sortRawMediaByLatLong,
+} from '@/lib/media/media-utils';
 import { mapDbUserToClientFriendlyUser } from '@/lib/user/user-utils';
-import type { AIExperienceCallToActionSuggestionModel } from '@/types/experience-prompts';
 import type {
   ExperienceMediaModel,
   ExperienceModel,
 } from '@/types/experiences';
 import type { USER_PROFILE_MODEL, User } from '@/types/user';
 import { eq } from 'drizzle-orm';
-import { unstable_expirePath as expirePath, unstable_cache } from 'next/cache';
+import { unstable_cache } from 'next/cache';
 import {
   getAllBookmarksByExpId,
   getCachedAllBookmarksByExpId,
 } from './bookmarks';
 import {
   CACHE_KEY_USER_EXPERIENCE,
+  CACHE_KEY_USER_EXPERIENCES,
   CACHE_KEY_USER_EXPERIENCE_MEDIA,
   CACHE_KEY_USER_EXPERIENCE_SINGLE_MEDIA,
 } from './cache-keys';
@@ -38,6 +41,7 @@ import type {
   ExperienceIncludeOpts,
   PartialExperienceModelOpts,
 } from './experience-action-types';
+import { updateExperience } from './experiences-updates';
 import { getAndMapUserGeo } from './geo';
 import { getAllLikesByExpId, getCachedAllLikesByExpId } from './likes';
 import {
@@ -388,9 +392,9 @@ export async function getCachedExperiencesByIds(
  */
 export async function getUserExperienceIds(
   userId: string,
-  opts = {} as PartialExperienceModelOpts,
+  queryOpts = {} as PartialExperienceModelOpts,
 ): Promise<string[]> {
-  const { visibility, numToTake = 100 } = opts;
+  const { visibility, numToTake = 100 } = queryOpts;
 
   const records = await db
     .selectDistinct({ id: experiences.id })
@@ -427,57 +431,32 @@ export async function getSingleUsersExperiences(
   return getExperiencesByIds(ids, includeOpts, cached);
 }
 
-export async function updateExperience(
-  id: string,
-  data: Partial<ExperienceSave>,
+/**
+ * Get single experience by prompt ID
+ */
+export async function getSingleExperienceByPromptId(
+  promptId: string,
   includeOpts = {} as ExperienceIncludeOpts,
-  expirePathKey = CACHE_KEY_USER_EXPERIENCE,
-): Promise<{ updated: boolean; data: ExperienceModel }> {
-  // const dataKeys = Object.keys(data) as (keyof Experience)[];
-  // const dataKeysReturning = dataKeys.map((key) => ({
-  //   [key]: experiences[key],
-  // }));
+  cached = false,
+): Promise<ExperienceModel | undefined> {
+  const [record] = await db
+    .selectDistinct()
+    .from(experiences)
+    .where(eq(experiences.promptId, promptId));
 
-  const updated = await db
-    .update(experiences)
-    .set(data)
-    .where(eq(experiences.id, id))
-    .returning();
+  if (!record) return undefined;
 
-  const record = updated[0];
-
-  if (!record) return { updated: false, data: record };
-
-  if (expirePathKey) {
-    expirePath(expirePathKey);
-  }
-
-  // Include options
-  if (includeOpts.media) {
-    expirePath(CACHE_KEY_USER_EXPERIENCE_MEDIA);
-  }
-
-  const mappedRecord = await getMappedExperienceModels(record, includeOpts);
-
-  return { updated: true, data: mappedRecord };
+  return getMappedExperienceModels(record, includeOpts, cached);
 }
 
-/**
- * Update an experience with CTAs or remove them
- */
-export async function updateExperienceCTAs(
-  expId: string,
-  ctas: AIExperienceCallToActionSuggestionModel[] | null,
+export async function getCachedSingleExperienceByPromptId(
+  ...args: Parameters<typeof getSingleExperienceByPromptId>
 ) {
-  try {
-    return updateExperience(expId, {
-      ctas: ctas ? ctas : [],
-    });
-  } catch (error) {
-    const errMsg = getErrorMessage(error);
-    console.error('Error updating experience CTAs:', error);
-    return errMsg;
-  }
+  const promptId = args[0];
+  return unstable_cache(getSingleExperienceByPromptId, [promptId], {
+    revalidate: 86400, // 24 hours
+    tags: [promptId],
+  })(...args).then((exp) => exp);
 }
 
 /**
@@ -496,4 +475,146 @@ export async function getExperiencesByPromptId(
   if (!records || !records.length) return undefined;
 
   return getMappedExperienceModelsList(records, includeOpts, cached);
+}
+
+/**
+ * Update an experience's pin status
+ *
+ * @note This function is used to pin/unpin an experience
+ * @note This function wraps the updateExperience function
+ */
+export async function updateExperiencePinStatus(id: string, pinned: boolean) {
+  try {
+    return updateExperience(id, {
+      pinned,
+      pinnedAt: pinned ? new Date() : null,
+    });
+  } catch (error) {
+    const errMsg = getErrorMessage(error);
+    console.error('Error updating experience pin status:', error);
+    return errMsg;
+  }
+}
+
+/**
+ * Get a single user experience for the frontend by ID
+ */
+export async function getSingleUserExperienceForFrontend(
+  expId: string,
+  includeOpts = {} as ExperienceIncludeOpts,
+  cached = true,
+) {
+  // Destructure for defaults
+  const {
+    author: includeAuthor = true,
+    media: includeMedia = true,
+    mediaThumbnail: includeMediaThumbs = true,
+    prompts: includePrompt = true,
+    story: includeStory = true,
+    bookmarks: includeBookmarks = true,
+    likes: includeLikes = true,
+  } = includeOpts;
+
+  // Include options
+  const includeOptsProps = {
+    author: includeAuthor,
+    media: includeMedia,
+    story: includeStory,
+    prompts: includePrompt,
+    bookmarks: includeBookmarks,
+    likes: includeLikes,
+    mediaThumbnail: includeMediaThumbs,
+  } as ExperienceIncludeOpts;
+
+  const experience = await (cached
+    ? getCachedSingleExperience(expId, includeOptsProps)
+    : getSingleExperience(expId, includeOptsProps));
+
+  if (!experience) return null;
+
+  // Allow us to compare the cachedAt time
+  const cachedAt = new Date();
+  const mappedExperience = {
+    ...experience,
+    cachedAt,
+    cachedAtTimestamp: cachedAt.getTime(),
+  } as ExperienceModel;
+
+  // Media
+  if (includeMedia && experience.Media) {
+    if (includeMediaThumbs) {
+      const experienceMedia = sortRawMediaByLatLong(
+        experience.Media,
+      ) as ExperienceMediaModel[];
+
+      if (experienceMedia) {
+        const expWithMediaThumbs =
+          await getSingleExperienceMediaThumbnails(experienceMedia);
+
+        mappedExperience.Media = expWithMediaThumbs;
+      }
+    }
+  }
+
+  return mappedExperience as ExperienceModel;
+}
+
+export async function getCachedSingleUserExperienceForFrontend(
+  ...args: Parameters<typeof getSingleUserExperienceForFrontend>
+) {
+  const expId = args[0];
+  return unstable_cache(getSingleUserExperienceForFrontend, [], {
+    // Revalidate in 1 hour
+    revalidate: 431200, // 12 hours
+    // Various ways to tag and revalidate
+    tags: [expId, `${expId}-${CACHE_KEY_USER_EXPERIENCE}`],
+  })(...args).then((exp) => exp);
+}
+
+/**
+ * Get user experiences for frontend
+ *
+ * @note First gets the experience IDs, then fetches the experiences
+ * @note This allows us to cache and revalidate the experience IDs for better performance and user experience
+ */
+export async function getUserExperiencesForFrontend(
+  authorId: string,
+  queryOpts = {} as PartialExperienceModelOpts,
+  includeOpts = {} as ExperienceIncludeOpts,
+): Promise<ExperienceModel[]> {
+  //
+  const userExperienceIds = await getCachedUserExperienceIds(
+    authorId,
+    queryOpts,
+  );
+
+  if (!userExperienceIds) return [];
+
+  /**
+   * Iterate through the experience IDs and fetch the experiences via @getCachedSingleUserExperienceForFrontend
+   *
+   * This allows us to cache and revalidate the experiences at the individual level for better performance and user experience
+   */
+  const experiences = await Promise.all(
+    userExperienceIds.map((expId) =>
+      getCachedSingleUserExperienceForFrontend(expId, includeOpts),
+    ),
+  );
+
+  return (experiences ? experiences.filter(Boolean) : []) as ExperienceModel[];
+}
+
+/**
+ * Get cached user profile experiences for frontend
+ *
+ * @note Wraps @getUserExperiencesForFrontend in a cache function
+ */
+export async function getCachedUserProfileExperiencesForFrontend(
+  ...args: Parameters<typeof getUserExperiencesForFrontend>
+) {
+  const profileId = args[0];
+  return unstable_cache(getUserExperiencesForFrontend, [], {
+    revalidate: 43200, // 12 hours
+    tags: [`${profileId}-${CACHE_KEY_USER_EXPERIENCES}`],
+  })(...args).then((experiences) => (experiences ? experiences : undefined));
 }

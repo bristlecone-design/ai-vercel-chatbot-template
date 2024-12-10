@@ -1,22 +1,28 @@
 'use client';
 
 import { useMemo } from 'react';
-import { Cameras, sortCamerasWithCount } from '@/camera';
-import PhotoCamera from '@/camera/PhotoCamera';
-import { FilmSimulations, sortFilmSimulationsWithCount } from '@/simulation';
-import PhotoFilmSimulation from '@/simulation/PhotoFilmSimulation';
-import PhotoFilmSimulationIcon from '@/simulation/PhotoFilmSimulationIcon';
-import { useAppState } from '@/state/AppState';
-import { addHiddenToTags, TAG_FAVS, TAG_HIDDEN, TagsWithMeta } from '@/tag';
-import HiddenTag from '@/tag/HiddenTag';
-import PhotoTag from '@/tag/PhotoTag';
+import { useAppState } from '@/state/app-state';
 import { FaTag } from 'react-icons/fa';
 import { IoMdCamera } from 'react-icons/io';
 
-import HeaderList from '@/components/header-list';
-
-import { dateRangeForPhotos, PhotoDateRange, photoQuantityText } from '.';
-import FavsTag from '../tag/FavsTag';
+import { dateRangeForPhotos, photoQuantityText, type PhotoDateRange } from '.';
+import { sortCamerasWithCount, type Cameras } from '../camera';
+import PhotoCamera from '../camera/PhotoCamera';
+import {
+  sortFilmSimulationsWithCount,
+  type FilmSimulations,
+} from '../simulation';
+import PhotoFilmSimulation from '../simulation/PhotoFilmSimulation';
+import PhotoFilmSimulationIcon from '../simulation/PhotoFilmSimulationIcon';
+import {
+  addHiddenToTags,
+  TAG_FAVS,
+  TAG_HIDDEN,
+  type TagsWithMeta,
+} from './tag';
+import FavsTag from './tag/FavsTag';
+import HiddenTag from './tag/HiddenTag';
+import PhotoTag from './tag/PhotoTag';
 
 export default function PhotoGridSidebar({
   tags,

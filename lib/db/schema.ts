@@ -709,7 +709,7 @@ export const experiences = pgTable(
     blocked: boolean('blocked').default(false),
     removed: boolean('removed').default(false),
     published: boolean('published').default(true),
-    visibility: postVisibilityType().default('public'),
+    visibility: postVisibilityType().notNull().default('public'),
     views: integer('views').default(0),
     upVoted: integer('upVoted').default(0),
     pinned: boolean('pinned').default(false),

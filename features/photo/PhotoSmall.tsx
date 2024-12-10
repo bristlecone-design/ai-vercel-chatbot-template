@@ -1,14 +1,15 @@
 import { useRef } from 'react';
 import Link from 'next/link';
-import { Camera } from '@/camera';
-import { FilmSimulation } from '@/simulation';
 import { clsx } from 'clsx';
 
-import useOnVisible from '@/lib/hooks/use-on-visible';
-import ImageSmall from '@/components/image/ImageSmall';
+import useOnVisible from '@/hooks/use-on-visible';
+import ImageSmall from '@/components/image/image-small';
 
-import { altTextForPhoto, doesPhotoNeedBlurCompatibility, Photo } from '.';
+import { altTextForPhoto, doesPhotoNeedBlurCompatibility } from '.';
+import type { Camera } from '../camera';
+import type { FilmSimulation } from '../simulation';
 
+import type { Photo } from '@/types/photo';
 import { pathForPhoto } from '@/config/site-paths';
 import { SHOULD_PREFETCH_ALL_LINKS } from '@/config/site-settings';
 

@@ -14,23 +14,146 @@ import type {
   ExperienceUserPromptModel,
   GeneratedExperienceUserPrompt,
   GeneratedExperienceUserPrompts,
+  PromptCollaboratorModel,
 } from '@/types/experience-prompts';
+import type { ExperienceModel } from '@/types/experiences';
+import type { USER_PROFILE_MODEL } from '@/types/user';
 import { and, desc, eq, inArray, isNull, not, or, sql } from 'drizzle-orm';
 import { unstable_cache } from 'next/cache';
 import { clearTagCache } from './cache';
 import {
+  CACHE_KEY_COMPLETE_USER_PROMPTS,
   CACHE_KEY_INCOMPLETE_PROMPTS,
   CACHE_KEY_PROMPT,
+  CACHE_KEY_PROMPTS,
   CACHE_KEY_PROMPT_STORIES,
   CACHE_KEY_PROMPT_STORY,
   CACHE_KEY_PUBLIC_PROMPTS,
 } from './cache-keys';
 import type { PromptCollaboratorIncludeOpts } from './collaborator-action-types';
-import type { ExperienceIncludeOpts } from './experience-action-types';
-import { getExperiencesByPromptId, getSingleExperience } from './experiences';
+import {
+  getCachedSingleExperienceByPromptId,
+  getExperiencesByPromptId,
+  getSingleExperience,
+  getSingleExperienceByPromptId,
+} from './experiences';
+import type { PromptIncludeOpts } from './prompt-action-types';
 import { getCachedStoryById } from './stories';
 import type { PromptCollectionIncludeOpts } from './story-collection-types';
-import { getCachedUserProfileById } from './user';
+import { getCachedUserProfileById, getUserProfileById } from './user';
+
+/**
+ * Get the mapped relationship models by prompt ID
+ */
+export async function getMappedPromptModelsById(
+  promptId: string,
+  userId?: string | null,
+  includeOpts = {} as PromptIncludeOpts,
+  cached = true,
+): Promise<{
+  Author?: USER_PROFILE_MODEL;
+  Collaborator?: USER_PROFILE_MODEL;
+  Experience?: ExperienceModel;
+  Prompt?: Prompt | null;
+  Story?: Story | null;
+}> {
+  const {
+    user: includeUser = true,
+
+    // For Prompt Collaborator Record
+    collaborator: includeCollaborator = false,
+    experience: includeExperience = false,
+    prompt: includePrompt = false,
+  } = includeOpts;
+
+  // Core Prompt Record
+  const [Author] = await Promise.all([
+    includeUser && userId
+      ? cached
+        ? getCachedUserProfileById(userId)
+        : getUserProfileById(userId)
+      : undefined,
+  ]);
+
+  // Prompt Collaborator Record
+  const [Collaborator, Experience, Prompt] = await Promise.all([
+    includeCollaborator ? Author : undefined,
+
+    includeExperience
+      ? cached
+        ? getCachedSingleExperienceByPromptId(promptId)
+        : getSingleExperienceByPromptId(promptId)
+      : undefined,
+
+    includePrompt
+      ? cached
+        ? getCachedSinglePromptById(promptId)
+        : getSinglePromptById(promptId)
+      : undefined,
+  ]);
+
+  return {
+    Author,
+    Collaborator,
+    Experience,
+    Prompt,
+  };
+}
+
+/**
+ * Get mapped models for a prompt record
+ */
+export async function getMappedSinglePromptModels(
+  record: Prompt,
+  includeOpts = {} as PromptIncludeOpts,
+  cached = true,
+): Promise<ExperienceUserPromptModel> {
+  const {
+    user: includeUser = true,
+
+    // For Prompt Collaborator Record
+    collaborator: includeCollaborator = false,
+    experience: includeExperience = false,
+    prompt: includePrompt = false,
+  } = includeOpts;
+  const hasIncludeOpts = includeUser;
+
+  if (!hasIncludeOpts) {
+    return record as ExperienceUserPromptModel;
+  }
+
+  const userId = record.authorId;
+
+  if (!userId) {
+    return record as ExperienceUserPromptModel;
+  }
+
+  const mappedModels = await getMappedPromptModelsById(
+    record.id,
+    userId,
+    includeOpts,
+    cached,
+  );
+
+  const { Author, Collaborator, Experience, Prompt } = mappedModels;
+
+  return {
+    ...record,
+    User: Author,
+    Collaborator,
+    Experience,
+    Prompt,
+  } as ExperienceUserPromptModel;
+}
+
+export async function getCachedMappedSinglePromptModels(
+  ...args: Parameters<typeof getMappedSinglePromptModels>
+) {
+  return unstable_cache(getMappedSinglePromptModels, [], {
+    revalidate: 86400, // 24 hours
+    tags: [CACHE_KEY_PROMPTS],
+  })(...args).then((media) => media);
+}
 
 /**
  * Get a single prompt by ID
@@ -99,11 +222,6 @@ export async function getCachedAllPromptsByExpId(
   })(...args).then((prompts) => prompts);
 }
 
-type PromptIncludeOpts = ExperienceIncludeOpts & {
-  experiences?: boolean;
-  experiencePrompts?: boolean;
-};
-
 /**
  * Get all prompts
  */
@@ -114,13 +232,13 @@ export async function getAllPrompts(
 
   if (!records || !records.length) return null;
 
-  const { author = false, experiences = false, story = false } = includeOpts;
+  const { user = false, experiences = false, story = false } = includeOpts;
 
   const mappedPrompts: ExperienceUserPromptModel[] = await Promise.all(
     records.map(async (prompt) => {
       const userPromptModel = prompt as any as ExperienceUserPromptModel;
       const { authorId, promptCollectionId } = prompt;
-      if (author && authorId) {
+      if (user && authorId) {
         userPromptModel.Author = await getCachedUserProfileById(authorId);
       }
 
@@ -246,7 +364,6 @@ export async function getCachedUserIncompletePrompts(
   })(...args).then((prompts) => prompts);
 }
 
-// Convert the above prisma query to a drizzle-orm query
 export async function getUserAllCompletedPrompts(
   userId: string,
   includeOpts = {} as PromptCollaboratorIncludeOpts,
@@ -317,7 +434,15 @@ export async function getUserAllCompletedPrompts(
   return filteredRecords as GeneratedExperienceUserPrompts;
 }
 
-// Turn the above prisma query into a drizzle-orm query
+export async function getCachedUserAllCompletedPrompts(
+  ...args: Parameters<typeof getUserAllCompletedPrompts>
+) {
+  return unstable_cache(getUserAllCompletedPrompts, [], {
+    revalidate: 86400, // 24 hours
+    tags: [CACHE_KEY_COMPLETE_USER_PROMPTS],
+  })(...args).then((prompts) => prompts);
+}
+
 export async function getFeaturedPromptCollections(
   featured = true,
   published = true,
@@ -487,4 +612,140 @@ export async function getPromptsByValues(promptValues: string[], take = 25) {
     .limit(take);
 
   return records;
+}
+
+/**
+ * Delete a prompt collaborator record by experience ID and prompt ID
+ */
+export async function deletePromptCollaboratorByExpAndPromptId(
+  experienceId: string,
+  promptId: string,
+) {
+  const records = await db
+    .delete(promptCollaborators)
+    .where(
+      and(
+        eq(promptCollaborators.experienceId, experienceId),
+        eq(promptCollaborators.promptId, promptId),
+      ),
+    )
+    .returning();
+
+  return { count: records.length, data: records };
+}
+
+/**
+ * Get a prompt collaborator record by exp ID
+ *
+ * @note This is a helper function to get a prompt collaborator record by experience ID, notably for the /prompts/completed/[expId] page
+ */
+export async function getPromptCollaboratorByExpId(
+  expId: string,
+  includeOpts = {} as PromptCollaboratorIncludeOpts,
+  cached = true,
+): Promise<PromptCollaboratorModel | null> {
+  const [record] = await db
+    .selectDistinct()
+    .from(promptCollaborators)
+    .where(eq(promptCollaborators.experienceId, expId));
+
+  if (!record) return null;
+
+  const {
+    collaborator = true,
+    experience = true,
+    prompt = true,
+  } = includeOpts || {};
+
+  const hasIncludeOpts = collaborator || experience || prompt;
+
+  if (!hasIncludeOpts) {
+    return record as unknown as PromptCollaboratorModel;
+  }
+
+  const userId = record.userId;
+
+  if (!userId || !record.promptId) {
+    return record as unknown as PromptCollaboratorModel;
+  }
+
+  const mappedModels = await getMappedPromptModelsById(
+    record.promptId,
+    userId,
+    includeOpts,
+    cached,
+  );
+
+  const { Collaborator, Experience, Prompt } = mappedModels;
+
+  return {
+    ...record,
+    // User: Author,
+    Collaborator,
+    Experience,
+    Prompt,
+  } as PromptCollaboratorModel;
+}
+
+/**
+ * Get cached prompt collaborator record by exp ID
+ */
+export async function getCachedPromptCollaboratorByExpId(
+  ...args: Parameters<typeof getPromptCollaboratorByExpId>
+) {
+  const expId = args[0];
+  return unstable_cache(getPromptCollaboratorByExpId, [expId], {
+    revalidate: 604800, // 1 week
+    tags: [expId, `${expId}-${CACHE_KEY_PROMPT}`],
+  })(...args).then((record) => (record ? record : undefined));
+}
+
+/**
+ * Get all prompt collaborator records (stories) with a user ID, prompt ID, experience ID, and story ID
+ */
+export async function getAllCompletedPromptStories() {
+  const records = await db
+    .selectDistinct()
+    .from(promptCollaborators)
+    .where(
+      and(
+        not(eq(promptCollaborators.promptId, '')),
+        not(eq(promptCollaborators.experienceId, '')),
+        not(eq(promptCollaborators.storyId, '')),
+      ),
+    );
+
+  if (!records) return null;
+
+  // Iterate through the records and return the mapped models for each record
+  const mappedRecords = await Promise.all(
+    records
+      .map(async (record) => {
+        const { userId, promptId, storyId } = record;
+
+        if (!userId || !promptId || !storyId) return undefined;
+
+        const mappedModels = await getMappedPromptModelsById(promptId, userId, {
+          user: true,
+          collaborator: true,
+          experience: true,
+          prompt: true,
+          story: true,
+        });
+
+        const { Collaborator, Experience, Prompt, Story } = mappedModels;
+
+        return {
+          ...record,
+          // User: Author,
+          Collaborator,
+          Experience,
+          Prompt,
+          Story,
+        };
+      })
+      .filter(Boolean),
+  );
+
+  return mappedRecords as unknown as PromptCollaboratorModel[];
 }

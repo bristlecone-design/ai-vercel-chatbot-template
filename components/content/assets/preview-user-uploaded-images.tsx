@@ -9,7 +9,7 @@ import {
   updateMediaDownloadable,
   updateMediaPublicVisibility,
   updateMediaRemixable,
-} from '@/actions/media';
+} from '@/actions/media/update-core-media';
 import { motion, useReducedMotion } from 'framer-motion';
 import { toast } from 'sonner';
 
@@ -69,9 +69,9 @@ import { Label } from '@/components/ui/label';
 import { BlockSkeleton } from '@/components/ui/skeleton';
 import { Switch } from '@/components/ui/switch';
 import { MediaUpdateForm } from '@/components/auth/media/media-update-form';
-import { GeneralDialog } from '@/components/general-dialog';
-import { GeneralDrawer } from '@/components/general-drawer';
-import ImageMedium from '@/components/image/ImageMedium';
+import { GeneralDialog } from '@/components/dialog-general';
+import { GeneralDrawer } from '@/components/drawer-general';
+import ImageMedium from '@/components/image/image-medium';
 import { ExperienceMapClient } from '@/components/maps/maps';
 import { Prose } from '@/components/prose';
 import { BaseTooltip, BaseTooltipContent } from '@/components/tooltip';

@@ -37,7 +37,7 @@ import {
   type GeneratedExperienceUserPrompt,
 } from '@/types/experience-prompts';
 import { AIGeneratedExperienceSingleTranslationSchema } from '@/types/experience-translations';
-import { updateExperienceCTAs } from './experiences';
+import { updateExperienceCTAs } from './experiences-updates';
 
 /**
  * For generating AI objects:

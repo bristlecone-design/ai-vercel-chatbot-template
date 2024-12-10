@@ -1,15 +1,17 @@
 'use client';
 
-import { ReactNode } from 'react';
-import Link from 'next/link';
-import { Camera } from '@/camera';
-import { Photo, titleForPhoto } from '@/photo';
-import { FilmSimulation } from '@/simulation';
-import { useAppState } from '@/state/AppState';
-import { clsx } from 'clsx';
+import type { ReactNode } from 'react';
+import { useAppState } from '@/state/app-state';
+import clsx from 'clsx';
+import { Link } from 'lucide-react';
 
-import { AnimationConfig } from '../components/animations/animated-items';
+import type { AnimationConfig } from '@/components/animations/animated-items';
 
+import { titleForPhoto } from '.';
+import type { Camera } from '../camera';
+import type { FilmSimulation } from '../simulation';
+
+import type { Photo } from '@/types/photo';
 import { pathForPhoto } from '@/config/site-paths';
 
 export default function PhotoLink({

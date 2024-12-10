@@ -7,7 +7,7 @@ import { type NextRequest, NextResponse } from 'next/server';
 // https://beta.nextjs.org/docs/routing/route-handlers
 
 // https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config#runtime
-export const runtime = 'edge';
+// export const runtime = 'edge';
 
 // Revalidate every x minutes
 // https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config#revalidate

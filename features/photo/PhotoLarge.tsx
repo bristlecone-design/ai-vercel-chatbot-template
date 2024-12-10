@@ -1,34 +1,31 @@
 'use client';
 
 import { useRef } from 'react';
-import Link from 'next/link';
-import AdminPhotoMenuClient from '@/admin/AdminPhotoMenuClient';
-import { cameraFromPhoto } from '@/camera';
-import PhotoFilmSimulation from '@/simulation/PhotoFilmSimulation';
-import { useAppState } from '@/state/AppState';
-import { sortTags } from '@/tag';
-import PhotoTags from '@/tag/PhotoTags';
-import { clsx } from 'clsx';
+import { useAppState } from '@/state/app-state';
+import clsx from 'clsx';
+import { Link } from 'lucide-react';
 
-import useOnVisible from '@/lib/hooks/use-on-visible';
-import DivDebugBaselineGrid from '@/components/div-debug-baseline-grid';
-import ImageLarge from '@/components/image/ImageLarge';
-import ShareButton from '@/components/share-button';
+import useOnVisible from '@/hooks/use-on-visible';
 import SiteGrid from '@/components/site-grid';
 
 import {
   altTextForPhoto,
   doesPhotoNeedBlurCompatibility,
-  Photo,
   shouldShowCameraDataForPhoto,
   shouldShowExifDataForPhoto,
   titleForPhoto,
 } from '.';
+import AdminPhotoMenuClient from '../admin/AdminPhotoMenuClient';
+import { cameraFromPhoto } from '../camera';
 import PhotoCamera from '../camera/PhotoCamera';
-import { RevalidatePhoto } from './InfinitePhotoScroll';
+import PhotoFilmSimulation from '../simulation/PhotoFilmSimulation';
+import type { RevalidatePhoto } from './InfinitePhotoScroll';
 import PhotoDate from './PhotoDate';
 import PhotoLink from './PhotoLink';
+import { sortTags } from './tag';
+import PhotoTags from './tag/PhotoTags';
 
+import type { Photo } from '@/types/photo';
 import {
   pathForFocalLength,
   pathForPhoto,
