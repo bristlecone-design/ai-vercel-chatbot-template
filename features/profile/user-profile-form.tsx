@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useState } from 'react';
+import React, { useActionState, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { updateUser } from '@/actions/user';
 import { useAppState } from '@/state/app-state';
@@ -22,6 +22,7 @@ import {
   professions,
 } from '@/components/combobox';
 import { ButtonCta } from '@/components/cta-btn';
+import { Spinner } from '@/components/spinner';
 import { SharedInfoTooltip } from '@/components/tooltip';
 
 import { saveUserProfileChanges } from './user-profile-actions';
@@ -56,6 +57,7 @@ export function UserProfileForm({
   const currentPath = usePathname();
 
   const {
+    isReady,
     isPreciseLocation,
     userLocation,
     userProfile,
@@ -63,7 +65,6 @@ export function UserProfileForm({
     userDisplayName,
     handleUpdatingAuthUser,
   } = useAppState();
-  console.log(`**** userProfile`, userProfile);
 
   const [result, dispatch] = useActionState(saveUserProfileChanges, undefined);
 
@@ -550,6 +551,45 @@ export function UserProfileForm({
     }
   };
 
+  // Initialize the form fields with the user's profile data
+  React.useEffect(() => {
+    if (isReady && userProfile) {
+      if (!userName && userProfile.name) {
+        setUserNameValue(userProfile.name);
+      }
+      if (!userBio && userProfile.bio) {
+        setUserBio(userProfile.bio);
+      }
+      if (!userEmail && userProfile.email) {
+        setUserEmailValue(userProfile.email);
+      }
+      if (!organizationValue && userProfile.organization) {
+        setOrganizationValue(userProfile.organization);
+      }
+      if (!locationValue && userProfile.location) {
+        setLocationValue(userProfile.location);
+      }
+      if (!userUrl && userProfile.url) {
+        setUserUrl(shortenUrl(userProfile.url));
+      }
+      if (!userUrlSocial && userProfile.urlSocial) {
+        setUserUrlSocial(userProfile.urlSocial);
+      }
+      if (!interestValue && userProfile.interests) {
+        setInterestValue(userProfile.interests.join(', '));
+      }
+      if (!professionValue && userProfile.profession) {
+        setProfessionValue(userProfile.profession);
+      }
+      if (
+        publicVisibility !== userProfile.public &&
+        typeof userProfile.public === 'boolean'
+      ) {
+        setPublicVisibility(userProfile.public);
+      }
+    }
+  }, [isReady, userProfile]);
+
   return (
     <form
       action={dispatch}
@@ -569,7 +609,7 @@ export function UserProfileForm({
             })}
           >
             <Label className="font-medium" htmlFor="name">
-              Name {userProfile?.name}
+              Name
             </Label>
             <div className="relative">
               <Input
@@ -584,11 +624,17 @@ export function UserProfileForm({
                 onChange={onNameChange}
                 onKeyDown={onNameKeyDown}
                 onBlur={onNameBlur}
-                placeholder="What do you go by?"
+                placeholder={isReady ? 'What do you go by?' : '...'}
                 className={cn('', inputClassName, {
                   'border-destructive': !userName,
                 })}
               />
+              {/* Loader/spinner component absolute positioned half way from top and bottom */}
+              {(updating || !isReady) && (
+                <div className="absolute left-3 top-1/2 flex -translate-y-1/2 items-center justify-center rounded-lg bg-background/75">
+                  <Spinner className="" />
+                </div>
+              )}
             </div>
           </div>
 
