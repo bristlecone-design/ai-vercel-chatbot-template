@@ -276,6 +276,13 @@ export function MultiSelectCombobox({
       !options.some((p) => p.value === v) && !options.some((p) => p.label === v)
   );
 
+  // Initialize values from defaultValueProp
+  React.useEffect(() => {
+    if (defaultValueProp && !values.length) {
+      setValues(defaultValueProp);
+    }
+  }, [defaultValueProp]);
+
   const searchList: Item[] = (
     customValueItems
       ? [

@@ -167,7 +167,10 @@ export function UserProfileForm({
     );
   };
 
-  const updateSourceUserProfileKey = (key: string, value: string | boolean) => {
+  const updateSourceUserProfileKey = (
+    key: string,
+    value: string | boolean | string[]
+  ) => {
     if (userProfile) {
       handleUpdatingAuthUser({
         ...userProfile,
@@ -178,7 +181,7 @@ export function UserProfileForm({
 
   const updateUserFieldInDb = async (
     field: string,
-    value: string | boolean
+    value: string | boolean | string[]
   ) => {
     if (userId && field) {
       const { updated, data: updatedUser } = await updateUser(
@@ -369,18 +372,22 @@ export function UserProfileForm({
 
   const onInterestChange = async (value: string) => {
     if (userId && value !== userProfile.interests?.join(',')) {
+      console.log('raw updated interest value', value);
       setUpdating(true);
-      const formattedValue = value
-        ? value
-            .split(',')
-            .sort()
-            .map((v) => v.trim())
-            .join(', ')
-        : value;
-      showInterestToast(formattedValue);
-      setInterestValue(formattedValue);
+      const scrubbedValue =
+        typeof value === 'string' && value
+          ? value
+              .split(',')
+              .sort()
+              .map((v) => v.trim())
+              .join(', ')
+          : value;
+      showInterestToast(scrubbedValue);
+      setInterestValue(scrubbedValue);
 
-      const updated = await updateUserFieldInDb('interests', formattedValue);
+      const valueInsertItems = scrubbedValue.split(',').map((v) => v.trim());
+
+      const updated = await updateUserFieldInDb('interests', valueInsertItems);
 
       setUpdating(false);
       // if (updated) {
@@ -783,6 +790,7 @@ export function UserProfileForm({
             </Label>
             <div className="relative">
               <MultiSelectCombobox
+                key={`interests-${isReady}`}
                 // name="profession"
                 // defaultValue={professionValueItems}
                 // options={professions.map((p) => ({
