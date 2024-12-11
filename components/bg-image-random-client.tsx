@@ -67,3 +67,29 @@ export function DiscoveryRandomBgImage({
     </div>
   );
 }
+
+export type DiscoveryBgImageContainerProps = React.ComponentProps<'div'> & {
+  numImages?: DiscoveryRandomBgImageProps['numImages'];
+  bgImageNum?: DiscoveryRandomBgImageProps['bgImageNum'];
+  children: React.ReactNode;
+  className?: string;
+};
+
+export function DiscoveryBgImageContainer({
+  className,
+  numImages,
+  bgImageNum,
+  children,
+}: DiscoveryBgImageContainerProps) {
+  return (
+    <div
+      className={cn(
+        'relative flex h-dvh w-screen items-start justify-center bg-background/65 pt-12 sm:items-center md:pt-0',
+        className
+      )}
+    >
+      <DiscoveryRandomBgImage numImages={numImages} bgImageNum={bgImageNum} />
+      {children}
+    </div>
+  );
+}
