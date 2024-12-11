@@ -1,4 +1,4 @@
-import { DiscoveryRandomBgImage } from '@/components/bg-image-random-client';
+import { DiscoveryBgImageContainer } from '@/components/bg-image-random-client';
 import { PrimaryContentContainer } from '@/components/layout-containers';
 
 interface ChallengeLayoutProps {
@@ -9,8 +9,7 @@ export default async function ChallengeLayout(props: ChallengeLayoutProps) {
   // console.log('**** ChallengeLayout props invoked', props);
   const { children } = props;
   return (
-    <div className="relative flex min-h-[calc(100vh_-_theme(spacing.16))]">
-      <DiscoveryRandomBgImage className="" />
+    <DiscoveryBgImageContainer>
       <div className="w-full overflow-auto pl-0 duration-300 ease-in-out animate-in">
         <PrimaryContentContainer
           className="z-auto h-full pb-0"
@@ -19,7 +18,7 @@ export default async function ChallengeLayout(props: ChallengeLayoutProps) {
           {children}
         </PrimaryContentContainer>
       </div>
-    </div>
+    </DiscoveryBgImageContainer>
   );
 }
 //

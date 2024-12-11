@@ -72,6 +72,7 @@ export type DiscoveryBgImageContainerProps = React.ComponentProps<'div'> & {
   numImages?: DiscoveryRandomBgImageProps['numImages'];
   bgImageNum?: DiscoveryRandomBgImageProps['bgImageNum'];
   children: React.ReactNode;
+  noFullSize?: boolean;
   className?: string;
 };
 
@@ -79,12 +80,15 @@ export function DiscoveryBgImageContainer({
   className,
   numImages,
   bgImageNum,
+  noFullSize = false,
   children,
 }: DiscoveryBgImageContainerProps) {
+  const fullsizeClass = noFullSize ? '' : 'h-dvh w-screen';
   return (
     <div
       className={cn(
-        'relative flex h-dvh w-screen items-start justify-center bg-background/65 pt-12 sm:items-center md:pt-0',
+        'relative flex items-start justify-center bg-background/65 sm:items-center',
+        fullsizeClass,
         className
       )}
     >
