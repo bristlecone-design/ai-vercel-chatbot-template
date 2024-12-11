@@ -180,7 +180,7 @@
     "use-debounce": "10.0.4",
     "usehooks-ts": "3.1.0",
     "vaul": "1.1.1",
-    "zod": "3.24.0"
+    "zod": "3.24.1"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
@@ -193,7 +193,7 @@
     "@types/katex": "0.16.7",
     "@types/md5": "2.3.5",
     "@types/ms": "0.7.34",
-    "@types/node": "22.10.1",
+    "@types/node": "22.10.2",
     "@types/pdf-parse": "1.1.4",
     "@types/pg": "8.11.10",
     "@types/react": "18.3.13",
