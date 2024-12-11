@@ -101,6 +101,7 @@ export default function ImageWithFallback(
               {...{
                 ...rest,
                 src: blurDataURL,
+                alt: '',
                 className: cn(imgClassName, getBlurClass()),
               }}
             />

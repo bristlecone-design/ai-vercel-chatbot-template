@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEvent } from 'react-use';
 
 import type { USER_PROFILE_PUBLIC_TABS } from '@/app/(user)/profile/[userName]/_shared/shared-tab-types';
 
@@ -188,16 +187,19 @@ export function UserProfileTabsProvider({
   };
 
   // Listen for changes in localStorage
-  useEvent(
-    'exp-nv-tab-storage',
-    (event) => {
-      const item = window.localStorage.getItem(ACTIVE_TAB_KEY);
-      if (item && item !== 'undefined') {
-        setActiveTab(JSON.parse(item));
+  React.useEffect(() => {
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === ACTIVE_TAB_KEY) {
+        setActiveTab(JSON.parse(event.newValue || ''));
       }
-    },
-    window
-  );
+    };
+
+    window.addEventListener('storage', handleStorage);
+
+    return () => {
+      window.removeEventListener('storage', handleStorage);
+    };
+  }, []);
 
   // Re-route to the correct tab if the user is on the root profile page
   React.useEffect(() => {
