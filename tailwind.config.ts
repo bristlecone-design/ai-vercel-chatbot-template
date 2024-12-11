@@ -117,6 +117,16 @@ const config: Config = {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
+        link: {
+          DEFAULT: 'hsl(var(--link-primary))',
+          prose: 'hsl(var(--link-prose))',
+        },
+
+        'ai-assist': {
+          DEFAULT: 'hsl(var(--ai-assist))',
+          foreground: 'hsl(var(--ai-assist-foreground))',
+        },
+
         sidebar: {
           DEFAULT: 'hsl(var(--sidebar-background))',
           foreground: 'hsl(var(--sidebar-foreground))',
