@@ -188,14 +188,14 @@
     @apply cursor-pointer;
     @apply whitespace-normal text-[inherit] brightness-100;
     @apply underline decoration-foreground/40 decoration-1 underline-offset-2;
-    /* @apply hover:decoration-link-prose/80 hover:underline hover:decoration-2 hover:underline-offset-4 hover:brightness-110; */
+    @apply hover:decoration-link-prose/80 hover:underline hover:decoration-2 hover:underline-offset-4 hover:brightness-110;
   }
 
   .link-prose {
     @apply cursor-pointer;
     @apply text-link-prose whitespace-normal brightness-100;
     @apply underline decoration-foreground/40 decoration-1 underline-offset-2;
-    /* @apply hover:decoration-link-prose/80 hover:underline hover:decoration-2 hover:underline-offset-4 hover:brightness-110; */
+    @apply hover:decoration-link-prose/80 hover:underline hover:decoration-2 hover:underline-offset-4 hover:brightness-110;
   }
 
   .no-init-underline {
@@ -240,26 +240,3 @@
     content: counter(step);
   }
 }
-
-/* .ProseMirror {
-  outline: none;
-}
-
-.skeleton {
-  * {
-    pointer-events: none !important;
-  }
-
-  *[class^='text-'] {
-    color: transparent;
-    @apply animate-pulse select-none rounded-md bg-foreground/20;
-  }
-
-  .skeleton-bg {
-    @apply bg-foreground/10;
-  }
-
-  .skeleton-div {
-    @apply animate-pulse bg-foreground/20;
-  }
-} */
