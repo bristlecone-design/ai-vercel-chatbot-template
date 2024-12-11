@@ -7,6 +7,7 @@ import { cn, randomRange } from '@/lib/utils';
 
 export type DiscoveryRandomBgImageProps = React.ComponentProps<'div'> & {
   className?: string;
+  containerClassName?: string;
   numImages?: number;
   bgImageNum?: number;
 };
@@ -15,6 +16,7 @@ export const NUM_IMAGES = 30;
 
 export function DiscoveryRandomBgImage({
   className,
+  containerClassName,
   numImages: numImagesProp = NUM_IMAGES,
   bgImageNum: bgImageNumProp,
 }: DiscoveryRandomBgImageProps) {
@@ -35,7 +37,7 @@ export function DiscoveryRandomBgImage({
   const isReady = isMounted && bgImage !== undefined;
 
   return (
-    <div className="absolute -z-10 size-full">
+    <div className={cn('absolute -z-10 size-full', containerClassName)}>
       <motion.div
         initial={{
           opacity: 0,
