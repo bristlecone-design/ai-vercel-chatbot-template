@@ -76,14 +76,14 @@ export function ExperienceCreateHoverMenu({
             type="button"
             onClick={handleOnBtnClick}
             className={cn(
-              'group/create-exp-btn size-12 self-end rounded-full p-2.5 transition-all hover:scale-100 hover:transform md:size-14',
-              'bg-tertiary border-2 border-foreground text-foreground',
-              'hover:border-tertiary hover:text-tertiary hover:bg-foreground',
+              'group size-12 self-end rounded-full p-2 transition-all hover:scale-100 hover:transform md:size-14',
+              'border-2 border-foreground bg-tertiary text-foreground',
+              'hover:border-tertiary hover:bg-foreground hover:text-tertiary',
               btnClassName
             )}
           >
             <span className="sr-only">Create Another Experience</span>
-            <IconPlus className="size-full transition-transform delay-200 duration-300 group-hover/create-exp-btn:rotate-180" />
+            <IconPlus className="size-full transition-transform delay-200 duration-300 group-hover:rotate-180" />
           </Button>
         </HoverCardTrigger>
         <HoverCardContent

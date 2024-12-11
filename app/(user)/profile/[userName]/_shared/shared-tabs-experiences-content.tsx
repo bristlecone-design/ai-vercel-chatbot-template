@@ -219,7 +219,7 @@ export function UserProfileExperienceTabContent({
                             // handleTogglingPromptChallengeAcceptance(true);
                             // handleEnablingCreateExperience();
                           }}
-                          className="hover:bg-tertiary group gap-1 ring-offset-2 transition-none duration-75 hover:text-foreground hover:ring-2 hover:ring-foreground"
+                          className="group gap-1 ring-offset-2 transition-none duration-75 hover:bg-tertiary hover:text-foreground hover:ring-2 hover:ring-foreground"
                         >
                           <IconSparkle className="size-4 transition-transform group-hover:rotate-180" />
                           <span>Contribute to Story Series</span>
