@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import { UserProfileProvider } from '@/features/profile/user-profile-provider';
 
 import { getUserFromSession } from '@/lib/session';
-import { DiscoveryRandomBgImage } from '@/components/bg-image-random-client';
+import { DiscoveryBgImageContainer } from '@/components/bg-image-random-client';
 import { PrimaryContentContainer } from '@/components/layout-containers';
 
 import { getAndVerifyUserProfileDataAccessByUsername } from '../[userName]/_shared/shared-profile-data-retriever';
@@ -44,13 +44,14 @@ export default async function Layout(props: CommonPageProps) {
       isProfilePublic={isProfilePublic}
       isInPrivateBeta={isInPrivateBeta}
     >
-      <DiscoveryRandomBgImage className="" />
-      <PrimaryContentContainer
-        className="z-auto"
-        innerContainerClassName="bg-background text-foreground sm:rounded-2xl relative p-0 sm:p-4 overflow-clip"
-      >
-        {children}
-      </PrimaryContentContainer>
+      <DiscoveryBgImageContainer noFullSize className="">
+        <PrimaryContentContainer
+          className="z-auto"
+          innerContainerClassName="bg-background text-foreground sm:rounded-2xl relative p-0 sm:p-4 overflow-clip"
+        >
+          {children}
+        </PrimaryContentContainer>
+      </DiscoveryBgImageContainer>
     </UserProfileProvider>
   );
 }

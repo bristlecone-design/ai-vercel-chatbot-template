@@ -15,7 +15,7 @@ export const CommonContainer = ({
     <div
       id={id}
       className={cn(
-        'mx-auto max-w-2xl px-4 lg:max-w-3xl xl:max-w-5xl',
+        'mx-auto max-w-2xl px-4 lg:max-w-3xl xl:max-w-4xl',
         className
       )}
     >
@@ -36,7 +36,11 @@ export const ContentContainer = ({
 }: ContentContainerProps) => {
   return (
     <div
-      className={cn('pb-[200px] sm:pt-4 md:pb-[264px] md:pt-10', className)}
+      className={cn(
+        'content-container w-full',
+        'pb-[200px] sm:pt-4 md:pb-[264px] md:pt-10',
+        className
+      )}
       {...rest}
     >
       {children}
