@@ -173,6 +173,7 @@ export function ExperienceMediaFiles({
   const isDragDisabled = disabled;
 
   return (
+    // biome-ignore lint/nursery/noStaticElementInteractions: <explanation>
     <div
       className="group/media-container grid w-full max-w-full grid-flow-col-dense grid-cols-5 grid-rows-2 gap-2 p-1.5"
       onDragOver={(e) => {
@@ -1109,7 +1110,6 @@ export function ExperienceCreateForm({
 
   // Attach pre-existing media files to the form (if any) on mount
   // The source is from the existingMediaToAttach prop, not the provider or state but we leverage the provider to handle the files
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     // Attach the pre-existing media files to the form
     if (
@@ -1118,7 +1118,6 @@ export function ExperienceCreateForm({
       existingMediaToAttachProp.length
     ) {
       // Convert each media to a standard File object
-      // biome-ignore lint/complexity/noForEach: <explanation>
       existingMediaToAttachProp.forEach(async (media) => {
         const { id: mediaId, url, urlOriginal, extension } = media;
 
@@ -1182,7 +1181,6 @@ export function ExperienceCreateForm({
    * @note Only runs on mount
    */
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     // Fetch the stories
     const fetchStories = async () => {
