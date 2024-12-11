@@ -96,6 +96,48 @@ export const ReactMarkdownExtended: FC<ReactMarkdownProps> = ({
             />
           );
         },
+        h1: ({ node, children, ...props }) => {
+          return (
+            <h1 className="mb-2 mt-6 text-3xl font-semibold" {...props}>
+              {children}
+            </h1>
+          );
+        },
+        h2: ({ node, children, ...props }) => {
+          return (
+            <h2 className="mb-2 mt-6 text-2xl font-semibold" {...props}>
+              {children}
+            </h2>
+          );
+        },
+        h3: ({ node, children, ...props }) => {
+          return (
+            <h3 className="mb-2 mt-6 text-xl font-semibold" {...props}>
+              {children}
+            </h3>
+          );
+        },
+        h4: ({ node, children, ...props }) => {
+          return (
+            <h4 className="mb-2 mt-6 text-lg font-semibold" {...props}>
+              {children}
+            </h4>
+          );
+        },
+        h5: ({ node, children, ...props }) => {
+          return (
+            <h5 className="mb-2 mt-6 text-base font-semibold" {...props}>
+              {children}
+            </h5>
+          );
+        },
+        h6: ({ node, children, ...props }) => {
+          return (
+            <h6 className="mb-2 mt-6 text-sm font-semibold" {...props}>
+              {children}
+            </h6>
+          );
+        },
       }}
     >
       {children}

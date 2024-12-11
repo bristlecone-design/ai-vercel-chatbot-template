@@ -6,9 +6,9 @@ import cx from 'classnames';
 import { motion } from 'framer-motion';
 
 import type { Vote } from '@/lib/db/schema';
-import { Markdown } from '@/components/content/md/markdown-legacy';
 
 import type { UIBlock } from './block';
+import { ReactMarkdownExtended } from './content/md/markdown';
 import { DocumentToolCall, DocumentToolResult } from './document';
 import { SparklesIcon } from './icons';
 import { MessageActions } from './message-actions';
@@ -51,7 +51,9 @@ export const PreviewMessage = ({
         <div className="flex w-full flex-col gap-2">
           {message.content && (
             <div className="flex flex-col gap-4">
-              <Markdown>{message.content as string}</Markdown>
+              <ReactMarkdownExtended>
+                {message.content as string}
+              </ReactMarkdownExtended>
             </div>
           )}
 
