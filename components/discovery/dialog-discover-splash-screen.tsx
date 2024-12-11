@@ -80,8 +80,10 @@ export function DialogDiscoverSplashScreen({
       'Join the waitlist'
     );
 
-  const onCtaLinkClick = () => {
+  const onCtaLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const href = e.currentTarget.getAttribute('href');
     setCtaClicked(true);
+    if (href) router.push(href);
   };
 
   React.useEffect(() => {
