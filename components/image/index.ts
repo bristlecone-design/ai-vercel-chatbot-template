@@ -16,4 +16,3 @@ export interface ImageProps {
   priority?: boolean;
   fill?: boolean;
 }
-w;
