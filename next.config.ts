@@ -8,12 +8,21 @@ import { IS_LOCAL_DEVELOPMENT } from '@/lib/getBaseUrl';
 
 // https://beta.nextjs.org/docs/configuring/typescript
 
-const STORE_ID = process.env.BLOB_READ_WRITE_TOKEN?.match(
+const PRIMARY_BLOB_STORE_ID = process.env.BLOB_READ_WRITE_TOKEN?.match(
   /^vercel_blob_rw_([a-z0-9]+)_[a-z0-9]+$/i,
 )?.[1].toLowerCase();
 
-const HOSTNAME_VERCEL_BLOB = STORE_ID
-  ? `${STORE_ID}.public.blob.vercel-storage.com`
+const HOSTNAME_VERCEL_BLOB = PRIMARY_BLOB_STORE_ID
+  ? `${PRIMARY_BLOB_STORE_ID}.public.blob.vercel-storage.com`
+  : undefined;
+
+const SECONDARY_BLOB_STORE_ID =
+  process.env.BLOB_READ_WRITE_TOKEN_SECONDARY?.match(
+    /^vercel_blob_rw_([a-z0-9]+)_[a-z0-9]+$/i,
+  )?.[1].toLowerCase();
+
+const HOSTNAME_VERCEL_BLOB_SECONDARY = SECONDARY_BLOB_STORE_ID
+  ? `${SECONDARY_BLOB_STORE_ID}.public.blob.vercel-storage.com`
   : undefined;
 
 const createRemotePattern = (
@@ -79,6 +88,7 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: initialRemotePatterns
       .concat(createRemotePattern(HOSTNAME_VERCEL_BLOB))
+      .concat(createRemotePattern(HOSTNAME_VERCEL_BLOB_SECONDARY))
       .concat(createRemotePattern('avatar.vercel.sh'))
       .concat(createRemotePattern('ai-vercel-chatbot-template.vercel.app'))
       .concat(createRemotePattern('experience.nv.guide'))
