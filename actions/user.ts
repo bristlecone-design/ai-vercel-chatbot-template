@@ -12,6 +12,7 @@ import { unstable_expirePath as expirePath, unstable_cache } from 'next/cache';
 import { clearTagCache } from './cache';
 import {
   CACHE_KEY_USER_PROFILE,
+  CACHE_KEY_USER_PROFILES,
   CACHE_KEY_USER_WAITLIST_PROFILES,
 } from './cache-keys';
 
@@ -110,6 +111,31 @@ export async function getCachedUserProfileById(
     revalidate: 86400, // 24 hours
     tags: [userId, CACHE_KEY_USER_PROFILE],
   })(userId).then((user) => user);
+}
+
+/**
+ * Get a list of user profiles by an array of user IDs
+ *
+ * @note This function wraps getUserProfileById and maps each result to a user profile
+ */
+export async function getUserProfilesByIds(
+  userIds: string[],
+): Promise<Array<USER_PROFILE_MODEL>> {
+  const userProfiles = await Promise.all(
+    userIds.map((userId) => getUserProfileById(userId)),
+  );
+
+  return userProfiles.filter(Boolean) as Array<USER_PROFILE_MODEL>;
+}
+
+// Cached version of getUserProfilesByIds
+export async function getCachedUserProfilesByIds(
+  userIds: string[],
+): Promise<Array<USER_PROFILE_MODEL>> {
+  return unstable_cache(getUserProfilesByIds, [], {
+    revalidate: 86400, // 24 hours
+    tags: [userIds.join(','), CACHE_KEY_USER_PROFILES],
+  })(userIds).then((userProfiles) => userProfiles);
 }
 
 /**

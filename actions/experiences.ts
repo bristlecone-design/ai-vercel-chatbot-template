@@ -478,6 +478,78 @@ export async function getExperiencesByPromptId(
 }
 
 /**
+ * Get single experience by story ID (prompt collection ID)
+ */
+export async function getSingleExperienceByStoryId(
+  storyId: string,
+  includeOpts = {} as ExperienceIncludeOpts,
+  cached = false,
+): Promise<ExperienceModel | undefined> {
+  const [record] = await db
+    .selectDistinct()
+    .from(experiences)
+    .where(eq(experiences.storyId, storyId));
+
+  if (!record) return undefined;
+
+  const includeOptKeys = Object.keys(includeOpts);
+  const hasIncludeOpts = includeOptKeys.some((key) => {
+    const k = key as keyof ExperienceIncludeOpts;
+    const keyVal = includeOpts[k];
+
+    if (typeof keyVal === 'boolean') {
+      return keyVal;
+    }
+
+    return false;
+  });
+
+  if (!hasIncludeOpts) {
+    return record as ExperienceModel;
+  }
+
+  return getMappedExperienceModels(record, includeOpts, cached);
+}
+
+export async function getCachedSingleExperienceByStoryId(
+  ...args: Parameters<typeof getSingleExperienceByStoryId>
+) {
+  const storyId = args[0];
+  return unstable_cache(getSingleExperienceByStoryId, [], {
+    revalidate: 86400, // 24 hours
+    tags: [storyId],
+  })(...args).then((exp) => exp);
+}
+
+/**
+ * Get multiple experiences by story ID (prompt collection ID)
+ */
+export async function getExperiencesByStoryId(
+  storyId: string,
+  includeOpts = {} as ExperienceIncludeOpts,
+  cached = false,
+): Promise<ExperienceModel[] | undefined> {
+  const records = await db
+    .selectDistinct()
+    .from(experiences)
+    .where(eq(experiences.storyId, storyId));
+
+  if (!records || !records.length) return undefined;
+
+  return getMappedExperienceModelsList(records, includeOpts, cached);
+}
+
+export async function getCachedExperiencesByStoryId(
+  ...args: Parameters<typeof getExperiencesByStoryId>
+) {
+  const storyId = args[0];
+  return unstable_cache(getExperiencesByStoryId, [], {
+    revalidate: 86400, // 24 hours
+    tags: [storyId],
+  })(...args).then((experiences) => experiences);
+}
+
+/**
  * Update an experience's pin status
  *
  * @note This function is used to pin/unpin an experience

@@ -16,9 +16,15 @@ import {
   mapDbUserToClientFriendlyUser,
 } from '@/lib/user/user-utils';
 
+import { getCachedSingleUserExperienceForFrontend } from '@/actions/experiences';
 import { getCachedMediaByExperienceId } from '@/actions/media/get-core-media';
 import { getCachedUserPublicFeaturedImgs } from '@/actions/media/get-featured-imgs';
-import { getCachedFeaturedPromptCollections } from '@/actions/prompts';
+import {
+  getCachedFeaturedPromptCollections,
+  getCachedPromptCollaboratorByExpId,
+  getCachedSingleExperiencePromptById,
+  getCachedSinglePromptCollectionByPath,
+} from '@/actions/prompts';
 import { getAboutTitleTemplate } from '@/config/site-meta';
 import {
   createFeaturedStorySeriesRootPermalink,
@@ -39,6 +45,7 @@ import type {
   ExperienceMediaModel,
   ExperienceModel,
 } from '@/types/experiences';
+import type { AppUser } from '@/types/next-auth';
 import type { USER_PROFILE_MODEL } from '@/types/user';
 
 function mapPromptCollaboratorAuthorDetails(
@@ -65,7 +72,7 @@ function mapPromptCollaboratorAuthorDetails(
 function mapSinglePromptChallengeForPageView(
   prompt: ExperienceUserPromptModel | null,
   expId?: string | null,
-  authUser?: USER_PROFILE_MODEL,
+  authUser?: AppUser | USER_PROFILE_MODEL,
 ) {
   if (!prompt) {
     return {
@@ -320,7 +327,7 @@ function mapSinglePromptCollectionForPageView(
     description: storyDescription,
     Experiences,
     Prompts: promptChallenges,
-    PromptCollaborators,
+    Collaborators,
   } = story;
 
   const openGraphImages = [storyLogo].filter(Boolean);
@@ -341,8 +348,8 @@ function mapSinglePromptCollectionForPageView(
       : undefined;
 
   const collaborators = (
-    PromptCollaborators?.length > 0
-      ? PromptCollaborators.map((pc) => pc.Collaborator).filter(Boolean)
+    Collaborators?.length > 0
+      ? Collaborators.map((pc) => pc).filter(Boolean)
       : []
   ) as USER_PROFILE_MODEL[];
 
@@ -831,7 +838,7 @@ export async function getPromptChallengeMetadataByPromptId(
   numOfOpenGraphImages = 1,
 ) {
   const authUserSession = await getUserFromSession();
-  const promptChallenge = await getCachedSinglePrompt(promptId, {
+  const promptChallenge = await getCachedSingleExperiencePromptById(promptId, {
     story: true,
   });
 

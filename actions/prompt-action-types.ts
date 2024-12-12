@@ -8,3 +8,9 @@ export type PromptIncludeOpts = {
   experiencePrompts?: boolean;
   prompt?: boolean;
 };
+
+export type PromptStoryIncludeOpts = {
+  prompts?: boolean;
+  experiences?: boolean;
+  collaborators?: boolean;
+};

@@ -835,6 +835,9 @@ export const prompt = pgTable(
 
 export type Prompt = InferSelectModel<typeof prompt>;
 
+// Alias for Prompt
+export type PromptModel = InferSelectModel<typeof prompt>;
+
 export type PromptInsert = InferInsertModel<typeof prompt>;
 
 export const promptSchema = createInsertSchema(prompt);

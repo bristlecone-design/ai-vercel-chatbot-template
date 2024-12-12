@@ -129,12 +129,12 @@ export async function getMediaByExperienceId(
   includeOpts = {} as MediaActionIncludeOpts,
   cached = true,
 ) {
-  const [record] = await db
+  const records = await db
     .select()
     .from(media)
     .where(and(eq(media.experienceId, experienceId), eq(media.isTTS, isTTS)));
 
-  return getMappedSingleMediaModels(record, includeOpts, cached);
+  return getMappedMultipleMediaModels(records, includeOpts, cached);
 }
 
 /**

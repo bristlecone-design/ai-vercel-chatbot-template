@@ -4,6 +4,7 @@ import { db } from '@/lib/db/connect';
 import {
   type Prompt,
   type PromptInsert,
+  type PromptModel,
   type Story,
   experiences,
   prompt,
@@ -14,7 +15,9 @@ import type {
   ExperienceUserPromptModel,
   GeneratedExperienceUserPrompt,
   GeneratedExperienceUserPrompts,
+  PromptCollaboratorBaseModel,
   PromptCollaboratorModel,
+  PromptStoryModel,
 } from '@/types/experience-prompts';
 import type { ExperienceModel } from '@/types/experiences';
 import type { USER_PROFILE_MODEL } from '@/types/user';
@@ -22,7 +25,10 @@ import { and, desc, eq, inArray, isNull, not, or, sql } from 'drizzle-orm';
 import { unstable_cache } from 'next/cache';
 import { clearTagCache } from './cache';
 import {
+  CACHE_KEY_COMPLETED_PROMPT_STORIES,
+  CACHE_KEY_COMPLETED_PROMPT_STORY,
   CACHE_KEY_COMPLETE_USER_PROMPTS,
+  CACHE_KEY_EXPERIENCE_PROMPT,
   CACHE_KEY_INCOMPLETE_PROMPTS,
   CACHE_KEY_PROMPT,
   CACHE_KEY_PROMPTS,
@@ -32,12 +38,17 @@ import {
 } from './cache-keys';
 import type { PromptCollaboratorIncludeOpts } from './collaborator-action-types';
 import {
+  getCachedExperiencesByStoryId,
   getCachedSingleExperienceByPromptId,
   getExperiencesByPromptId,
+  getExperiencesByStoryId,
   getSingleExperience,
   getSingleExperienceByPromptId,
 } from './experiences';
-import type { PromptIncludeOpts } from './prompt-action-types';
+import type {
+  PromptIncludeOpts,
+  PromptStoryIncludeOpts,
+} from './prompt-action-types';
 import { getCachedStoryById } from './stories';
 import type { PromptCollectionIncludeOpts } from './story-collection-types';
 import { getCachedUserProfileById, getUserProfileById } from './user';
@@ -64,6 +75,7 @@ export async function getMappedPromptModelsById(
     collaborator: includeCollaborator = false,
     experience: includeExperience = false,
     prompt: includePrompt = false,
+    story: includeStory = false,
   } = includeOpts;
 
   // Core Prompt Record
@@ -101,6 +113,60 @@ export async function getMappedPromptModelsById(
 }
 
 /**
+ * Get the mapped relationship models for a story model by story ID
+ *
+ * @note Relationship models include Prompts, Experiences, and Collaborators
+ */
+export async function getMappedPromptCollectionModelsByStoryId(
+  storyId: string,
+  includeOpts = {} as PromptStoryIncludeOpts,
+  cached = true,
+): Promise<{
+  Prompts: PromptStoryModel['Prompts'];
+  Experiences: PromptStoryModel['Experiences'];
+  Collaborators: PromptStoryModel['Collaborators'];
+}> {
+  const {
+    collaborators: includeCollaborators = false,
+    experiences: includeExperiences = false,
+    prompts: includePrompts = false,
+  } = includeOpts;
+
+  // const promptCollaboratorIncludeOpts = {
+  //   collaborator: includeCollaborators,
+  //   experience: includeExperiences,
+  //   prompt: includePrompts,
+  // } as PromptCollaboratorIncludeOpts;
+
+  // Prompt Collaborator Record
+  const [Prompts, Experiences, Collaborators] = await Promise.all([
+    includePrompts
+      ? cached
+        ? getCachedAllPromptsByStoryId(storyId)
+        : getAllPromptsByStoryId(storyId)
+      : undefined,
+
+    includeExperiences
+      ? cached
+        ? getCachedExperiencesByStoryId(storyId)
+        : getExperiencesByStoryId(storyId)
+      : undefined,
+
+    includeCollaborators
+      ? cached
+        ? getCachedAllPromptCollaboratorUsersByStoryId(storyId, cached)
+        : getAllPromptCollaboratorUsersByStoryId(storyId, cached)
+      : undefined,
+  ]);
+
+  return {
+    Prompts: Prompts || [],
+    Experiences: Experiences || [],
+    Collaborators: Collaborators || [],
+  };
+}
+
+/**
  * Get mapped models for a prompt record
  */
 export async function getMappedSinglePromptModels(
@@ -116,6 +182,8 @@ export async function getMappedSinglePromptModels(
     experience: includeExperience = false,
     prompt: includePrompt = false,
   } = includeOpts;
+
+  // TODO: Account for prompt collaborator record atts
   const hasIncludeOpts = includeUser;
 
   if (!hasIncludeOpts) {
@@ -180,6 +248,59 @@ export async function getCachedSinglePromptById(
 }
 
 /**
+ * Get a single experience prompt by ID
+ *
+ * @note An Experience Prompt is a prompt that is associated with an experience and other related data, e.g. Story, Collaborator, etc.
+ */
+export async function getSingleExperiencePromptById(
+  id: string,
+  includeOpts = {} as PromptIncludeOpts,
+  cached = false,
+): Promise<ExperienceUserPromptModel | null> {
+  const prompt = await (cached
+    ? getCachedSinglePromptById(id)
+    : getSinglePromptById(id));
+
+  if (!prompt) return null;
+
+  const {
+    user: includeUser = true,
+
+    // For Prompt Collaborator Record
+    collaborator: includeCollaborator = false,
+    experience: includeExperience = false,
+    prompt: includePrompt = false,
+    story: includeStory = false,
+  } = includeOpts;
+
+  // TODO: Account for prompt collaborator record atts
+  const hasIncludeOpts =
+    includeUser || includeCollaborator || includeExperience || includePrompt;
+
+  if (!hasIncludeOpts) {
+    return prompt as ExperienceUserPromptModel;
+  }
+
+  const mappedModel = await getMappedSinglePromptModels(
+    prompt,
+    includeOpts,
+    cached,
+  );
+
+  return mappedModel;
+}
+
+export async function getCachedSingleExperiencePromptById(
+  ...args: Parameters<typeof getSingleExperiencePromptById>
+): Promise<ExperienceUserPromptModel | null> {
+  const [promptId] = args;
+  return unstable_cache(getSingleExperiencePromptById, [], {
+    revalidate: 86400, // 24 hours
+    tags: [promptId, CACHE_KEY_EXPERIENCE_PROMPT],
+  })(...args).then((prompt) => prompt);
+}
+
+/**
  * Get a single prompt by Experience ID
  */
 export async function getSinglePromptByExpId(
@@ -206,6 +327,10 @@ export async function getCachedSinglePromptByExpId(
 }
 
 /**
+ * Get single prompt with story by prompt ID
+ */
+
+/**
  * Get all prompts by Experience ID
  */
 export async function getAllPromptsByExpId(id: string): Promise<Array<Prompt>> {
@@ -214,11 +339,33 @@ export async function getAllPromptsByExpId(id: string): Promise<Array<Prompt>> {
 
 export async function getCachedAllPromptsByExpId(
   ...args: Parameters<typeof getAllPromptsByExpId>
-): Promise<Array<Prompt>> {
+) {
   const [expId] = args;
   return unstable_cache(getAllPromptsByExpId, [expId], {
     revalidate: 86400, // 24 hours
     tags: [expId, CACHE_KEY_PROMPT],
+  })(...args).then((prompts) => prompts);
+}
+
+/**
+ * Get all prompts by story ID (prompt collection ID)
+ */
+export async function getAllPromptsByStoryId(
+  storyId: string,
+): Promise<Array<PromptModel> | null> {
+  return db
+    .selectDistinct()
+    .from(prompt)
+    .where(eq(prompt.promptCollectionId, storyId));
+}
+
+export async function getCachedAllPromptsByStoryId(
+  ...args: Parameters<typeof getAllPromptsByStoryId>
+) {
+  const [storyId] = args;
+  return unstable_cache(getAllPromptsByStoryId, [], {
+    revalidate: 86400, // 24 hours
+    tags: [storyId, CACHE_KEY_PROMPT_STORIES],
   })(...args).then((prompts) => prompts);
 }
 
@@ -447,7 +594,7 @@ export async function getFeaturedPromptCollections(
   featured = true,
   published = true,
   includeOpts = {} as PromptCollectionIncludeOpts,
-) {
+): Promise<PromptStoryModel[] | undefined> {
   const {
     prompts: includePrompts = true,
     experiences: includeExperiences = true,
@@ -465,11 +612,46 @@ export async function getFeaturedPromptCollections(
       ),
     );
 
-  if (!records) return null;
+  if (!records) return undefined;
 
-  // TBD: Implement the rest of the includeOpts
+  const hasIncludeOpts =
+    includePrompts || includeExperiences || includeCollaborators;
 
-  return records;
+  if (!hasIncludeOpts) {
+    return records.map((record) => {
+      return {
+        ...record,
+        Prompts: [],
+        Experiences: [],
+        Collaborators: [],
+      } as PromptStoryModel;
+    });
+  }
+
+  const promptStoryIncludeOpts = {
+    prompts: includePrompts,
+    experiences: includeExperiences,
+    collaborators: includeCollaborators,
+  } as PromptStoryIncludeOpts;
+
+  const mappedRecords = await Promise.all(
+    records.map(async (record) => {
+      const storyId = record.id;
+
+      const mappedModels = await getMappedPromptCollectionModelsByStoryId(
+        storyId,
+        promptStoryIncludeOpts,
+        true,
+      );
+
+      return {
+        ...record,
+        ...mappedModels,
+      } as PromptStoryModel;
+    }),
+  );
+
+  return mappedRecords;
 }
 
 // Cached version of getFeaturedPromptCollections
@@ -643,7 +825,7 @@ export async function getPromptCollaboratorByExpId(
   expId: string,
   includeOpts = {} as PromptCollaboratorIncludeOpts,
   cached = true,
-): Promise<PromptCollaboratorModel | null> {
+): Promise<PromptCollaboratorModel | PromptCollaboratorBaseModel | null> {
   const [record] = await db
     .selectDistinct()
     .from(promptCollaborators)
@@ -660,19 +842,23 @@ export async function getPromptCollaboratorByExpId(
   const hasIncludeOpts = collaborator || experience || prompt;
 
   if (!hasIncludeOpts) {
-    return record as unknown as PromptCollaboratorModel;
+    return record as unknown as PromptCollaboratorBaseModel;
   }
 
   const userId = record.userId;
 
   if (!userId || !record.promptId) {
-    return record as unknown as PromptCollaboratorModel;
+    return record as unknown as PromptCollaboratorBaseModel;
   }
 
   const mappedModels = await getMappedPromptModelsById(
     record.promptId,
     userId,
-    includeOpts,
+    {
+      collaborator,
+      experience,
+      prompt,
+    },
     cached,
   );
 
@@ -694,9 +880,265 @@ export async function getCachedPromptCollaboratorByExpId(
   ...args: Parameters<typeof getPromptCollaboratorByExpId>
 ) {
   const expId = args[0];
-  return unstable_cache(getPromptCollaboratorByExpId, [expId], {
+  return unstable_cache(getPromptCollaboratorByExpId, [], {
     revalidate: 604800, // 1 week
     tags: [expId, `${expId}-${CACHE_KEY_PROMPT}`],
+  })(...args).then((record) => (record ? record : undefined));
+}
+
+/**
+ * Get story (prompt collection) by prompt ID
+ */
+export async function getPromptCollaboratorByPromptId(
+  promptId: string,
+  includeOpts = {} as PromptCollaboratorIncludeOpts,
+  cached = true,
+): Promise<PromptCollaboratorModel | PromptCollaboratorBaseModel | null> {
+  const [record] = await db
+    .selectDistinct()
+    .from(promptCollaborators)
+    .where(eq(promptCollaborators.promptId, promptId));
+
+  if (!record) return null;
+
+  const {
+    collaborator = true,
+    experience = true,
+    prompt = true,
+  } = includeOpts || {};
+
+  const hasIncludeOpts = collaborator || experience || prompt;
+
+  if (!hasIncludeOpts) {
+    return record as unknown as PromptCollaboratorBaseModel;
+  }
+
+  const userId = record.userId;
+
+  if (!userId || !record.promptId) {
+    return record as unknown as PromptCollaboratorBaseModel;
+  }
+
+  const mappedModels = await getMappedPromptModelsById(
+    record.promptId,
+    userId,
+    {
+      collaborator,
+      experience,
+      prompt,
+    },
+    cached,
+  );
+
+  const { Collaborator, Experience, Prompt } = mappedModels;
+
+  return {
+    ...record,
+    // User: Author,
+    Collaborator,
+    Experience,
+    Prompt,
+  } as PromptCollaboratorModel;
+}
+
+/**
+ * Get cached prompt collaborator record by exp ID
+ */
+export async function getCachedPromptCollaboratorByPromptId(
+  ...args: Parameters<typeof getPromptCollaboratorByPromptId>
+) {
+  const promptId = args[0];
+  return unstable_cache(getPromptCollaboratorByPromptId, [], {
+    revalidate: 604800, // 1 week
+    tags: [promptId, `${promptId}-${CACHE_KEY_COMPLETED_PROMPT_STORY}`],
+  })(...args).then((record) => (record ? record : undefined));
+}
+
+/**
+ * Get a prompt collaborator record by story ID
+ *
+ * @note This is a helper function to get a prompt collaborator record by story ID
+ */
+export async function getPromptCollaboratorByStoryId(
+  storyId: string,
+  includeOpts = {} as PromptCollaboratorIncludeOpts,
+  cached = true,
+): Promise<PromptCollaboratorModel | PromptCollaboratorBaseModel | null> {
+  const [record] = await db
+    .selectDistinct()
+    .from(promptCollaborators)
+    .where(eq(promptCollaborators.storyId, storyId));
+
+  if (!record) return null;
+
+  const {
+    collaborator = true,
+    experience = true,
+    prompt = true,
+  } = includeOpts || {};
+
+  const hasIncludeOpts = collaborator || experience || prompt;
+
+  if (!hasIncludeOpts) {
+    return record as unknown as PromptCollaboratorBaseModel;
+  }
+
+  const userId = record.userId;
+
+  if (!userId || !record.promptId) {
+    return record as unknown as PromptCollaboratorBaseModel;
+  }
+
+  const mappedModels = await getMappedPromptModelsById(
+    record.promptId,
+    userId,
+    {
+      collaborator,
+      experience,
+      prompt,
+    },
+    cached,
+  );
+
+  const { Collaborator, Experience, Prompt } = mappedModels;
+
+  return {
+    ...record,
+    // User: Author,
+    Collaborator,
+    Experience,
+    Prompt,
+  } as PromptCollaboratorModel;
+}
+
+/**
+ * Get cached prompt collaborator record by exp ID
+ */
+export async function getCachedPromptCollaboratorByStoryId(
+  ...args: Parameters<typeof getPromptCollaboratorByStoryId>
+) {
+  const expId = args[0];
+  return unstable_cache(getPromptCollaboratorByStoryId, [], {
+    revalidate: 604800, // 1 week
+    tags: [expId, `${expId}-${CACHE_KEY_PROMPT}`],
+  })(...args).then((record) => (record ? record : undefined));
+}
+
+/**
+ * Get all prompt collaborator model records by story ID
+ */
+export async function getAllPromptCollaboratorsByStoryId(
+  storyId: string,
+  includeOpts = {} as PromptCollaboratorIncludeOpts,
+  cached = true,
+): Promise<PromptCollaboratorModel[] | PromptCollaboratorBaseModel[] | null> {
+  const records = await db
+    .selectDistinct()
+    .from(promptCollaborators)
+    .where(eq(promptCollaborators.storyId, storyId));
+
+  if (!records || !records.length) return null;
+
+  const {
+    collaborator = true,
+    experience = true,
+    prompt = true,
+  } = includeOpts || {};
+
+  const hasIncludeOpts = collaborator || experience || prompt;
+
+  if (!hasIncludeOpts) {
+    return records as unknown as PromptCollaboratorBaseModel[];
+  }
+
+  const mappedRecords = await Promise.all(
+    records.map(async (record) => {
+      const { userId, promptId } = record;
+
+      if (!userId || !promptId) return undefined;
+
+      const mappedModels = await getMappedPromptModelsById(promptId, userId, {
+        collaborator,
+        experience,
+        prompt,
+      });
+
+      const { Collaborator, Experience, Prompt } = mappedModels;
+
+      return {
+        ...record,
+        // User: Author,
+        Collaborator,
+        Experience,
+        Prompt,
+      };
+    }),
+  );
+
+  return mappedRecords as PromptCollaboratorModel[];
+}
+
+/**
+ * Get all cached prompt collaborator records by story ID
+ */
+export async function getCachedAllPromptCollaboratorsByStoryId(
+  ...args: Parameters<typeof getAllPromptCollaboratorsByStoryId>
+) {
+  const storyId = args[0];
+  return unstable_cache(getAllPromptCollaboratorsByStoryId, [], {
+    revalidate: 604800, // 1 week
+    tags: [storyId, `${storyId}-${CACHE_KEY_COMPLETED_PROMPT_STORIES}`],
+  })(...args).then((record) => (record ? record : undefined));
+}
+
+/**
+ * Get all prompt collaborator user profile records by story ID
+ *
+ * @note - This function is used to get all the users associated to a story by their prompt collaborator records (aka: anyone who has completed a prompt in a story)
+ *
+ */
+export async function getAllPromptCollaboratorUsersByStoryId(
+  storyId: string,
+  cached = true,
+): Promise<USER_PROFILE_MODEL[] | null> {
+  const records = await db
+    .selectDistinct({
+      userId: promptCollaborators.userId,
+    })
+    .from(promptCollaborators)
+    .where(eq(promptCollaborators.storyId, storyId));
+
+  if (!records || !records.length) return null;
+
+  const users = await Promise.all(
+    records
+      .map(async (record) => {
+        const { userId } = record;
+
+        if (!userId) return undefined;
+
+        const userModel = await (cached
+          ? getCachedUserProfileById(userId)
+          : getUserProfileById(userId));
+
+        return userModel;
+      })
+      .filter(Boolean),
+  );
+
+  return users as USER_PROFILE_MODEL[];
+}
+
+/**
+ * Get all cached prompt collaborator user profile records by story ID
+ */
+export async function getCachedAllPromptCollaboratorUsersByStoryId(
+  ...args: Parameters<typeof getAllPromptCollaboratorUsersByStoryId>
+) {
+  const storyId = args[0];
+  return unstable_cache(getAllPromptCollaboratorUsersByStoryId, [], {
+    revalidate: 604800, // 1 week
+    tags: [storyId, `${storyId}-${CACHE_KEY_COMPLETED_PROMPT_STORIES}`],
   })(...args).then((record) => (record ? record : undefined));
 }
 
@@ -748,4 +1190,65 @@ export async function getAllCompletedPromptStories() {
   );
 
   return mappedRecords as unknown as PromptCollaboratorModel[];
+}
+
+/**
+ * Get a Single Prompt Collection (set of prompts) by path
+ */
+export async function getSinglePromptCollectionByPath(
+  path: string,
+  includeOpts = {} as PromptCollectionIncludeOpts,
+) {
+  const {
+    prompts = true,
+    experiences = true,
+    collaborators = false,
+  } = includeOpts || {};
+
+  const [record] = await db
+    .selectDistinct()
+    .from(promptCollection)
+    .where(
+      and(
+        eq(promptCollection.path, path),
+        // eq(promptCollection.published, published),
+      ),
+    );
+
+  if (!record) return undefined;
+
+  const hasIncludeOpts = prompts || experiences || collaborators;
+
+  if (!hasIncludeOpts) {
+    return {
+      ...record,
+      Prompts: [],
+      Experiences: [],
+      Collaborators: [],
+    } as PromptStoryModel;
+  }
+
+  const mappedModels = await getMappedPromptCollectionModelsByStoryId(
+    record.id,
+    {
+      prompts,
+      experiences,
+      collaborators,
+    },
+  );
+
+  return {
+    ...record,
+    ...mappedModels,
+  } as PromptStoryModel;
+}
+
+export async function getCachedSinglePromptCollectionByPath(
+  ...args: Parameters<typeof getSinglePromptCollectionByPath>
+) {
+  const path = args[0];
+  return unstable_cache(getSinglePromptCollectionByPath, [], {
+    revalidate: 86400, // 24 hours
+    tags: [path, `${path}-${CACHE_KEY_PROMPT_STORY}`],
+  })(...args).then((record) => (record ? record : undefined));
 }

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import type {
+  PromptModel,
   Story,
   promptCollaboratorSchema,
   promptCollectionModelSchema,
@@ -10,15 +11,17 @@ import type {
 import type { ExperienceModel } from './experiences';
 import type { USER_PROFILE_MODEL } from './user';
 
+export type PromptCollaboratorBaseModel = z.infer<
+  typeof promptCollaboratorSchema
+>;
+
 /**
  * Schema for Prompt Collaborator Records
  *
  * @note Prompt collaborators are entries for users who have contributed to the prompt. Each prompt can have multiple collaborators. Each prompt collaboration is a type of experience.
  *
  */
-export type PromptCollaboratorModel = z.infer<
-  typeof promptCollaboratorSchema
-> & {
+export type PromptCollaboratorModel = PromptCollaboratorBaseModel & {
   Prompt: ExperienceUserPromptModel;
 
   Collaborator: USER_PROFILE_MODEL;
@@ -38,9 +41,9 @@ export interface PromptStoryBaseModel
  * Extension of Prompt Collection Model
  */
 export interface PromptStoryModel extends PromptStoryBaseModel {
-  Prompts: ExperienceUserPromptModel[];
+  Prompts: PromptModel[] | ExperienceUserPromptModel[];
   Experiences: ExperienceModel[];
-  Collaborators: PromptCollaboratorModel[];
+  Collaborators: USER_PROFILE_MODEL[];
 }
 
 /**

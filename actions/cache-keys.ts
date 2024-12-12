@@ -33,6 +33,8 @@ export const CACHE_KEY_PUBLIC_FEATURED_PHOTOS = 'public-featured-photos';
 // Prompts
 export const CACHE_KEY_PROMPT = 'prompt';
 export const CACHE_KEY_PROMPTS = 'prompts';
+export const CACHE_KEY_EXPERIENCE_PROMPT = 'experience-prompt';
+export const CACHE_KEY_EXPERIENCES_PROMPTS = 'experience-prompts';
 export const CACHE_KEY_COMPLETE_PROMPT = 'complete-prompt';
 export const CACHE_KEY_COMPLETE_PROMPTS = 'complete-prompts';
 export const CACHE_KEY_INCOMPLETE_PROMPTS = 'incomplete-prompts';
