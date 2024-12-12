@@ -725,6 +725,8 @@ export const experiences = pgTable(
     type: entityEnum().default('experience'),
     subType: experienceType().default('experience'),
     meta: json('meta').default({}),
+
+    // Relationships
     authorId: text('authorId').references(() => users.id),
     embeddingsId: text('embeddingsId').references(() => embeddings.id),
     kvStorageId: text('kvStorageId'),

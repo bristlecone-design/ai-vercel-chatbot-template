@@ -9,7 +9,7 @@ export default async function ChallengeLayout(props: ChallengeLayoutProps) {
   // console.log('**** ChallengeLayout props invoked', props);
   const { children } = props;
   return (
-    <DiscoveryBgImageContainer>
+    <DiscoveryBgImageContainer noFullSize>
       <div className="w-full overflow-auto pl-0 duration-300 ease-in-out animate-in">
         <PrimaryContentContainer
           className="z-auto h-full pb-0"

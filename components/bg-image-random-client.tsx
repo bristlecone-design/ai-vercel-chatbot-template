@@ -83,7 +83,7 @@ export function DiscoveryBgImageContainer({
   noFullSize = false,
   children,
 }: DiscoveryBgImageContainerProps) {
-  const fullsizeClass = noFullSize ? '' : 'h-dvh w-screen';
+  const fullsizeClass = noFullSize ? 'size-full' : 'h-dvh w-screen';
   return (
     <div
       className={cn(

@@ -32,7 +32,7 @@ async function DynamicChatView() {
 async function DynamicUnauthenticatedSplashView() {
   const waitlistCount = await getCachedUserWaitlistCount();
   return (
-    <DiscoveryBgImageContainer>
+    <DiscoveryBgImageContainer noFullSize>
       <ExperienceSplashScreen waitlistCount={waitlistCount} />
     </DiscoveryBgImageContainer>
   );
