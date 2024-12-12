@@ -234,10 +234,7 @@ export async function getCachedMappedSinglePromptModels(
  * Get a single prompt by ID
  */
 export async function getSinglePromptById(id: string): Promise<Prompt | null> {
-  const [record] = await db
-    .selectDistinct()
-    .from(prompt)
-    .where(eq(prompt.id, id));
+  const [record] = await db.select().from(prompt).where(eq(prompt.id, id));
 
   if (!record) return null;
 
@@ -313,10 +310,7 @@ export async function getCachedSingleExperiencePromptById(
 export async function getSinglePromptByExpId(
   id: string,
 ): Promise<Prompt | undefined> {
-  const [record] = await db
-    .selectDistinct()
-    .from(prompt)
-    .where(eq(experiences.id, id));
+  const [record] = await db.select().from(prompt).where(eq(experiences.id, id));
 
   if (!record) return undefined;
 
@@ -341,7 +335,7 @@ export async function getCachedSinglePromptByExpId(
  * Get all prompts by Experience ID
  */
 export async function getAllPromptsByExpId(id: string): Promise<Array<Prompt>> {
-  return db.selectDistinct().from(prompt).where(eq(experiences.id, id));
+  return db.select().from(prompt).where(eq(experiences.id, id));
 }
 
 export async function getCachedAllPromptsByExpId(
@@ -360,10 +354,7 @@ export async function getCachedAllPromptsByExpId(
 export async function getAllPromptsByStoryId(
   storyId: string,
 ): Promise<Array<PromptModel> | null> {
-  return db
-    .selectDistinct()
-    .from(prompt)
-    .where(eq(prompt.promptCollectionId, storyId));
+  return db.select().from(prompt).where(eq(prompt.promptCollectionId, storyId));
 }
 
 export async function getCachedAllPromptsByStoryId(
@@ -382,7 +373,7 @@ export async function getCachedAllPromptsByStoryId(
 export async function getAllPrompts(
   includeOpts = {} as PromptIncludeOpts,
 ): Promise<Array<ExperienceUserPromptModel> | null> {
-  const records = await db.selectDistinct().from(prompt);
+  const records = await db.select().from(prompt);
 
   if (!records || !records.length) return null;
 
@@ -429,7 +420,7 @@ export async function getRandomPrompts(
   pageSize = 100,
 ): Promise<Array<ExperienceUserPromptModel> | null> {
   const randomResults = await db
-    .selectDistinct()
+    .select()
     .from(prompt)
     .orderBy(sql`RAND()`)
     .limit(pageSize);
@@ -455,7 +446,7 @@ export async function getAnonymousUserPrompts(location = '', randomSize = 100) {
     .map((item) => item.id) as string[];
 
   const records = await db
-    .selectDistinct()
+    .select()
     .from(prompt)
     .where(
       and(
@@ -494,7 +485,7 @@ export async function getUserIncompletePrompts(
     .map((item) => item.id) as string[];
 
   const records = await db
-    .selectDistinct()
+    .select()
     .from(prompt)
     .leftJoin(promptCollaborators, isNull(promptCollaborators.promptId))
     .where(
@@ -529,7 +520,7 @@ export async function getUserAllCompletedPrompts(
   } = includeOpts || {};
 
   const records = await db
-    .selectDistinct()
+    .select()
     .from(promptCollaborators)
     .where(eq(promptCollaborators.userId, userId))
     .orderBy(desc(promptCollaborators.createdAt));
@@ -678,7 +669,7 @@ export async function getSinglePromptCollectionById(
   id: string,
 ): Promise<Story | undefined> {
   const [record] = await db
-    .selectDistinct()
+    .select()
     .from(promptCollection)
     .where(eq(promptCollection.id, id));
 
@@ -706,7 +697,7 @@ export async function getAdditionalAnonymousPrompts(
   take = 15,
 ) {
   const records = await db
-    .selectDistinct({
+    .select({
       id: prompt.id,
       model: prompt.model,
       prompt: prompt.prompt,
@@ -739,7 +730,7 @@ export async function getAdditionalUserPrompts(
   take = 15,
 ) {
   const records = await db
-    .selectDistinct({
+    .select({
       id: prompt.id,
       model: prompt.model,
       prompt: prompt.prompt,
@@ -794,7 +785,7 @@ export async function saveMultiplePrompts(
  */
 export async function getPromptsByValues(promptValues: string[], take = 25) {
   const records = await db
-    .selectDistinct()
+    .select()
     .from(prompt)
     .where(inArray(prompt.prompt, promptValues))
     .orderBy(desc(prompt.createdAt))
@@ -834,7 +825,7 @@ export async function getPromptCollaboratorByExpId(
   cached = true,
 ): Promise<PromptCollaboratorModel | null> {
   const [record] = await db
-    .selectDistinct()
+    .select()
     .from(promptCollaborators)
     .where(eq(promptCollaborators.experienceId, expId));
 
@@ -902,7 +893,7 @@ export async function getPromptCollaboratorByPromptId(
   cached = true,
 ): Promise<PromptCollaboratorModel | PromptCollaboratorBaseModel | null> {
   const [record] = await db
-    .selectDistinct()
+    .select()
     .from(promptCollaborators)
     .where(eq(promptCollaborators.promptId, promptId));
 
@@ -972,7 +963,7 @@ export async function getPromptCollaboratorByStoryId(
   cached = true,
 ): Promise<PromptCollaboratorModel | PromptCollaboratorBaseModel | null> {
   const [record] = await db
-    .selectDistinct()
+    .select()
     .from(promptCollaborators)
     .where(eq(promptCollaborators.storyId, storyId));
 
@@ -1040,7 +1031,7 @@ export async function getAllPromptCollaboratorsByStoryId(
   cached = true,
 ): Promise<PromptCollaboratorModel[] | PromptCollaboratorBaseModel[] | null> {
   const records = await db
-    .selectDistinct()
+    .select()
     .from(promptCollaborators)
     .where(eq(promptCollaborators.storyId, storyId));
 
@@ -1113,7 +1104,7 @@ export async function getAllPromptCollaboratorUsersByStoryId(
   cached = true,
 ): Promise<USER_PROFILE_MODEL[] | null> {
   const records = await db
-    .selectDistinct({
+    .select({
       userId: promptCollaborators.userId,
     })
     .from(promptCollaborators)
@@ -1158,7 +1149,7 @@ export async function getCachedAllPromptCollaboratorUsersByStoryId(
  */
 export async function getAllCompletedPromptStories() {
   const records = await db
-    .selectDistinct()
+    .select()
     .from(promptCollaborators)
     .where(
       and(
@@ -1218,7 +1209,7 @@ export async function getCompletedPromptCollaborationsByPromptIdAndExpId(
   cached = true,
 ) {
   const [record] = await db
-    .selectDistinct()
+    .select()
     .from(promptCollaborators)
     .where(
       and(
@@ -1302,7 +1293,7 @@ export async function getSinglePromptCollectionByPath(
   } = includeOpts || {};
 
   const [record] = await db
-    .selectDistinct()
+    .select()
     .from(promptCollection)
     .where(
       and(
