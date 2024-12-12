@@ -530,7 +530,7 @@ export async function getExperiencesByStoryId(
   cached = false,
 ): Promise<ExperienceModel[] | undefined> {
   const records = await db
-    .selectDistinct()
+    .select()
     .from(experiences)
     .where(eq(experiences.storyId, storyId));
 
