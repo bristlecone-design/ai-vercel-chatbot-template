@@ -31,6 +31,8 @@ export const {
         // Map the profile to the expected schema in the database
         const username = profile.login;
         const avatar = profile.avatar_url;
+        const blogUrl = profile.blog;
+        const htmlUrl = profile.html_url;
         const dbUser = {
           username,
           email: profile.email,
@@ -40,6 +42,7 @@ export const {
           location: profile.location,
           bio: profile.bio,
           hireable: profile.hireable,
+          url: blogUrl || htmlUrl,
           image: avatar,
           avatar: avatar,
           picture: avatar,
@@ -49,7 +52,9 @@ export const {
           meta: { github: profile },
         } as DbUser;
 
-        return { ...profile, ...dbUser } as unknown as AdapterUser;
+        const mappedProfile = { ...profile, ...dbUser } as AdapterUser;
+        // console.log('GitHub mappedProfile::', mappedProfile);
+        return mappedProfile;
       },
     }),
     Google({
