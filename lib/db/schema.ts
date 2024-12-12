@@ -72,12 +72,15 @@ export const users = pgTable('user', {
   givenName: text('givenName'), // First name
   familyName: text('familyName'), // Last name
   bio: text('bio'),
+  blog: text('blog'),
   url: text('url'),
   urlSocial: text('urlSocial'),
   urlPay: text('urlPay'),
   company: text('company'),
   organization: text('organization'),
   profession: text('profession'),
+  investor: json('investor').array().default(sql`'{}'::json[]`),
+  partner: json('partner').array().default(sql`'{}'::json[]`),
   interests: text('interests').array().notNull().default(sql`ARRAY[]::text[]`),
   image: text('image'),
   picture: text('picture'), // Alias or fallback for image
@@ -89,6 +92,7 @@ export const users = pgTable('user', {
   phoneVerified: boolean('phoneVerified').default(false),
   onboarded: boolean('onboarded').default(false),
   followerCount: integer('followerCount').default(0),
+  verified: boolean('verified').default(false),
   meta: json('meta').default({}),
 });
 
