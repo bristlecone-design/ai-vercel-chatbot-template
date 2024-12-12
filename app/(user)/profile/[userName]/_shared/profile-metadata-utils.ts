@@ -20,6 +20,7 @@ import { getCachedSingleUserExperienceForFrontend } from '@/actions/experiences'
 import { getCachedMediaByExperienceId } from '@/actions/media/get-core-media';
 import { getCachedUserPublicFeaturedImgs } from '@/actions/media/get-featured-imgs';
 import {
+  getCachedCompletedPromptCollaborationsByPromptIdAndExpId,
   getCachedFeaturedPromptCollections,
   getCachedPromptCollaboratorByExpId,
   getCachedSingleExperiencePromptById,
@@ -344,7 +345,9 @@ function mapSinglePromptCollectionForPageView(
 
   const activePrompt =
     promptId && promptChallenges.length > 0
-      ? promptChallenges.find((p) => p.id === promptId)
+      ? (promptChallenges.find(
+          (p) => p.id === promptId,
+        ) as ExperienceUserPromptModel)
       : undefined;
 
   const collaborators = (
@@ -408,7 +411,7 @@ function mapSinglePromptCollectionForPageView(
     // List of experiences, prompts, and collaborators
     collaborators: collaborators,
     experiences: Experiences,
-    prompts: promptChallenges,
+    prompts: promptChallenges as ExperienceUserPromptModel[],
 
     // Assets
     opengraphAssets: openGraphImages as unknown[],
@@ -998,7 +1001,7 @@ export async function getCompletedStoryPromptChallengeMetadata(
 
   // Retrieve the completed prompt challenge from the cache (db)
   const completedStoryCollaboration =
-    await getCachedPromptCollaboratorStoryByPromptAndExpId(
+    await getCachedCompletedPromptCollaborationsByPromptIdAndExpId(
       promptId,
       expId,
       storyPath,

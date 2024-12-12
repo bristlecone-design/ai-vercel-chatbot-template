@@ -900,10 +900,18 @@ export const promptCollaborators = pgTable(
     published: boolean('published').default(true),
 
     // Relationships
-    userId: text('userId').references(() => users.id),
-    experienceId: text('experienceId').references(() => experiences.id),
-    promptId: text('promptId').references(() => prompt.id),
-    storyId: text('storyId').references(() => promptCollection.id),
+    userId: text('userId')
+      .references(() => users.id)
+      .notNull(),
+    experienceId: text('experienceId')
+      .references(() => experiences.id)
+      .notNull(),
+    promptId: text('promptId')
+      .references(() => prompt.id)
+      .notNull(),
+    storyId: text('storyId')
+      .references(() => promptCollection.id)
+      .notNull(),
   },
   (table) => [
     {
@@ -920,7 +928,7 @@ export const promptCollaborators = pgTable(
 
 export type PromptCollaborator = InferSelectModel<typeof promptCollaborators>;
 
-export const promptCollaboratorSchema = createInsertSchema(promptCollaborators);
+export const promptCollaboratorSchema = createSelectSchema(promptCollaborators);
 
 /**
  * Media
