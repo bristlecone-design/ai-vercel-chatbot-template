@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useActionState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useFormStatus } from 'react-dom';
 import { toast } from 'sonner';
 
 import { cn } from '@/lib/utils';
@@ -105,7 +105,7 @@ export function MediaUpdateForm({
 
   // Form submission action
   const { pending } = useFormStatus();
-  const [result, dispatch] = useFormState(saveMediaAttrChanges, undefined);
+  const [result, dispatch] = useActionState(saveMediaAttrChanges, undefined);
   // console.log(`**** result`, result);
 
   const areThereChanges =

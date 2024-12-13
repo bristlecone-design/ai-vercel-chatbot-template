@@ -1,19 +1,19 @@
 'use client';
 
-import AdminChildPage from '@/admin/AdminChildPage';
-import PhotoSyncButton from '@/admin/PhotoSyncButton';
-import { TagsWithMeta } from '@/tag';
-import { useFormState } from 'react-dom';
+import { useActionState } from 'react';
 
-import { areSimpleObjectsEqual } from '@/lib/object';
+import { areSimpleObjectsEqual } from '@/lib/objects';
 
+import AdminChildPage from '../admin/AdminChildPage';
+import PhotoSyncButton from '../admin/PhotoSyncButton';
 import { getExifDataAction } from './actions';
 import AiButton from './ai/AiButton';
 import { convertPhotoToFormData } from './form';
 import PhotoForm from './form/PhotoForm';
 import usePhotoFormParent from './form/usePhotoFormParent';
+import type { TagsWithMeta } from './tag';
 
-import { Photo, PhotoFormData } from '@/types/photo';
+import type { Photo, PhotoFormData } from '@/types/photo';
 import { PATH_ADMIN_PHOTOS } from '@/config/site-paths';
 
 export default function PhotoEditPageClient({
@@ -31,7 +31,7 @@ export default function PhotoEditPageClient({
 }) {
   const seedExifData = { url: photo.url };
 
-  const [updatedExifData, action] = useFormState<Partial<PhotoFormData>>(
+  const [updatedExifData, action] = useActionState<Partial<PhotoFormData>>(
     getExifDataAction,
     seedExifData
   );

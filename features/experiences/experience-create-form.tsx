@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useActionState, useEffect, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   connectMediaToExperience,
@@ -11,7 +11,7 @@ import { useAppState } from '@/state/app-state';
 import { upload } from '@vercel/blob/client';
 import { capitalCase } from 'change-case';
 import { motion } from 'framer-motion';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useFormStatus } from 'react-dom';
 import { toast } from 'sonner';
 
 import type { Experience } from '@/lib/db/schema';
@@ -128,7 +128,7 @@ function ExperienceMediaFilesPlaceholder({
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/80',
         {
           'bg-accent/40': disabled,
-          'ring-tertiary/40 ring-2 ring-offset-2 ring-offset-muted': disabled,
+          'ring-2 ring-tertiary/40 ring-offset-2 ring-offset-muted': disabled,
         }
       )}
       onClick={onClickPlaceholder}
@@ -1043,7 +1043,7 @@ export function ExperienceCreateForm({
     return submitResult;
   };
   // const [result, dispatch] = useFormState(saveCreateExperience, undefined);
-  const [result, dispatch] = useFormState(handleFormSubmit, undefined);
+  const [result, dispatch] = useActionState(handleFormSubmit, undefined);
   const { pending } = useFormStatus();
 
   const handleOnDropOfFiles = (files: File[] | FileList) => {
@@ -1400,7 +1400,7 @@ export function ExperienceCreateForm({
                           }
                         }}
                       >
-                        <IconChallengePrompts className="group-hover:text-tertiary size-3.5 transition-transform duration-300 group-hover:rotate-45 group-hover:brightness-125" />
+                        <IconChallengePrompts className="size-3.5 transition-transform duration-300 group-hover:rotate-45 group-hover:text-tertiary group-hover:brightness-125" />
                       </Button>
                     )}
                   {!noPromptChallengeInfoProp && (
@@ -1508,7 +1508,7 @@ export function ExperienceCreateForm({
                               setInputTitle(suggestedTitle);
                             }}
                           >
-                            <IconCheck className="hover:fill-success-foreground size-3" />
+                            <IconCheck className="size-3 hover:fill-success-foreground" />
                           </Button>
                           <Button
                             size="off"
@@ -1529,7 +1529,7 @@ export function ExperienceCreateForm({
                               });
                             }}
                           >
-                            <IconRefresh className="hover:fill-success-foreground size-3" />
+                            <IconRefresh className="size-3 hover:fill-success-foreground" />
                           </Button>
                         </div>
                       )}
