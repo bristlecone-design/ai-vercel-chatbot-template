@@ -50,7 +50,7 @@ export async function generateMetadata(
   props: ChallengeSingleStoryPageProps,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const searchParams = await props.searchParams;
+  // const searchParams = await props.searchParams;
   const params = await props.params;
   const { storyPath } = params;
 
