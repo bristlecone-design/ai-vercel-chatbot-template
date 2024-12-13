@@ -36,7 +36,7 @@ export async function getCachedSingleBookmarkByExpId(
 export async function getAllBookmarksByExpId(
   id: string,
 ): Promise<Array<Bookmark>> {
-  return db.select().from(bookmarks).where(eq(experiences.id, id));
+  return db.select().from(bookmarks).where(eq(bookmarks.experienceId, id));
 }
 
 export async function getCachedAllBookmarksByExpId(

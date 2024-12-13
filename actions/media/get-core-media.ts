@@ -601,7 +601,7 @@ export async function getExperienceAudioMediaRecord(
           eq(audioMedia.experienceId, experienceId),
           eq(audioMedia.userId, userId),
         ),
-        eq(media.isTTS, true),
+        // eq(media.isTTS, true),
       ),
     )
     .orderBy(desc(audioMedia.updatedAt));

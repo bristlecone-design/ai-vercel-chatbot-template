@@ -40,7 +40,10 @@ export async function getCachedSingleLikeByExpId(
 export async function getAllLikesByExpId(
   id: string,
 ): Promise<Array<ExperienceLikes>> {
-  return db.select().from(experienceLikes).where(eq(experiences.id, id));
+  return db
+    .select()
+    .from(experienceLikes)
+    .where(eq(experienceLikes.experienceId, id));
 }
 
 export async function getCachedAllLikesByExpId(
