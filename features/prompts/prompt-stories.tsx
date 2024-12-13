@@ -66,14 +66,14 @@ export function PromptStoriesItem({
     storyPath
   );
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   React.useEffect(() => {
     if (storyPromptPermalink) {
       router.prefetch(storyPromptPermalink);
     }
   }, []);
 
-  const { activities = [], interests = [] } = item;
+  const activities = item.activities || [];
+  const interests = item.interests || [];
 
   const activitiesAndInterests = [...activities, ...interests];
 
