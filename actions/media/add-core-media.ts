@@ -1,3 +1,5 @@
+'use server';
+
 import { db } from '@/lib/db/connect';
 import {
   type AudioMediaInsert,
@@ -142,61 +144,69 @@ export async function saveExperienceAudioMediaRecord(
   voiceModel: string,
   language: string,
   userId = '110200990', // Defaults to Experience NV Account
-): Promise<MediaAudio> {
-  const payload = {
-    userId,
-    experienceId,
-    url: audioUrl,
-    urlOriginal: audioUrl,
-    urlDownload: audioDownloadUrl,
-    storagePath,
-    blobId: storagePath || undefined,
-    title,
-    language,
-    isTTS: true,
-    meta: {
-      audioText: audioText || '',
-      voiceModel: voiceModel || '',
-    },
-  } as Media;
+): Promise<MediaAudio | undefined> {
+  try {
+    const payload = {
+      userId,
+      experienceId,
+      url: audioUrl,
+      urlOriginal: audioUrl,
+      urlDownload: audioDownloadUrl,
+      storagePath,
+      blobId: storagePath || undefined,
+      title,
+      language,
+      isTTS: true,
+      meta: {
+        audioText: audioText || '',
+        voiceModel: voiceModel || '',
+      },
+    } as Media;
 
-  /**
-   * If the audio media record already exists, update the media record
-   */
-  if (mediaId) {
-    const [updatedRecord] = await db
-      .update(media)
-      .set(payload)
-      .where(eq(media.id, mediaId))
-      .returning();
+    /**
+     * If the audio media record already exists, update the media record
+     */
+    if (mediaId) {
+      const [updatedRecord] = await db
+        .update(media)
+        .set(payload)
+        .where(eq(media.id, mediaId))
+        .returning();
+
+      return {
+        voice: voiceModel,
+        ...updatedRecord,
+      } as MediaAudio;
+    }
+
+    /**
+     * If the audio media record does not exist, create a new media record
+     */
+
+    const [newRecord] = await db.insert(media).values(payload).returning();
+
+    if (newRecord) {
+      await createAudioMediaConnection(
+        newRecord.id,
+        experienceId,
+        userId,
+        model,
+        language,
+        voiceModel,
+      );
+    }
 
     return {
       voice: voiceModel,
-      ...updatedRecord,
+      ...newRecord,
     } as MediaAudio;
-  }
-
-  /**
-   * If the audio media record does not exist, create a new media record
-   */
-
-  const [newRecord] = await db.insert(media).values(payload).returning();
-
-  if (newRecord) {
-    await createAudioMediaConnection(
-      newRecord.id,
-      experienceId,
-      userId,
-      model,
-      language,
-      voiceModel,
+  } catch (e) {
+    console.error(
+      'Error in saveExperienceAudioMediaRecord',
+      getErrorMessage(e),
     );
+    return undefined;
   }
-
-  return {
-    voice: voiceModel,
-    ...newRecord,
-  } as MediaAudio;
 }
 
 export async function createAudioMediaConnection(
@@ -224,7 +234,6 @@ export async function createAudioMediaConnection(
   const { media: includeMedia = true } = includeOpts;
 
   if (lookupRecord) {
-    console.warn('**** Audio media already exists for user', lookupRecord);
     const mediaRecord =
       includeMedia && mediaId ? await getCachedSingleMedia(mediaId) : undefined;
 

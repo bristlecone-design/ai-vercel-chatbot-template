@@ -314,10 +314,6 @@ export function SimpleTextToSpeech({
           audioAILanguage
         );
         const existingAudioId = existingAudio?.id;
-        // console.log(
-        //   'existingAudio in handleGeneratingText before saving::',
-        //   existingAudio
-        // );
 
         const savedTTSAudio = await saveExperienceAudioMediaRecord(
           existingAudioId,
@@ -332,7 +328,6 @@ export function SimpleTextToSpeech({
           audioAILanguage,
           audioAuthorId
         );
-        // console.log('**** savedTTSAudio', savedTTSAudio);
 
         if (savedTTSAudio) {
           const url = URL.createObjectURL(blob);
