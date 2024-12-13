@@ -107,7 +107,7 @@ export async function getMappedExperienceModelsById(
     includeMedia
       ? cached
         ? getCachedAllExperienceMediaByExpId(expId)
-        : getCachedAllExperienceMediaByExpId(expId)
+        : getAllExperienceMediaByExpId(expId)
       : undefined,
 
     includePrompt
@@ -310,14 +310,16 @@ export async function getCachedSingleExperienceMedia(
   })(expId).then((media) => media);
 }
 
-export async function getAllExperienceMedia(expId: string): Promise<Media[]> {
-  return db.select().from(media).where(eq(experiences.id, expId));
+export async function getAllExperienceMediaByExpId(
+  expId: string,
+): Promise<Media[]> {
+  return db.select().from(media).where(eq(media.experienceId, expId));
 }
 
 export async function getCachedAllExperienceMediaByExpId(
   expId: string,
 ): Promise<Media[]> {
-  return unstable_cache(getAllExperienceMedia, [expId], {
+  return unstable_cache(getAllExperienceMediaByExpId, [expId], {
     revalidate: 86400, // 24 hours
     tags: [expId, CACHE_KEY_USER_EXPERIENCE_MEDIA],
   })(expId).then((media) => media);
