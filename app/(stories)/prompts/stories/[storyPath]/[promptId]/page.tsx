@@ -16,6 +16,7 @@ import { getUserFromSession } from '@/lib/session';
 import { cn } from '@/lib/utils';
 import { IconArrowLeft } from '@/components/ui/icons';
 import { BlockSkeleton } from '@/components/ui/skeleton';
+import { InfoAlert } from '@/components/alerts';
 
 import {
   getPromptChallengeMetadataByPromptId,
