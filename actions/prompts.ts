@@ -310,7 +310,7 @@ export async function getCachedSingleExperiencePromptById(
 export async function getSinglePromptByExpId(
   id: string,
 ): Promise<Prompt | undefined> {
-  const [record] = await db.select().from(prompt).where(eq(experiences.id, id));
+  const [record] = await db.select().from(prompt).where(eq(prompt.id, id));
 
   if (!record) return undefined;
 

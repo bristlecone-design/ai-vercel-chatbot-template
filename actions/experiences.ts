@@ -25,7 +25,7 @@ import type {
   ExperienceModel,
 } from '@/types/experiences';
 import type { USER_PROFILE_MODEL, User } from '@/types/user';
-import { count, eq } from 'drizzle-orm';
+import { and, count, eq } from 'drizzle-orm';
 import { unstable_cache } from 'next/cache';
 import {
   getAllBookmarksByExpId,
@@ -698,11 +698,17 @@ export async function getUserExperienceCountForFrontend(
   authorId: string,
   queryOpts = {} as PartialExperienceModelOpts,
 ): Promise<number> {
-  const { visibility, numToTake = 100 } = queryOpts;
+  const { visibility = 'public', numToTake = 100 } = queryOpts;
   const [result] = await db
     .select({ count: count() })
     .from(experiences)
-    .where(eq(experiences.authorId, authorId))
+    .where(
+      and(
+        eq(experiences.authorId, authorId),
+        eq(experiences.visibility, visibility),
+        // eq(experiences.published, true),
+      ),
+    )
     .limit(numToTake);
 
   return result.count || 0;
