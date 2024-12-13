@@ -229,9 +229,9 @@ export async function getCachedSingleExperienceMediaThumbnail(
   ...args: Parameters<typeof getSingleExperienceMediaThumbnail>
 ) {
   const mediaUrl = args[0];
-  return unstable_cache(getSingleExperienceMediaThumbnail, [mediaUrl], {
+  return unstable_cache(getSingleExperienceMediaThumbnail, [], {
     revalidate: 86400, // 24 hours
-    tags: [mediaUrl, CACHE_KEY_USER_EXPERIENCE_SINGLE_MEDIA],
+    tags: [mediaUrl, `${mediaUrl}-${CACHE_KEY_USER_EXPERIENCE_SINGLE_MEDIA}`],
   })(...args).then((mediaThumbnail) =>
     mediaThumbnail ? mediaThumbnail : undefined,
   );
@@ -304,9 +304,9 @@ export async function getSingleExperienceMedia(expId: string): Promise<Media> {
 export async function getCachedSingleExperienceMedia(
   expId: string,
 ): Promise<Media | undefined> {
-  return unstable_cache(getSingleExperienceMedia, [expId], {
+  return unstable_cache(getSingleExperienceMedia, [], {
     revalidate: 86400, // 24 hours
-    tags: [expId, CACHE_KEY_USER_EXPERIENCE_SINGLE_MEDIA],
+    tags: [expId, `${expId}-${CACHE_KEY_USER_EXPERIENCE_SINGLE_MEDIA}`],
   })(expId).then((media) => media);
 }
 
@@ -319,9 +319,9 @@ export async function getAllExperienceMediaByExpId(
 export async function getCachedAllExperienceMediaByExpId(
   expId: string,
 ): Promise<Media[]> {
-  return unstable_cache(getAllExperienceMediaByExpId, [expId], {
+  return unstable_cache(getAllExperienceMediaByExpId, [], {
     revalidate: 86400, // 24 hours
-    tags: [expId, CACHE_KEY_USER_EXPERIENCE_MEDIA],
+    tags: [expId, `${expId}-${CACHE_KEY_USER_EXPERIENCE_MEDIA}`],
   })(expId).then((media) => media);
 }
 
@@ -408,7 +408,7 @@ export async function getCachedUserExperienceIds(
   ...args: Parameters<typeof getUserExperienceIds>
 ): Promise<string[]> {
   const userId = args[0];
-  return unstable_cache(getUserExperienceIds, [userId], {
+  return unstable_cache(getUserExperienceIds, [], {
     revalidate: 86400, // 24 hours
     tags: [userId],
   })(...args).then((ids) => ids);
@@ -452,7 +452,7 @@ export async function getCachedSingleExperienceByPromptId(
   ...args: Parameters<typeof getSingleExperienceByPromptId>
 ) {
   const promptId = args[0];
-  return unstable_cache(getSingleExperienceByPromptId, [promptId], {
+  return unstable_cache(getSingleExperienceByPromptId, [], {
     revalidate: 86400, // 24 hours
     tags: [promptId],
   })(...args).then((exp) => exp);

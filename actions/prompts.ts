@@ -363,7 +363,7 @@ export async function getCachedAllPromptsByStoryId(
   const [storyId] = args;
   return unstable_cache(getAllPromptsByStoryId, [], {
     revalidate: 86400, // 24 hours
-    tags: [storyId, CACHE_KEY_PROMPT_STORIES],
+    tags: [storyId, `${storyId}-${CACHE_KEY_PROMPT_STORIES}`],
   })(...args).then((prompts) => prompts);
 }
 
@@ -462,9 +462,10 @@ export async function getAnonymousUserPrompts(location = '', randomSize = 100) {
 export async function getCachedAnonymousUserPrompts(
   ...args: Parameters<typeof getAnonymousUserPrompts>
 ) {
+  const [location, randomSize] = args;
   return unstable_cache(getAnonymousUserPrompts, [], {
     revalidate: 86400, // 24 hours
-    tags: [CACHE_KEY_PUBLIC_PROMPTS],
+    tags: [`anonymous-${location}-${randomSize}-${CACHE_KEY_PUBLIC_PROMPTS}`],
   })(...args).then((prompts) => prompts);
 }
 
@@ -503,9 +504,12 @@ export async function getUserIncompletePrompts(
 export async function getCachedUserIncompletePrompts(
   ...args: Parameters<typeof getUserIncompletePrompts>
 ) {
+  const [userId, location, randomSize] = args;
   return unstable_cache(getUserIncompletePrompts, [], {
     revalidate: 86400, // 24 hours
-    tags: [CACHE_KEY_INCOMPLETE_PROMPTS],
+    tags: [
+      `incomplete-${userId}-${location}-${randomSize}-${CACHE_KEY_INCOMPLETE_PROMPTS}`,
+    ],
   })(...args).then((prompts) => prompts);
 }
 
@@ -582,9 +586,10 @@ export async function getUserAllCompletedPrompts(
 export async function getCachedUserAllCompletedPrompts(
   ...args: Parameters<typeof getUserAllCompletedPrompts>
 ) {
+  const [userId] = args;
   return unstable_cache(getUserAllCompletedPrompts, [], {
     revalidate: 86400, // 24 hours
-    tags: [CACHE_KEY_COMPLETE_USER_PROMPTS],
+    tags: [`completed-${userId}-${CACHE_KEY_COMPLETE_USER_PROMPTS}`],
   })(...args).then((prompts) => prompts);
 }
 
@@ -656,9 +661,12 @@ export async function getFeaturedPromptCollections(
 export async function getCachedFeaturedPromptCollections(
   ...args: Parameters<typeof getFeaturedPromptCollections>
 ) {
+  const [featured, published, includeOpts] = args;
   return unstable_cache(getFeaturedPromptCollections, [], {
     revalidate: 86400, // 24 hours
-    tags: [CACHE_KEY_PROMPT_STORIES],
+    tags: [
+      `featured-stories-${featured}-${published}-${CACHE_KEY_PROMPT_STORIES}`,
+    ],
   })(...args).then((prompts) => prompts);
 }
 
@@ -685,7 +693,7 @@ export async function getCachedSinglePromptCollectionById(
   const [id] = args;
   return unstable_cache(getSinglePromptCollectionById, [], {
     revalidate: 86400, // 24 hours
-    tags: [id, CACHE_KEY_PROMPT_STORY],
+    tags: [id, `${id}-${CACHE_KEY_PROMPT_STORY}`],
   })(...args).then((prompt) => prompt);
 }
 
