@@ -10,7 +10,6 @@ import { UserAvatar } from './user-avatar';
 function OverviewAvatar() {
   const appState = useAppState();
   const { userAvatar, userProfileUsername, userDisplayName } = appState;
-  console.log('**** appState:', appState);
 
   if (!userAvatar) return null;
 
