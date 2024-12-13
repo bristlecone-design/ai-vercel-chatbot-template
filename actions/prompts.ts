@@ -665,6 +665,7 @@ export async function getCachedFeaturedPromptCollections(
   return unstable_cache(getFeaturedPromptCollections, [], {
     revalidate: 86400, // 24 hours
     tags: [
+      CACHE_KEY_PROMPT_STORIES,
       `featured-stories-${featured}-${published}-${CACHE_KEY_PROMPT_STORIES}`,
     ],
   })(...args).then((prompts) => prompts);
