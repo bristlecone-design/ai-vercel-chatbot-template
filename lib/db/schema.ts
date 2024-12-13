@@ -720,8 +720,8 @@ export const experiences = pgTable(
     staffPick: boolean('staffPick').default(false),
     hideGeoLocation: boolean('hideGeoLocation').default(false),
     location: text('location'),
-    latitude: integer('latitude'),
-    longitude: integer('longitude'),
+    latitude: doublePrecision('latitude'),
+    longitude: doublePrecision('longitude'),
     type: entityEnum().default('experience'),
     subType: experienceType().default('experience'),
     meta: json('meta').default({}),
@@ -740,7 +740,6 @@ export const experiences = pgTable(
         table.title,
         table.content,
         table.description,
-        table.prompt,
       ),
     },
   ],
@@ -802,15 +801,9 @@ export const prompt = pgTable(
     content: text('content'),
     prompt: text('prompt').notNull(),
     location: text('location'),
-    activities: text('activities')
-      .array()
-      .notNull()
-      .default(sql`ARRAY[]::text[]`),
-    interests: text('interests')
-      .array()
-      .notNull()
-      .default(sql`ARRAY[]::text[]`),
-    model: text('model').notNull(),
+    activities: text('activities').array().default(sql`ARRAY[]::text[]`),
+    interests: text('interests').array().default(sql`ARRAY[]::text[]`),
+    model: text('model'),
     pinned: boolean('pinned').default(false),
     featured: boolean('featured').default(false),
     published: boolean('published').default(true),
@@ -982,7 +975,7 @@ export const media = pgTable(
     aspectRatio: real('aspectRatio'),
     make: text('make'),
     model: text('model'),
-    tags: text('tags').array().notNull().default(sql`ARRAY[]::text[]`),
+    tags: text('tags').array().default(sql`ARRAY[]::text[]`),
     focalLength: text('focalLength'),
     focalLengthFormatted: text('focalLengthFormatted'),
     focalLength35: text('focalLength35'),
