@@ -13,7 +13,7 @@ export async function getSingleStoryById(
   id: string,
 ): Promise<Story | undefined> {
   const [record] = await db
-    .selectDistinct()
+    .select()
     .from(promptCollection)
     .where(eq(promptCollection.id, id));
 
@@ -38,7 +38,7 @@ export async function getSingleStoryByExpId(
   id: string,
 ): Promise<Story | undefined> {
   const [record] = await db
-    .selectDistinct()
+    .select()
     .from(promptCollection)
     .where(eq(experiences.id, id));
 
@@ -60,10 +60,7 @@ export async function getCachedStoryByExpId(
  * Get all stories (collections) by Experience ID
  */
 export async function getAllStoriesByExpId(id: string): Promise<Array<Story>> {
-  return db
-    .selectDistinct()
-    .from(promptCollection)
-    .where(eq(experiences.id, id));
+  return db.select().from(promptCollection).where(eq(experiences.id, id));
 }
 
 export async function getCachedAllStoriesByExpId(

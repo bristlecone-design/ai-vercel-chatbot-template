@@ -27,7 +27,7 @@ export async function getPartialExperienceById(
   cached = false,
 ): Promise<PartialExperienceModel | null> {
   const [record] = await db
-    .selectDistinct({
+    .select({
       id: experiences.id,
       createdAt: experiences.createdAt,
       updatedAt: experiences.updatedAt,

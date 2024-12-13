@@ -296,10 +296,7 @@ export async function getExperiencesMediaThumbnails(
 }
 
 export async function getSingleExperienceMedia(expId: string): Promise<Media> {
-  const record = await db
-    .selectDistinct()
-    .from(media)
-    .where(eq(experiences.id, expId));
+  const record = await db.select().from(media).where(eq(experiences.id, expId));
 
   return record[0];
 }
@@ -314,7 +311,7 @@ export async function getCachedSingleExperienceMedia(
 }
 
 export async function getAllExperienceMedia(expId: string): Promise<Media[]> {
-  return db.selectDistinct().from(media).where(eq(experiences.id, expId));
+  return db.select().from(media).where(eq(experiences.id, expId));
 }
 
 export async function getCachedAllExperienceMediaByExpId(
@@ -335,7 +332,7 @@ export async function getSingleExperience(
   cached = false,
 ): Promise<ExperienceModel | null> {
   const [record] = await db
-    .selectDistinct()
+    .select()
     .from(experiences)
     .where(eq(experiences.id, id));
 
@@ -397,7 +394,7 @@ export async function getUserExperienceIds(
   const { visibility, numToTake = 100 } = queryOpts;
 
   const records = await db
-    .selectDistinct({ id: experiences.id })
+    .select({ id: experiences.id })
     .from(experiences)
     .where(eq(experiences.authorId, userId))
     .limit(numToTake);
@@ -440,7 +437,7 @@ export async function getSingleExperienceByPromptId(
   cached = false,
 ): Promise<ExperienceModel | undefined> {
   const [record] = await db
-    .selectDistinct()
+    .select()
     .from(experiences)
     .where(eq(experiences.promptId, promptId));
 
@@ -468,7 +465,7 @@ export async function getExperiencesByPromptId(
   cached = false,
 ): Promise<ExperienceModel[] | undefined> {
   const records = await db
-    .selectDistinct()
+    .select()
     .from(experiences)
     .where(eq(experiences.promptId, promptId));
 
@@ -486,7 +483,7 @@ export async function getSingleExperienceByStoryId(
   cached = false,
 ): Promise<ExperienceModel | undefined> {
   const [record] = await db
-    .selectDistinct()
+    .select()
     .from(experiences)
     .where(eq(experiences.storyId, storyId));
 

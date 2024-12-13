@@ -12,7 +12,7 @@ export async function getSingleBookmarkByExpId(
   id: string,
 ): Promise<Bookmark | null> {
   const [record] = await db
-    .selectDistinct()
+    .select()
     .from(bookmarks)
     .where(eq(experiences.id, id));
 
@@ -36,7 +36,7 @@ export async function getCachedSingleBookmarkByExpId(
 export async function getAllBookmarksByExpId(
   id: string,
 ): Promise<Array<Bookmark>> {
-  return db.selectDistinct().from(bookmarks).where(eq(experiences.id, id));
+  return db.select().from(bookmarks).where(eq(experiences.id, id));
 }
 
 export async function getCachedAllBookmarksByExpId(

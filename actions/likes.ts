@@ -16,7 +16,7 @@ export async function getSingleLikeByExpId(
   id: string,
 ): Promise<ExperienceLikes | null> {
   const [record] = await db
-    .selectDistinct()
+    .select()
     .from(experienceLikes)
     .where(eq(experiences.id, id));
 
@@ -40,10 +40,7 @@ export async function getCachedSingleLikeByExpId(
 export async function getAllLikesByExpId(
   id: string,
 ): Promise<Array<ExperienceLikes>> {
-  return db
-    .selectDistinct()
-    .from(experienceLikes)
-    .where(eq(experiences.id, id));
+  return db.select().from(experienceLikes).where(eq(experiences.id, id));
 }
 
 export async function getCachedAllLikesByExpId(
