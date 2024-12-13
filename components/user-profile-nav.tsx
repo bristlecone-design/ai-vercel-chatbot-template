@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { ChevronDown } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
 
 import {
@@ -11,8 +10,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { SidebarMenuButton } from '@/components/ui/sidebar';
 
+import { Button } from './ui/button';
+import { IconChevronDown } from './ui/icons';
 import { BlockSkeleton } from './ui/skeleton';
 import { UserAvatar } from './user-avatar';
 
@@ -34,7 +34,7 @@ export function UserProfileNav() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <SidebarMenuButton className="h-10 bg-background data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
+        <Button className="h-10 gap-1.5 bg-background text-foreground/70 hover:bg-muted hover:text-foreground">
           {userImagePath && (
             <UserAvatar
               src={userImagePath}
@@ -46,8 +46,8 @@ export function UserProfileNav() {
           <span className="hidden truncate sm:inline-block">
             {isLoading ? <BlockSkeleton className="h-6 w-20" /> : user?.name}
           </span>
-          <ChevronDown className="ml-auto" />
-        </SidebarMenuButton>
+          <IconChevronDown className="" />
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         side="top"

@@ -9,7 +9,7 @@ import { useWindowSize } from 'usehooks-ts';
 
 import type { Vote } from '@/lib/db/schema';
 import { fetcher } from '@/lib/utils';
-import { ChatHeader } from '@/components/chat-header';
+import { ChatHeader } from '@/components/header-chat';
 import { PreviewMessage, ThinkingMessage } from '@/components/message';
 import { useScrollToBottom } from '@/components/use-scroll-to-bottom';
 
