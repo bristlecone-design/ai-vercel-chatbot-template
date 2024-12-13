@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppState } from '@/state/app-state';
 import { useUserPrompts } from '@/state/prompt-provider';
@@ -40,6 +41,8 @@ export function ExperienceCreateMenu({
   handleCreatingAnExperience: handleCreatingAnExperienceProp,
   handleOnCloseExperienceDialog: handleOnCloseExperienceDialogProp,
 }: ExperienceCreateMenuProps) {
+  const portalNodeRef = React.useRef<Element | null>(null);
+
   const router = useRouter();
   // const pathname = usePathname();
   // const isOnChallengesView = pathname.startsWith('/prompts');
@@ -115,6 +118,11 @@ export function ExperienceCreateMenu({
   //   }
   // }, [contentEditor, contentEditorId]);
 
+  // Set the portal node ref to the document.body on mount
+  React.useEffect(() => {
+    portalNodeRef.current = document.body;
+  }, []);
+
   if (createExperienceEnabled) {
     return null;
   }
@@ -133,5 +141,10 @@ export function ExperienceCreateMenu({
     </div>
   );
 
-  return portal ? createPortal(node, document.body) : node;
+  return portal
+    ? createPortal(
+        node,
+        portalNodeRef.current || document?.createDocumentFragment()
+      )
+    : node;
 }
