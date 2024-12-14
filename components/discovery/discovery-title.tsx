@@ -1,4 +1,4 @@
-import type React from 'react';
+import React from 'react';
 import Link from 'next/link';
 
 import { cn } from '@/lib/utils';
@@ -7,23 +7,55 @@ export type DiscoveryTitleProps = {
   firstPart?: string;
   secondPart?: string;
   className?: string;
+  firstPartClassName?: string;
+  secondPartClassName?: string;
+  linkHref?: string;
+  smaller?: boolean;
 };
 
 export function DiscoveryTitle({
   firstPart = 'Experience',
   secondPart = 'Nevada',
+  linkHref,
+  smaller = false,
+  firstPartClassName,
+  secondPartClassName,
   className,
 }: DiscoveryTitleProps) {
+  const titleParts = (
+    <React.Fragment>
+      <span className={cn('shaded-text', firstPartClassName)}>{firstPart}</span>{' '}
+      <span
+        className={cn(
+          'brightness-90 hover:brightness-100',
+          secondPartClassName
+        )}
+      >
+        {secondPart}
+      </span>
+    </React.Fragment>
+  );
+
+  const textClassName = smaller
+    ? 'text-2xl sm:text-3xl xl:text-3xl'
+    : 'text-5xl sm:text-6xl xl:text-7xl';
+
   return (
     <h1
       className={cn(
         'text-center font-semibold tracking-normal transition-all duration-150 md:font-extrabold',
         'leading-loose md:leading-normal',
-        'text-5xl sm:text-6xl xl:text-7xl',
+        textClassName,
         className
       )}
     >
-      <span className="shaded-text">{firstPart}</span> <span>{secondPart}</span>
+      {linkHref ? (
+        <Link href={linkHref} passHref>
+          {titleParts}
+        </Link>
+      ) : (
+        titleParts
+      )}
     </h1>
   );
 }
