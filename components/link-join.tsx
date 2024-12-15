@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 import { cn } from '@/lib/utils';
 import { buttonVariants, type ButtonProps } from '@/components/ui/button';
@@ -33,12 +33,19 @@ export function UserJoinLink({
   icon,
   onClick: onClickProp,
 }: UserJoinLinkProps) {
+  const router = useRouter();
   const pathname = usePathname();
 
   const [isClicked, setIsClicked] = React.useState(false);
 
   const handleOnClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     setIsClicked(true);
+
+    const href = e.currentTarget.getAttribute('href');
+
+    if (href) {
+      router.push(href);
+    }
 
     if (typeof onClickProp === 'function') {
       onClickProp(e);
