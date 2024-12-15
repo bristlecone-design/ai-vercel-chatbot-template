@@ -18,7 +18,7 @@ export function ChatHeader({ selectedModelId }: { selectedModelId: string }) {
   const { width: windowWidth } = useWindowSize();
 
   return (
-    <header className="sticky top-0 flex items-center justify-between gap-2 px-2 py-1.5 md:px-2">
+    <header className="sticky top-0 flex min-h-14 items-center justify-between gap-2 px-2 py-1.5 md:px-2">
       <div className="flex items-center justify-start gap-2">
         <SidebarToggle />
         {(!open || windowWidth < 768) && (
