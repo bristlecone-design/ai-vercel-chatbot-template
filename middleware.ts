@@ -3,6 +3,7 @@ import { auth } from '@/app/(auth)/auth-edge';
 const rootPath = '/';
 const loginPath = '/login';
 const registerPath = '/register';
+const profilePath = '/profile';
 
 export default auth((req) => {
   const { auth, nextUrl } = req;
@@ -22,7 +23,7 @@ export default auth((req) => {
 
   // Redirect to root path if user is logged in and tries to access login or register pages
   if (isLoggedIn && (isLoginPath || isRegisterPath)) {
-    return Response.redirect(new URL(rootPath, nextUrl));
+    return Response.redirect(new URL(profilePath, nextUrl));
   }
 
   return;
