@@ -1421,7 +1421,7 @@ export function SingleExperiencePost({
                     onClick={onCopyExperienceContent}
                   >
                     {isExpContentCopied && (
-                      <IconCheck className="text-success-foreground size-5 sm:size-5" />
+                      <IconCheck className="size-5 text-success-foreground sm:size-5" />
                     )}
                     {!isExpContentCopied && (
                       <IconCopy
@@ -1467,7 +1467,7 @@ export function SingleExperiencePost({
                         {
                           'bg-amber-700/70 px-2 py-1 hover:bg-amber-700':
                             !isTiedToStory,
-                          'bg-tertiary/90 hover:bg-tertiary px-2 py-1':
+                          'bg-tertiary/90 px-2 py-1 hover:bg-tertiary':
                             isTiedToStory,
                         }
                       )}
