@@ -1,4 +1,8 @@
 import Link from 'next/link';
+import {
+  getCachedSingleUserExperienceForFrontend,
+  getSingleUserExperienceForFrontend,
+} from '@/actions/experiences';
 import { ViewUserProfileLazyPartialExperiences } from '@/features/experiences/posts/experience-posts';
 import { UserExperiencePostsProvider } from '@/features/experiences/posts/experience-posts-provider';
 import { createPromptCollectionStoryPermalink } from '@/features/experiences/utils/experience-prompt-utils';
@@ -6,7 +10,8 @@ import {
   mapExperiencesWithUserActions,
   sortExperiencesForUserProfilePage,
 } from '@/features/experiences/utils/experience-utils';
-import { Badge } from 'lucide-react';
+
+import { Badge } from '@/components/ui/badge';
 
 import type { ProfileSingleExperienceProps } from '../../../../_shared/profile-page-types';
 import { getAndVerifyUserProfileDataAccessByUsername } from '../../../../_shared/shared-profile-data-retriever';
@@ -67,6 +72,7 @@ export default async function SingleExperienceInterceptorDynamicPage(
         )
       : [experience]
   ) as ExperienceModel[];
+  // console.log('**** experience in single experience interceptor:', experience);
 
   // console.log(`**** experience returned for ${expId}:`, experience);
   const { Prompt, Story, title: expTitle } = experience;
