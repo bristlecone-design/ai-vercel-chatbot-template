@@ -2056,7 +2056,7 @@ export function ViewUserProfileLazyPartialExperiences({
               noPromptTitle={noPromptTitle}
               noStoryTitle={noStoryTitle}
               partialExperience={experience}
-              intersectingThreshold={index === 0 ? 0 : undefined}
+              intersectingThreshold={index <= 1 ? 0 : undefined}
               truncateContent={truncateContent}
               truncateContentLength={truncateContentLength}
               handleOpeningMediaGeoMap={handleOpeningMediaGeoMap}
