@@ -1788,7 +1788,7 @@ export type LazyExperiencePostProps = {
  */
 export function LazyExperiencePost({
   partialExperience,
-  intersectingThreshold = 0.65,
+  intersectingThreshold = 0.25,
   truncateContent = false,
   truncateContentLength = 525,
   noExpTitle = false,
