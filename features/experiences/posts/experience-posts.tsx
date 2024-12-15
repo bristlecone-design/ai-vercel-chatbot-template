@@ -1228,7 +1228,7 @@ export function SingleExperiencePost({
                 )}
               </div>
             </div>
-            <div className="relative z-40 flex max-w-full flex-col flex-wrap gap-3 leading-normal brightness-90 transition-all duration-150 group-hover/experience-post:brightness-100 md:gap-3">
+            <div className="relative z-10 flex max-w-full flex-col flex-wrap gap-3 leading-normal brightness-90 transition-all duration-150 group-hover/experience-post:brightness-100 md:gap-3">
               <Prose className="lg:prose-lg">
                 {storyTitle && !noStoryTitle && (
                   <h2
