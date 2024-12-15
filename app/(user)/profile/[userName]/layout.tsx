@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { UserProfileProvider } from '@/features/profile/user-profile-provider';
 
 import { DiscoveryBgImageContainer } from '@/components/bg-image-random-client';
+import { StandardHeader } from '@/components/header-standard';
 import { PrimaryContentContainer } from '@/components/layout-containers';
 
 import type { ProfilePageProps } from './_shared/profile-page-types';
@@ -133,22 +134,25 @@ export default async function Layout(
   const { children, tabs } = props;
 
   return (
-    <UserProfileProvider
-      userProfile={userProfile}
-      isAuthUserOwnProfile={isAuthUserOwnProfile}
-      isAuthenticated={isAuthenticated}
-      isProfilePublic={isProfilePublic}
-      isInPrivateBeta={isInPrivateBeta}
-    >
-      <DiscoveryBgImageContainer noFullSize className="">
-        <PrimaryContentContainer
-          className="z-auto"
-          innerContainerClassName="bg-background text-foreground sm:rounded-2xl relative p-0 sm:p-4 overflow-clip"
-        >
-          {children}
-          <SharedTabsContainer>{tabs}</SharedTabsContainer>
-        </PrimaryContentContainer>
-      </DiscoveryBgImageContainer>
-    </UserProfileProvider>
+    <div className="flex flex-col">
+      <StandardHeader />
+      <UserProfileProvider
+        userProfile={userProfile}
+        isAuthUserOwnProfile={isAuthUserOwnProfile}
+        isAuthenticated={isAuthenticated}
+        isProfilePublic={isProfilePublic}
+        isInPrivateBeta={isInPrivateBeta}
+      >
+        <DiscoveryBgImageContainer noFullSize className="">
+          <PrimaryContentContainer
+            className="z-auto"
+            innerContainerClassName="bg-background text-foreground sm:rounded-2xl relative p-0 sm:p-4 overflow-clip"
+          >
+            {children}
+            <SharedTabsContainer>{tabs}</SharedTabsContainer>
+          </PrimaryContentContainer>
+        </DiscoveryBgImageContainer>
+      </UserProfileProvider>
+    </div>
   );
 }
