@@ -3,6 +3,7 @@ import { UserProfileProvider } from '@/features/profile/user-profile-provider';
 
 import { getUserFromSession } from '@/lib/session';
 import { DiscoveryBgImageContainer } from '@/components/bg-image-random-client';
+import { StandardHeader } from '@/components/header-standard';
 import { PrimaryContentContainer } from '@/components/layout-containers';
 
 import { getAndVerifyUserProfileDataAccessByUsername } from '../[userName]/_shared/shared-profile-data-retriever';
@@ -37,21 +38,24 @@ export default async function Layout(props: CommonPageProps) {
   } = profileData;
 
   return (
-    <UserProfileProvider
-      userProfile={userProfile}
-      isAuthUserOwnProfile={isAuthUserOwnProfile}
-      isAuthenticated={isAuthenticated}
-      isProfilePublic={isProfilePublic}
-      isInPrivateBeta={isInPrivateBeta}
-    >
-      <DiscoveryBgImageContainer noFullSize className="">
-        <PrimaryContentContainer
-          className="z-auto"
-          innerContainerClassName="bg-background text-foreground sm:rounded-2xl relative p-0 sm:p-4 overflow-clip"
-        >
-          {children}
-        </PrimaryContentContainer>
-      </DiscoveryBgImageContainer>
-    </UserProfileProvider>
+    <div className="flex flex-col">
+      <StandardHeader />
+      <UserProfileProvider
+        userProfile={userProfile}
+        isAuthUserOwnProfile={isAuthUserOwnProfile}
+        isAuthenticated={isAuthenticated}
+        isProfilePublic={isProfilePublic}
+        isInPrivateBeta={isInPrivateBeta}
+      >
+        <DiscoveryBgImageContainer noFullSize className="">
+          <PrimaryContentContainer
+            className="z-auto"
+            innerContainerClassName="bg-background text-foreground sm:rounded-2xl relative p-0 sm:p-4 overflow-clip"
+          >
+            {children}
+          </PrimaryContentContainer>
+        </DiscoveryBgImageContainer>
+      </UserProfileProvider>
+    </div>
   );
 }
