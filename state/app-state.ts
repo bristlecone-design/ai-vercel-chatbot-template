@@ -72,7 +72,9 @@ export interface AppStateContext {
   userFirstName: string | null;
   userLastName?: string | null;
   userAvatar: string;
+  userProfileEmail: string;
   userProfilePermalink: string;
+  userProfileLoading?: boolean;
 
   // Auth User Flags
   isUserAllowed?: boolean;
@@ -155,7 +157,9 @@ export const DEFAULT_APP_STATE: AppStateContext = {
   userFirstName: '',
   userLastName: '',
   userAvatar: '',
+  userProfileEmail: '',
   userProfilePermalink: '',
+  userProfileLoading: false,
 
   isUserAllowed: false,
   isAuthenticated: false,

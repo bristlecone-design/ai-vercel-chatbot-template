@@ -153,6 +153,8 @@ export default function AppStateProvider({
     );
     const profileUserLastName = null;
 
+    const profileEmail = userProfile?.email || userSession?.email || '';
+
     const profileUsername = userProfile?.username || '';
     const profilePermalink = profileUsername
       ? getUserProfilePermalink(profileUsername)
@@ -390,66 +392,70 @@ export default function AppStateProvider({
 
     // Prepare the context value
     const providerProps = useMemo<AppStateContext>(
-      () => ({
-        isReady,
+      () =>
+        ({
+          isReady,
 
-        // User Session
-        userSession,
-        userId: activeUserId,
+          // User Session
+          userSession,
+          userId: activeUserId,
 
-        // User Geo Location
-        userLocation,
-        userLatitude,
-        userLongitude,
-        isPreciseLocation,
+          // User Geo Location
+          userLocation,
+          userLatitude,
+          userLongitude,
+          isPreciseLocation,
 
-        // Auth User
-        userProfile,
-        userProfileUsername: activeUsername,
-        userDisplayName: profileUserDisplayName,
-        userFirstName: profileUserFirstName,
-        userLastName: profileUserLastName,
-        userAvatar: profileUserAvatar,
-        userProfilePermalink: profilePermalink,
+          // Auth User
+          userProfile,
+          userProfileUsername: activeUsername,
+          userDisplayName: profileUserDisplayName,
+          userFirstName: profileUserFirstName,
+          userLastName: profileUserLastName,
+          userAvatar: profileUserAvatar,
+          userProfilePermalink: profilePermalink,
+          userProfileEmail: profileEmail,
+          userProfileLoading: isLoading && !userProfile,
 
-        isUserAllowed,
-        isAuthenticated,
-        isProfilePublic,
-        isInPrivateBeta,
+          isUserAllowed,
+          isAuthenticated,
+          isProfilePublic,
+          isInPrivateBeta,
 
-        // Core Handlers
-        // User Geo
-        handleGettingUserGeo,
+          // Core Handlers
+          // User Geo
+          handleGettingUserGeo,
 
-        // User Data
-        handleRefreshingUserProfile,
-        handleUpdatingAuthUser: handleUpdatingAuthUserProfile,
-        handleClearingCacheById: handleClearingUserProfileCacheById,
-        handleClearingCacheByUsername: handleClearingUserProfileCacheByUsername,
-        handleClearingCache,
+          // User Data
+          handleRefreshingUserProfile,
+          handleUpdatingAuthUser: handleUpdatingAuthUserProfile,
+          handleClearingCacheById: handleClearingUserProfileCacheById,
+          handleClearingCacheByUsername:
+            handleClearingUserProfileCacheByUsername,
+          handleClearingCache,
 
-        // Navigation and Auth
-        handleNavigateToUserProfile,
-        handleSigningOut,
-        handleSigningIn,
+          // Navigation and Auth
+          handleNavigateToUserProfile,
+          handleSigningOut,
+          handleSigningIn,
 
-        // ADMIN
+          // ADMIN
 
-        // MISC
-        // currentPathname,
-        // previousPathname,
-        // swrTimestamp,
-        shouldRespondToKeyboardCommands,
-        setShouldRespondToKeyboardCommands,
-        isCommandKOpen,
-        setIsCommandKOpen,
+          // MISC
+          // currentPathname,
+          // previousPathname,
+          // swrTimestamp,
+          shouldRespondToKeyboardCommands,
+          setShouldRespondToKeyboardCommands,
+          isCommandKOpen,
+          setIsCommandKOpen,
 
-        // DEBUG
-        shouldDebugImageFallbacks,
-        setShouldDebugImageFallbacks,
-        shouldShowBaselineGrid,
-        setShouldShowBaselineGrid,
-      }),
+          // DEBUG
+          shouldDebugImageFallbacks,
+          setShouldDebugImageFallbacks,
+          shouldShowBaselineGrid,
+          setShouldShowBaselineGrid,
+        }) satisfies AppStateContext,
       [
         isReady,
         isUserAllowed,

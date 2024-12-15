@@ -1,7 +1,9 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
-import { signOut, useSession } from 'next-auth/react';
+import { useAppState } from '@/state/app-state';
+import { signOut } from 'next-auth/react';
 
 import {
   DropdownMenu,
@@ -19,15 +21,16 @@ import { UserAvatar } from './user-avatar';
 import { getBaseConfigKey } from '@/config/site-base';
 
 export function UserProfileNav() {
-  const session = useSession();
+  const {
+    isAuthenticated,
+    userProfileEmail,
+    userAvatar,
+    userDisplayName,
+    userProfilePermalink,
+    userProfileLoading,
+  } = useAppState();
 
-  const status = session?.status;
-  const user = session?.data?.user ?? null;
-  const userEmail = user?.email ?? null;
-  const userImagePath = user?.image ?? null;
-  const isLoading = status === 'loading';
-
-  if (!user && !isLoading) {
+  if (!isAuthenticated) {
     return null;
   }
 
@@ -35,16 +38,20 @@ export function UserProfileNav() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button className="h-10 gap-1.5 bg-background text-foreground/70 hover:bg-muted hover:text-foreground">
-          {userImagePath && (
+          {userAvatar && (
             <UserAvatar
-              src={userImagePath}
-              alt={userEmail ?? 'User Avatar'}
+              src={userAvatar}
+              alt={userDisplayName ?? 'User Avatar'}
               className="rounded-full"
             />
           )}
-          {!userImagePath && <BlockSkeleton className="size-7 rounded-full" />}
+          {!userAvatar && <BlockSkeleton className="size-7 rounded-full" />}
           <span className="hidden truncate sm:inline-block">
-            {isLoading ? <BlockSkeleton className="h-6 w-20" /> : user?.name}
+            {userProfileLoading ? (
+              <BlockSkeleton className="h-6 w-20" />
+            ) : (
+              userDisplayName
+            )}
           </span>
           <IconChevronDown className="" />
         </Button>
@@ -53,6 +60,24 @@ export function UserProfileNav() {
         side="top"
         className="w-[--radix-popper-anchor-width]"
       >
+        {userProfileEmail && userProfilePermalink && (
+          <React.Fragment>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onSelect={(event) => {
+                // console.log('onSelect invoked', event);
+              }}
+            >
+              <Link
+                href={userProfilePermalink}
+                className="brightness-65 truncate font-medium"
+              >
+                {userProfileEmail}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </React.Fragment>
+        )}
         <DropdownMenuItem
           className="cursor-pointer"
           onSelect={(event) => {
