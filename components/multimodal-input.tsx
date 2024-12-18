@@ -309,7 +309,11 @@ export function MultimodalInput({
 
       <Textarea
         ref={textareaRef}
-        placeholder="Send a message..."
+        placeholder={
+          isAudioTranscribing
+            ? 'Transcribing your audio...'
+            : 'Send a message...'
+        }
         value={input}
         onChange={handleInput}
         disabled={disabled || isLoading || isAudioTranscribing}
