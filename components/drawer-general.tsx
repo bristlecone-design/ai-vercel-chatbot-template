@@ -20,6 +20,7 @@ export interface GeneralDrawerProps extends DialogProps {
   modal?: boolean;
   dismissible?: boolean;
   noCloseBtn?: boolean;
+  noFooter?: boolean;
   drawerKey?: string;
   closeOnOutsideClick?: boolean;
   dontScaleBackground?: boolean;
@@ -28,7 +29,7 @@ export interface GeneralDrawerProps extends DialogProps {
   titleContent?: React.ReactNode;
   footerCtaLabel?: string;
   title?: React.ReactNode;
-  content?: string | null;
+  description?: string | null;
   className?: string;
   contentClassName?: string;
   handleOnClose?: () => void;
@@ -43,6 +44,7 @@ export function GeneralDrawer({
   modal = true,
   dismissible = false,
   noCloseBtn = false,
+  noFooter = false,
   closeOnOutsideClick = false,
   dontScaleBackground = false,
   titleClassName,
@@ -50,7 +52,7 @@ export function GeneralDrawer({
   titleContent,
   footerCtaLabel = 'Back',
   title: titleProp = 'Howdy Howdy',
-  content: contentProp,
+  description: descriptionProp,
   handleOnClose,
   ...props
 }: GeneralDrawerProps) {
@@ -104,7 +106,7 @@ export function GeneralDrawer({
         }}
         className="max-h-[94svh] min-h-[94svh] bg-background/95 backdrop-blur-lg"
       >
-        <div className="mx-auto min-w-full max-w-4xl overflow-auto md:min-w-124 md:px-0">
+        <div className="mx-auto min-w-full max-w-7xl overflow-auto md:min-w-124 md:px-0">
           <DrawerHeader
             className={cn(
               'mx-auto flex max-w-4xl shrink flex-col flex-wrap pb-10 md:px-0'
@@ -124,9 +126,9 @@ export function GeneralDrawer({
                 {titleContent}
               </h2>
             </DrawerTitle>
-            {contentProp && (
+            {descriptionProp && (
               <DrawerDescription className="text-center text-base font-normal text-foreground/90 sm:text-center sm:text-lg">
-                {contentProp}
+                {descriptionProp}
               </DrawerDescription>
             )}
           </DrawerHeader>
@@ -140,26 +142,28 @@ export function GeneralDrawer({
           </div>
         </div>
 
-        <DrawerFooter className="">
-          <div
-            className={cn('flex flex-row items-center justify-between gap-4')}
-          >
-            <div className="flex gap-2.5">
-              <Button
-                size="xs"
-                flavor="ring"
-                variant="tertiary"
-                onClick={() => {
-                  handleOnOpenChange(false);
-                }}
-                className="group"
-              >
-                <IconArrowLeft className="size-5 transition-transform duration-300 group-hover:-translate-x-0.5 group-hover:brightness-125" />
-                {footerCtaLabel}
-              </Button>
+        {!noFooter && (
+          <DrawerFooter className="">
+            <div
+              className={cn('flex flex-row items-center justify-between gap-4')}
+            >
+              <div className="flex gap-2.5">
+                <Button
+                  size="xs"
+                  flavor="ring"
+                  variant="tertiary"
+                  onClick={() => {
+                    handleOnOpenChange(false);
+                  }}
+                  className="group"
+                >
+                  <IconArrowLeft className="size-5 transition-transform duration-300 group-hover:-translate-x-0.5 group-hover:brightness-125" />
+                  {footerCtaLabel}
+                </Button>
+              </div>
             </div>
-          </div>
-        </DrawerFooter>
+          </DrawerFooter>
+        )}
       </DrawerContent>
     </Drawer>
   );

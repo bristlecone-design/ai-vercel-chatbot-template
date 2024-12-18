@@ -117,15 +117,16 @@ export function isAudioUrl(url: string): boolean {
   return url.match(/\.(mp3|wav|ogg)$/) != null;
 }
 
-export function isAudioFile(file: File): boolean {
+export function isAudioFile(file: File | Blob): boolean {
   return (
     file.type === 'audio/mpeg' ||
     file.type === 'audio/wav' ||
-    file.type === 'audio/ogg'
+    file.type === 'audio/ogg' ||
+    file.type === 'audio/webm'
   );
 }
 
-export function isAudio(asset: string | File): boolean {
+export function isAudio(asset: string | File | Blob): boolean {
   return typeof asset === 'string' ? isAudioUrl(asset) : isAudioFile(asset);
 }
 

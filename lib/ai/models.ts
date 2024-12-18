@@ -10,7 +10,7 @@ export interface Model {
 export const models: Array<Model> = [
   {
     id: 'gpt-4o-mini',
-    label: 'GPT 4o mini',
+    label: 'Personalized Model',
     apiIdentifier: 'gpt-4o-mini',
     description: 'Small model for fast, lightweight tasks',
   },

@@ -10,6 +10,7 @@ import {
   type Dispatch,
   type SetStateAction,
 } from 'react';
+import { useAppAudio } from '@/state/app-audio-provider';
 import type {
   Attachment,
   ChatRequestOptions,
@@ -23,7 +24,16 @@ import { useLocalStorage, useWindowSize } from 'usehooks-ts';
 
 import { sanitizeUIMessages } from '@/lib/utils';
 
-import { ArrowUpIcon, PaperclipIcon, StopIcon } from './icons';
+import {
+  AudioManagerRecordBtn,
+  AudioManagerVisualizer,
+} from './audio/audio-manager';
+import {
+  MultimodalAttachFilesBtn,
+  MultimodalClearInputBtn,
+  MultimodalStopBtn,
+  MultimodalSubmitBtn,
+} from './multimodal-input-btns';
 import { PreviewAttachment } from './preview-attachment';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
@@ -41,29 +51,21 @@ const suggestedActions = [
   },
 ];
 
-export function MultimodalInput({
-  chatId,
-  input,
-  setInput,
-  isLoading,
-  stop,
-  attachments,
-  setAttachments,
-  messages,
-  setMessages,
-  append,
-  handleSubmit,
-  className,
-  disabled = false,
-}: {
+export type MultimodalInputProps = {
   chatId: string;
   input: string;
   disabled?: boolean;
+  textareaRef?: React.RefObject<HTMLTextAreaElement>;
   setInput: (value: string) => void;
   isLoading: boolean;
   stop: () => void;
+  uploadFile: (file: File) => Promise<Attachment | undefined>;
+  removeFile: (
+    attachment: Attachment
+  ) => Promise<{ success: boolean; url: string } | undefined>;
   attachments: Array<Attachment>;
   setAttachments: Dispatch<SetStateAction<Array<Attachment>>>;
+  removeAttachment: (attachment: Attachment) => void;
   messages: Array<Message>;
   setMessages: Dispatch<SetStateAction<Array<Message>>>;
   append: (
@@ -77,15 +79,37 @@ export function MultimodalInput({
     chatRequestOptions?: ChatRequestOptions
   ) => void;
   className?: string;
-}) {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+};
+
+export function MultimodalInput({
+  chatId,
+  input,
+  setInput,
+  isLoading,
+  stop,
+  attachments,
+  setAttachments,
+  removeAttachment: removeAttachmentProp,
+  uploadFile,
+  removeFile,
+  messages,
+  setMessages,
+  append,
+  handleSubmit,
+  className,
+  disabled = false,
+  textareaRef: textareaRefProp,
+}: MultimodalInputProps) {
+  const textareaRef = textareaRefProp || useRef<HTMLTextAreaElement>(null);
   const { width } = useWindowSize();
 
-  useEffect(() => {
-    if (textareaRef.current) {
-      adjustHeight();
-    }
-  }, []);
+  const {
+    // data: audioData,
+    // isAudioLoading,
+    isAudioRecording,
+    isAudioTranscribing,
+    // cancelAll: handleClearingAudio,
+  } = useAppAudio();
 
   const adjustHeight = () => {
     if (textareaRef.current) {
@@ -93,6 +117,12 @@ export function MultimodalInput({
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 2}px`;
     }
   };
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      adjustHeight();
+    }
+  }, []);
 
   const [localStorageInput, setLocalStorageInput] = useLocalStorage(
     'input',
@@ -145,33 +175,6 @@ export function MultimodalInput({
     chatId,
   ]);
 
-  const uploadFile = async (file: File) => {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    try {
-      const response = await fetch('/api/files/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        const { url, pathname, contentType } = data;
-
-        return {
-          url,
-          name: pathname,
-          contentType: contentType,
-        };
-      }
-      const { error } = await response.json();
-      toast.error(error);
-    } catch (error) {
-      toast.error('Failed to upload file, please try again!');
-    }
-  };
-
   const handleFileChange = useCallback(
     async (event: ChangeEvent<HTMLInputElement>) => {
       const files = Array.from(event.target.files || []);
@@ -198,9 +201,35 @@ export function MultimodalInput({
     [setAttachments]
   );
 
+  const handleRemovingAttachment = useCallback(
+    async (attachment: Attachment) => {
+      if (attachment.url) {
+        const res = await removeFile(attachment);
+
+        if (res?.success && typeof removeAttachmentProp === 'function') {
+          removeAttachmentProp(attachment);
+        }
+      }
+    },
+    [attachments, setAttachments]
+  );
+
+  const handleClearingInput = () => {
+    setInput('');
+    setLocalStorageInput('');
+    setAttachments([]);
+  };
+
+  const hasInputValue = input.length > 0 || localStorageInput.length > 0;
+
+  const isClearInputDisabled =
+    !hasInputValue || isLoading || isAudioTranscribing || disabled;
+
   return (
     <div className="relative flex w-full flex-col gap-4">
-      {messages.length === 0 &&
+      {/* Suggestions */}
+      {!isAudioRecording &&
+        messages.length === 0 &&
         attachments.length === 0 &&
         uploadQueue.length === 0 && (
           <div className="grid w-full gap-2 sm:grid-cols-2">
@@ -235,19 +264,24 @@ export function MultimodalInput({
           </div>
         )}
 
-      <input
-        type="file"
-        className="pointer-events-none fixed -left-4 -top-4 size-0.5 opacity-0"
-        ref={fileInputRef}
-        multiple
-        onChange={handleFileChange}
-        tabIndex={-1}
-      />
+      {/* Audio Visuals  */}
+      {isAudioRecording && (
+        <div className="w-full py-2">
+          <AudioManagerVisualizer className="h-20" barWidth={1} />
+        </div>
+      )}
 
+      {/* Attachments */}
       {(attachments.length > 0 || uploadQueue.length > 0) && (
-        <div className="flex flex-row items-end gap-2 overflow-x-scroll">
+        <div className="flex flex-row items-end gap-2">
           {attachments.map((attachment) => (
-            <PreviewAttachment key={attachment.url} attachment={attachment} />
+            <PreviewAttachment
+              allowRemove
+              key={attachment.url}
+              attachment={attachment}
+              handleOnRemove={handleRemovingAttachment}
+              isUploading={isAudioTranscribing}
+            />
           ))}
 
           {uploadQueue.map((filename) => (
@@ -264,12 +298,21 @@ export function MultimodalInput({
         </div>
       )}
 
+      <input
+        type="file"
+        className="pointer-events-none fixed -left-4 -top-4 size-0.5 opacity-0"
+        ref={fileInputRef}
+        multiple
+        onChange={handleFileChange}
+        tabIndex={-1}
+      />
+
       <Textarea
         ref={textareaRef}
         placeholder="Send a message..."
         value={input}
         onChange={handleInput}
-        disabled={disabled || isLoading}
+        disabled={disabled || isLoading || isAudioTranscribing}
         className={cx(
           'max-h-[calc(75dvh)] min-h-[24px] resize-none overflow-hidden rounded-xl bg-muted text-base',
           className
@@ -289,42 +332,50 @@ export function MultimodalInput({
         }}
       />
 
-      {isLoading ? (
-        <Button
-          className="absolute bottom-2 right-2 m-0.5 h-fit rounded-full border p-1.5 dark:border-zinc-600"
-          onClick={(event) => {
-            event.preventDefault();
-            stop();
-            setMessages((messages) => sanitizeUIMessages(messages));
-          }}
-          disabled={disabled}
-        >
-          <StopIcon size={14} />
-        </Button>
-      ) : (
-        <Button
-          className="absolute bottom-2 right-2 m-0.5 h-fit rounded-full border p-1.5 dark:border-zinc-600"
-          onClick={(event) => {
-            event.preventDefault();
-            submitForm();
-          }}
-          disabled={input.length === 0 || uploadQueue.length > 0}
-        >
-          <ArrowUpIcon size={14} />
-        </Button>
-      )}
+      <div className="absolute bottom-2 left-2 right-2 flex items-center justify-end gap-2">
+        {/* Audio Recording */}
+        <AudioManagerRecordBtn disabled={disabled} />
 
-      <Button
-        className="absolute bottom-2 right-11 m-0.5 h-fit rounded-full p-1.5 dark:border-zinc-700"
-        onClick={(event) => {
-          event.preventDefault();
-          fileInputRef.current?.click();
-        }}
-        variant="outline"
-        disabled={disabled || isLoading}
-      >
-        <PaperclipIcon size={14} />
-      </Button>
+        {/* Attachments */}
+        <MultimodalAttachFilesBtn
+          variant="outline"
+          handleOnClick={() => {
+            fileInputRef.current?.click();
+          }}
+          disabled={disabled || isLoading || isAudioTranscribing}
+          className=""
+        />
+
+        {/* Clearing Input */}
+        <MultimodalClearInputBtn
+          handleOnClick={handleClearingInput}
+          disabled={isClearInputDisabled}
+        />
+
+        {/* Submit/Stop */}
+        {isLoading ? (
+          <MultimodalStopBtn
+            handleOnClick={() => {
+              stop();
+              setMessages((messages) => sanitizeUIMessages(messages));
+            }}
+            disabled={disabled}
+            className="h-fit rounded-full border p-1.5"
+          />
+        ) : (
+          <MultimodalSubmitBtn
+            handleOnSubmit={() => {
+              submitForm();
+            }}
+            disabled={
+              input.length === 0 ||
+              uploadQueue.length > 0 ||
+              isAudioTranscribing
+            }
+            className="h-fit rounded-full border p-1.5"
+          />
+        )}
+      </div>
     </div>
   );
 }

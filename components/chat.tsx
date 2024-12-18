@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import type { Attachment, Message } from 'ai';
 import { useChat } from 'ai/react';
 import { AnimatePresence } from 'framer-motion';
@@ -8,11 +8,16 @@ import useSWR, { useSWRConfig } from 'swr';
 import { useWindowSize } from 'usehooks-ts';
 
 import type { Vote } from '@/lib/db/schema';
+import {
+  removeFileFetch,
+  uploadFileFetch,
+} from '@/lib/storage/vercel-blob-fetch';
 import { fetcher } from '@/lib/utils';
 import { ChatHeader } from '@/components/header-chat';
 import { PreviewMessage, ThinkingMessage } from '@/components/message';
 import { useScrollToBottom } from '@/components/use-scroll-to-bottom';
 
+import { WithAudioProvider } from './audio/audio-manager';
 import { Block, type UIBlock } from './block';
 import { BlockStreamHandler } from './block-stream-handler';
 import { MultimodalInput } from './multimodal-input';
@@ -29,6 +34,15 @@ export function Chat({
   selectedModelId: string;
   disabled?: boolean;
 }) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const adjustTextAreaHeight = () => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 2}px`;
+    }
+  };
+
   const { mutate } = useSWRConfig();
 
   const {
@@ -74,7 +88,57 @@ export function Chat({
   const [messagesContainerRef, messagesEndRef] =
     useScrollToBottom<HTMLDivElement>();
 
+  const [isAudioRecording, setIsAudioRecording] = useState(false);
+
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);
+
+  const handleToggleAudioRecording = (nextState: boolean | undefined) => {
+    if (typeof nextState === 'boolean') {
+      setIsAudioRecording(nextState);
+      return;
+    }
+
+    setIsAudioRecording((prev) => !prev);
+  };
+
+  const handleRemovingAttachment = (attachment: Attachment) => {
+    console.log('attachment to remove', attachment);
+    setAttachments((prev) => {
+      if (!prev || prev.length === 0) {
+        return [];
+      }
+
+      return prev.filter((a) => a.url !== attachment.url);
+    });
+  };
+
+  const handleOnAudioTranscriptionComplete = async (transcription: string) => {
+    setInput(transcription);
+    adjustTextAreaHeight();
+  };
+
+  // const handleOnAudioRecordingComplete = async (
+  //   blob: Blob,
+  //   fileName?: string
+  // ) => {
+  //   try {
+  //     const uploadedAttachment = await uploadFileFetch(blob);
+  //     console.log('uploadedAttachment', uploadedAttachment);
+
+  //     if (uploadedAttachment) {
+  //       setAttachments((prev) => [
+  //         ...prev,
+  //         {
+  //           ...uploadedAttachment,
+  //           name: fileName || 'Audio Message',
+  //           contentType: blob.type,
+  //         },
+  //       ]);
+  //     }
+  //   } catch (error) {
+  //     toast.error('Failed to upload file, please try again!');
+  //   }
+  // };
 
   return (
     <>
@@ -84,7 +148,7 @@ export function Chat({
           ref={messagesContainerRef}
           className="flex min-w-0 flex-1 flex-col gap-6 overflow-y-scroll pt-4"
         >
-          {messages.length === 0 && <Overview />}
+          {messages.length === 0 && <Overview avatarPing={isAudioRecording} />}
 
           {messages.map((message, index) => (
             <PreviewMessage
@@ -114,20 +178,32 @@ export function Chat({
           />
         </div>
         <form className="mx-auto flex w-full gap-2 bg-background px-4 pb-4 md:max-w-3xl md:pb-6">
-          <MultimodalInput
-            chatId={id}
-            input={input}
-            disabled={disabled}
-            setInput={setInput}
-            handleSubmit={handleSubmit}
-            isLoading={isLoading}
-            stop={stop}
-            attachments={attachments}
-            setAttachments={setAttachments}
-            messages={messages}
-            setMessages={setMessages}
-            append={append}
-          />
+          <WithAudioProvider
+            transcribeOnComplete
+            // handleOnRecordComplete={handleOnAudioRecordingComplete}
+            handleOnTranscriptionComplete={handleOnAudioTranscriptionComplete}
+            handleOnRecordingStart={() => handleToggleAudioRecording(true)}
+            handleOnRecordingEnd={() => handleToggleAudioRecording(false)}
+          >
+            <MultimodalInput
+              chatId={id}
+              input={input}
+              disabled={disabled}
+              textareaRef={textareaRef}
+              setInput={setInput}
+              handleSubmit={handleSubmit}
+              isLoading={isLoading}
+              stop={stop}
+              attachments={attachments}
+              setAttachments={setAttachments}
+              removeAttachment={handleRemovingAttachment}
+              uploadFile={uploadFileFetch}
+              removeFile={removeFileFetch}
+              messages={messages}
+              setMessages={setMessages}
+              append={append}
+            />
+          </WithAudioProvider>
         </form>
       </div>
 
