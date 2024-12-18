@@ -16,7 +16,11 @@ import {
   SidebarMenu,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { BetterTooltip } from '@/components/ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { PlusIcon } from '@/components/icons';
 import { SidebarHistory } from '@/components/sidebar-history';
 import { SidebarUserNav } from '@/components/sidebar-user-nav';
@@ -53,20 +57,23 @@ export function AppSidebar({
                 Experience Nevada
               </span>
             </Link>
-            <BetterTooltip content="New Chat" align="start">
-              <Button
-                variant="ghost"
-                type="button"
-                className="h-fit p-2"
-                onClick={() => {
-                  setOpenMobile(false);
-                  router.push('/');
-                  router.refresh();
-                }}
-              >
-                <PlusIcon />
-              </Button>
-            </BetterTooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  type="button"
+                  className="h-fit p-2"
+                  onClick={() => {
+                    setOpenMobile(false);
+                    router.push('/');
+                    router.refresh();
+                  }}
+                >
+                  <PlusIcon />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent align="end">New Chat</TooltipContent>
+            </Tooltip>
           </div>
         </SidebarMenu>
       </SidebarHeader>
