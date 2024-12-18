@@ -38,7 +38,7 @@ export function DiscoveryTitle({
 
   const textClassName = smaller
     ? 'text-xl sm:text-2xl xl:text-2xl'
-    : 'text-5xl sm:text-6xl xl:text-7xl';
+    : 'text-4xl sm:text-5xl md:text-6xl xl:text-7xl';
 
   return (
     <h1
