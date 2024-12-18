@@ -83,7 +83,11 @@ export function DialogDiscoverSplashScreen({
   const onCtaLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     const href = e.currentTarget.getAttribute('href');
     setCtaClicked(true);
-    if (href) router.push(href);
+    if (href) {
+      e.preventDefault();
+      e.stopPropagation();
+      router.push(href);
+    }
   };
 
   React.useEffect(() => {
