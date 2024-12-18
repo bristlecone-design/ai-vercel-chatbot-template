@@ -241,6 +241,19 @@ export const AudioProvider = ({
     setAudioState('stopped');
   };
 
+  const handleInitRecordingTimeInterval = () => {
+    timeInterval.current = window.setInterval(() => {
+      setRecordingTime((prevTime) => prevTime + 1);
+    }, 1000);
+  };
+
+  const handleResetRecordingTimeInterval = () => {
+    if (timeInterval.current) {
+      clearInterval(timeInterval.current);
+      timeInterval.current = null;
+    }
+  };
+
   const handleStartRecording = async () => {
     try {
       if (openModalOnRecordProp) {
@@ -273,9 +286,10 @@ export const AudioProvider = ({
       setMediaRecorder(recorder);
       setAudioState('recording');
 
-      timeInterval.current = window.setInterval(() => {
-        setRecordingTime((prevTime) => prevTime + 1);
-      }, 1000);
+      handleInitRecordingTimeInterval();
+      // timeInterval.current = window.setInterval(() => {
+      //   setRecordingTime((prevTime) => prevTime + 1);
+      // }, 1000);
     } catch (err) {
       console.error('Error accessing microphone:', err);
       if (typeof handleOnRecordingEndProp === 'function') {
@@ -303,20 +317,35 @@ export const AudioProvider = ({
         audioStreamRef.current.getTracks().forEach((track) => track.stop());
       }
       if (timeInterval.current) {
-        clearInterval(timeInterval.current);
-        timeInterval.current = null;
+        handleResetRecordingTimeInterval();
       }
       setRecordingTime(0);
-      setMediaRecorder(null);
+      // setMediaRecorder(null);
     }
   };
 
   const handlePauseRecording = () => {
-    setAudioState('paused');
+    if (mediaRecorder) {
+      setAudioState('paused');
+      mediaRecorder.pause();
+      handleResetRecordingTimeInterval();
+
+      if (typeof handleOnRecordingEndProp === 'function') {
+        handleOnRecordingEndProp();
+      }
+    }
   };
 
   const handleResumeRecording = () => {
-    setAudioState('recording');
+    if (mediaRecorder) {
+      setAudioState('recording');
+      mediaRecorder.resume();
+      handleInitRecordingTimeInterval();
+
+      if (typeof handleOnRecordingStartProp === 'function') {
+        handleOnRecordingStartProp();
+      }
+    }
   };
 
   const handleCancelingAll = () => {

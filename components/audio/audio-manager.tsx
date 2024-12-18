@@ -8,7 +8,7 @@ import {
 
 import { cn } from '@/lib/utils';
 
-import { IconCircleX, IconMaximize } from '../ui/icons';
+import { IconCircleX, IconMaximize, IconPause } from '../ui/icons';
 import AudioPlayer from './audio-player';
 import { AudioRecorder } from './audio-recorder';
 import { GeneralAudioBtn, RecordAudioBtn } from './audio-recorder-btns';
@@ -80,6 +80,7 @@ export function AudioManagerRecordBtn({
   disabled,
 }: AudioManagerRecordBtnProps) {
   const {
+    isAudioPaused,
     isAudioRecording,
     isAudioTranscribing,
     startRecording,
@@ -90,9 +91,39 @@ export function AudioManagerRecordBtn({
     <RecordAudioBtn
       key={`record-audio-btn-${isAudioRecording}`}
       recording={isAudioRecording}
-      disabled={disabled || isAudioTranscribing}
+      disabled={disabled || isAudioTranscribing || isAudioPaused}
       onClick={() => (isAudioRecording ? stopRecording() : startRecording())}
     />
+  );
+}
+
+export interface AudioManagerPauseResumeBtnProps {
+  disabled?: boolean;
+}
+
+export function AudioManagerPauseResumeBtn({
+  disabled,
+}: AudioManagerPauseResumeBtnProps) {
+  const {
+    isAudioRecording,
+    isAudioTranscribing,
+    isAudioPaused,
+    resumeRecording,
+    pauseRecording,
+  } = useAppAudio();
+
+  if (!isAudioPaused && !isAudioRecording) {
+    return null;
+  }
+
+  return (
+    <GeneralAudioBtn
+      variant={isAudioPaused ? 'destructive' : 'outline'}
+      disabled={disabled || isAudioTranscribing}
+      onClick={() => (isAudioRecording ? pauseRecording() : resumeRecording())}
+    >
+      <IconPause />
+    </GeneralAudioBtn>
   );
 }
 

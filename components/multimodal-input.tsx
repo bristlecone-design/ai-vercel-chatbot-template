@@ -22,12 +22,14 @@ import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { useLocalStorage, useWindowSize } from 'usehooks-ts';
 
-import { sanitizeUIMessages } from '@/lib/utils';
+import { cn, sanitizeUIMessages } from '@/lib/utils';
 
 import {
+  AudioManagerPauseResumeBtn,
   AudioManagerRecordBtn,
   AudioManagerVisualizer,
 } from './audio/audio-manager';
+import { AudioRecordingTime } from './audio/audio-recorder';
 import {
   MultimodalAttachFilesBtn,
   MultimodalClearInputBtn,
@@ -106,6 +108,7 @@ export function MultimodalInput({
   const {
     // data: audioData,
     // isAudioLoading,
+    isAudioPaused,
     isAudioRecording,
     isAudioTranscribing,
     // cancelAll: handleClearingAudio,
@@ -229,6 +232,8 @@ export function MultimodalInput({
     <div className="relative flex w-full flex-col gap-4">
       {/* Suggestions */}
       {!isAudioRecording &&
+        !isAudioTranscribing &&
+        !isAudioPaused &&
         messages.length === 0 &&
         attachments.length === 0 &&
         uploadQueue.length === 0 && (
@@ -265,9 +270,12 @@ export function MultimodalInput({
         )}
 
       {/* Audio Visuals  */}
-      {isAudioRecording && (
-        <div className="w-full py-2">
-          <AudioManagerVisualizer className="h-20" barWidth={1} />
+      {(isAudioRecording || isAudioTranscribing || isAudioPaused) && (
+        <div className="flex w-full justify-center py-2">
+          <AudioManagerVisualizer
+            className="h-14 min-w-[initial] max-w-[68%] rounded-3xl"
+            barWidth={1}
+          />
         </div>
       )}
 
@@ -312,13 +320,17 @@ export function MultimodalInput({
         placeholder={
           isAudioTranscribing
             ? 'Transcribing your audio...'
-            : 'Send a message...'
+            : isAudioRecording
+              ? 'Recording audio...'
+              : isAudioPaused
+                ? 'Audio recording paused...'
+                : 'Send a message...'
         }
         value={input}
         onChange={handleInput}
         disabled={disabled || isLoading || isAudioTranscribing}
         className={cx(
-          'max-h-[calc(75dvh)] min-h-[24px] resize-none overflow-hidden rounded-xl bg-muted text-base',
+          'max-h-[calc(75dvh)] min-h-[24px] resize-none overflow-auto rounded-xl bg-muted text-base',
           className
         )}
         rows={3}
@@ -336,7 +348,26 @@ export function MultimodalInput({
         }}
       />
 
-      <div className="absolute bottom-2 left-2 right-2 flex items-center justify-end gap-2">
+      <div
+        className={cn(
+          'absolute bottom-2 right-2 flex w-fit items-center justify-end gap-2 shadow-sm backdrop-blur-md',
+          {
+            'rounded-2xl bg-background/20': !isAudioRecording && !isAudioPaused,
+            'rounded-full px-3': isAudioRecording || isAudioPaused,
+          }
+        )}
+      >
+        {/* Audio Recording Time */}
+        {(isAudioRecording || isAudioPaused) && (
+          <AudioRecordingTime
+            variant="default"
+            className="bg-primary/50 text-xs font-semibold"
+          />
+        )}
+
+        {/* Audio Pause/Resume */}
+        <AudioManagerPauseResumeBtn disabled={disabled} />
+
         {/* Audio Recording */}
         <AudioManagerRecordBtn disabled={disabled} />
 
@@ -346,13 +377,17 @@ export function MultimodalInput({
           handleOnClick={() => {
             fileInputRef.current?.click();
           }}
-          disabled={disabled || isLoading || isAudioTranscribing}
+          disabled={
+            disabled || isLoading || isAudioRecording || isAudioTranscribing
+          }
+          dim={isAudioRecording || isAudioPaused}
           className=""
         />
 
         {/* Clearing Input */}
         <MultimodalClearInputBtn
           handleOnClick={handleClearingInput}
+          dim={isAudioRecording || isAudioPaused}
           disabled={isClearInputDisabled}
         />
 
@@ -364,7 +399,8 @@ export function MultimodalInput({
               setMessages((messages) => sanitizeUIMessages(messages));
             }}
             disabled={disabled}
-            className="h-fit rounded-full border p-1.5"
+            dim={isAudioRecording || isAudioPaused}
+            className=""
           />
         ) : (
           <MultimodalSubmitBtn
@@ -376,7 +412,8 @@ export function MultimodalInput({
               uploadQueue.length > 0 ||
               isAudioTranscribing
             }
-            className="h-fit rounded-full border p-1.5"
+            dim={isAudioRecording || isAudioPaused}
+            className=""
           />
         )}
       </div>

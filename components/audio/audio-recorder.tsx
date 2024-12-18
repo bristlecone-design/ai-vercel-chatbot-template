@@ -4,7 +4,7 @@ import { useAppAudio } from '@/state/app-audio-provider';
 
 import { cn } from '@/lib/utils';
 
-import { Badge } from '../ui/badge';
+import { Badge, type BadgeProps } from '../ui/badge';
 import { IconMic, IconStop } from '../ui/icons';
 import AudioPlayer from './audio-player';
 import { GeneralAudioBtn } from './audio-recorder-btns';
@@ -16,18 +16,40 @@ const formatTime = (seconds: number) => {
   return `${mins}:${secs.toString().padStart(2, '0')}`;
 };
 
-export function AudioRecordingTime({ className }: { className?: string }) {
-  const { recordingTime, isAudioRecording, data: audioData } = useAppAudio();
+export interface AudioRecordingTimeProps extends BadgeProps {
+  className?: string;
+}
+
+export function AudioRecordingTime({
+  className,
+  variant,
+}: AudioRecordingTimeProps) {
+  const {
+    recordingTime,
+    isAudioRecording,
+    isAudioPaused,
+    data: audioData,
+  } = useAppAudio();
+  const badgeVariant = variant
+    ? variant
+    : recordingTime
+      ? 'secondary'
+      : 'outline';
+
+  const formattedRecordingTime = formatTime(recordingTime);
   return (
     <Badge
-      variant={recordingTime ? 'secondary' : 'outline'}
+      key={`audio-recording-time-${badgeVariant}`}
+      variant={badgeVariant}
       className={cn('rounded-full text-lg font-medium', className)}
     >
       {isAudioRecording
-        ? `Recording: ${formatTime(recordingTime)}`
-        : audioData
-          ? 'Ready to Record New'
-          : 'Ready to Record'}
+        ? `Recording: ${formattedRecordingTime}`
+        : isAudioPaused
+          ? `Paused: ${formattedRecordingTime}`
+          : audioData
+            ? 'Ready to Record New'
+            : 'Ready to Record'}
     </Badge>
   );
 }

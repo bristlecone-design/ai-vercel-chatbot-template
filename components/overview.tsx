@@ -13,19 +13,22 @@ function OverviewAvatar({
   ping,
   className,
   containerClassName,
+  noProfileLink = false,
 }: {
   ping?: boolean;
   className?: string;
   containerClassName?: string;
+  noProfileLink?: boolean;
 }) {
   const appState = useAppState();
   const { userAvatar, userProfileUsername, userDisplayName } = appState;
 
   if (!userAvatar) return null;
 
-  const userProfilePermalink = userProfileUsername
-    ? getUserProfilePermalink(userProfileUsername)
-    : '';
+  const userProfilePermalink =
+    userProfileUsername && !noProfileLink
+      ? getUserProfilePermalink(userProfileUsername)
+      : '';
 
   const renderedAvatar = (
     <div
@@ -67,8 +70,10 @@ export const Overview = memo(
     children,
     avatarPing,
     avatarClassName,
+    avatarNoProfileLink,
   }: {
     children?: React.ReactNode;
+    avatarNoProfileLink?: boolean;
     avatarClassName?: string;
     avatarPing?: boolean;
   }) => {
@@ -85,9 +90,13 @@ export const Overview = memo(
         exit={{ opacity: 0, scale: 0.98 }}
         transition={{ delay: 0.25 }}
       >
-        <div className="flex max-w-3xl flex-col items-center gap-8 rounded-xl p-6 text-center leading-relaxed">
+        <div className="flex max-w-3xl flex-col items-center gap-12 rounded-xl py-14 text-center leading-relaxed">
           <DiscoveryMasthead />
-          <OverviewAvatar ping={avatarPing} className={avatarClassName} />
+          <OverviewAvatar
+            ping={avatarPing}
+            noProfileLink={avatarNoProfileLink}
+            className={avatarClassName}
+          />
           {children}
         </div>
       </motion.div>

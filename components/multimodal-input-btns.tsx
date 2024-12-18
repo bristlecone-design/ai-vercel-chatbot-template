@@ -3,18 +3,27 @@ import { cn } from '@/lib/utils';
 import { Button, type ButtonProps } from './ui/button';
 import { IconArrowUp, IconClose, IconPaperclip, IconStop } from './ui/icons';
 
-export interface MultimodalInputBtnsProps extends ButtonProps {}
+export interface MultimodalInputBtnsProps extends ButtonProps {
+  dim?: boolean;
+}
 
 export function MultimodalBaseBtn({
   disabled,
   className,
   children,
+  dim,
   ...rest
 }: MultimodalInputBtnsProps) {
   return (
     <Button
       disabled={disabled}
-      className={cn('h-fit rounded-full border p-1.5', className)}
+      className={cn(
+        'h-fit rounded-full border p-1.5',
+        {
+          hidden: dim,
+        },
+        className
+      )}
       {...rest}
     >
       {children}
