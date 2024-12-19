@@ -1,7 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-
 import { cn } from '@/lib/utils';
 
 import { Button, type ButtonProps } from '../ui/button';
@@ -28,33 +26,24 @@ export function GeneralAudioBtn({
 export interface RecordAudioBtnProps extends GeneralAudioBtnProps {
   className?: string;
   recording?: boolean;
+  paused?: boolean;
   stopRecording?: boolean;
 }
 
 export function RecordAudioBtn({
   className,
   disabled,
+  paused: pausedProp = false,
   recording: recordingProp = false,
   stopRecording: stopRecordingProp,
   onClick,
   ...rest
 }: RecordAudioBtnProps) {
-  const [recording, setRecording] = useState(recordingProp);
-
   const handleOnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setRecording((prev) => !prev);
-
     if (typeof onClick === 'function') {
       onClick(e);
     }
   };
-
-  // Stop recording if stopRecordingProp is true and recording is true
-  useEffect(() => {
-    if (typeof stopRecordingProp === 'boolean' && recording) {
-      setRecording(false);
-    }
-  }, [recording, stopRecordingProp]);
 
   return (
     <GeneralAudioBtn
@@ -63,15 +52,15 @@ export function RecordAudioBtn({
       className={cn(
         'h-fit rounded-full p-1.5',
         {
-          'animate-pulse': recording,
+          'animate-pulse': recordingProp,
         },
         className
       )}
       onClick={handleOnClick}
       disabled={disabled}
     >
-      {!recording && <IconMic className="size-4" />}
-      {recording && <IconStop className="size-4" />}{' '}
+      {!recordingProp && !pausedProp && <IconMic className="size-4" />}
+      {(recordingProp || pausedProp) && <IconStop className="size-4" />}{' '}
       <span className="sr-only">Record</span>
     </GeneralAudioBtn>
   );

@@ -92,10 +92,11 @@ export function AudioManagerRecordBtn({
     <RecordAudioBtn
       key={`record-audio-btn-${isAudioRecording}`}
       recording={isAudioRecording}
-      disabled={
-        disabled || isAudioTranscribing || isAudioPaused || isAudioCountdown
-      }
-      onClick={() => (isAudioRecording ? stopRecording() : startRecording())}
+      paused={isAudioPaused}
+      disabled={disabled || isAudioTranscribing || isAudioCountdown}
+      onClick={() => {
+        isAudioRecording || isAudioPaused ? stopRecording() : startRecording();
+      }}
     />
   );
 }
@@ -122,7 +123,7 @@ export function AudioManagerPauseResumeBtn({
 
   return (
     <GeneralAudioBtn
-      variant={isAudioPaused ? 'destructive' : 'outline'}
+      variant={isAudioPaused ? 'outline' : 'outline'}
       disabled={disabled || isAudioTranscribing || isAudioCountdown}
       onClick={() => (isAudioRecording ? pauseRecording() : resumeRecording())}
     >

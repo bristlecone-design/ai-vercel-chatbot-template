@@ -58,7 +58,7 @@ export type MultimodalInputProps = {
   chatId: string;
   input: string;
   disabled?: boolean;
-  textareaRef?: React.RefObject<HTMLTextAreaElement>;
+  textareaRef?: React.RefObject<HTMLTextAreaElement | null>;
   setInput: (value: string) => void;
   isLoading: boolean;
   stop: () => void;

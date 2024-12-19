@@ -337,7 +337,7 @@ export const AudioProvider = ({
       handleOnRecordingEndProp();
     }
 
-    if (mediaRecorder && isAudioRecording) {
+    if (mediaRecorder && (isAudioRecording || isAudioPaused)) {
       mediaRecorder.stop();
       setAudioState('stopped');
 
