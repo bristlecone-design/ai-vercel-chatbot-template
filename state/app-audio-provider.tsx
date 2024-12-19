@@ -166,8 +166,6 @@ export const AudioProvider = ({
   // Countdown timer
   const {
     count: countdown,
-    setCount,
-    increment,
     decrement,
     reset: resetCounter,
   } = useCounter(countdownStartProp);
@@ -181,29 +179,6 @@ export const AudioProvider = ({
   const isAudioCountdown = audioState === 'countdown';
 
   const isCountdownEnabled = withCountdownProp && Boolean(countdownStartProp);
-
-  /**
-   * Countdown Recording Timer:
-   * - If recording initiated, start the countdown until counter is at 0 then start recording
-   */
-  useInterval(
-    () => {
-      // If the countdown is at 1 (not 0), start recording
-      if (mediaRecorder && countdown <= 1) {
-        setAudioState('recording');
-        mediaRecorder.start();
-        resetCounter();
-        return;
-      }
-
-      // Decrement the countdown
-      decrement();
-    },
-    // Delay in milliseconds or null to stop it
-    isAudioCountdown && mediaRecorder && isCountdownEnabled
-      ? countdownDelayProp
-      : null
-  );
 
   const transcribeAudioFile = async (file: Blob | File) => {
     setTranscribing(true);
@@ -430,6 +405,30 @@ export const AudioProvider = ({
   const handleHideRecordingModal = () => {
     setModalOpen(false);
   };
+
+  /**
+   * Countdown Recording Timer:
+   * - If recording initiated, start the countdown until counter is at 0 then start recording
+   */
+  useInterval(
+    () => {
+      // If the countdown is at 1 (not 0), start recording
+      if (mediaRecorder && countdown <= 1) {
+        setAudioState('recording');
+        mediaRecorder.start();
+        handleInitRecordingTimeInterval();
+        resetCounter();
+        return;
+      }
+
+      // Decrement the countdown
+      decrement();
+    },
+    // Delay in milliseconds or null to stop it
+    isAudioCountdown && mediaRecorder && isCountdownEnabled
+      ? countdownDelayProp
+      : null
+  );
 
   // Prepare the context value
   const providerValues = useMemo<AudioProviderCtxType>(
