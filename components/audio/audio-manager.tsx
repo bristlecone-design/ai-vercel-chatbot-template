@@ -82,6 +82,7 @@ export function AudioManagerRecordBtn({
   const {
     isAudioPaused,
     isAudioRecording,
+    isAudioCountdown,
     isAudioTranscribing,
     startRecording,
     stopRecording,
@@ -91,7 +92,9 @@ export function AudioManagerRecordBtn({
     <RecordAudioBtn
       key={`record-audio-btn-${isAudioRecording}`}
       recording={isAudioRecording}
-      disabled={disabled || isAudioTranscribing || isAudioPaused}
+      disabled={
+        disabled || isAudioTranscribing || isAudioPaused || isAudioCountdown
+      }
       onClick={() => (isAudioRecording ? stopRecording() : startRecording())}
     />
   );
@@ -105,9 +108,10 @@ export function AudioManagerPauseResumeBtn({
   disabled,
 }: AudioManagerPauseResumeBtnProps) {
   const {
+    isAudioPaused,
+    isAudioCountdown,
     isAudioRecording,
     isAudioTranscribing,
-    isAudioPaused,
     resumeRecording,
     pauseRecording,
   } = useAppAudio();
@@ -119,7 +123,7 @@ export function AudioManagerPauseResumeBtn({
   return (
     <GeneralAudioBtn
       variant={isAudioPaused ? 'destructive' : 'outline'}
-      disabled={disabled || isAudioTranscribing}
+      disabled={disabled || isAudioTranscribing || isAudioCountdown}
       onClick={() => (isAudioRecording ? pauseRecording() : resumeRecording())}
     >
       <IconPause />

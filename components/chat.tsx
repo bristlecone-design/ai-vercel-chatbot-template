@@ -184,6 +184,7 @@ export function Chat({
         </div>
         <form className="mx-auto flex w-full gap-2 bg-background px-4 pb-4 md:max-w-3xl md:pb-6">
           <WithAudioProvider
+            withCountdown
             transcribeOnComplete
             // handleOnRecordComplete={handleOnAudioRecordingComplete}
             handleOnTranscriptionComplete={handleOnAudioTranscriptionComplete}

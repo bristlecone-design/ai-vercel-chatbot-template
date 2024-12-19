@@ -2,9 +2,12 @@
 
 import type React from 'react';
 import { createContext, useContext, useMemo, useRef, useState } from 'react';
+import { useCounter, useInterval } from 'usehooks-ts';
 
 import { transcribeAudioFileFetch } from '@/lib/storage/vercel-blob-fetch';
 import { AUDIO_DEFAULTS } from '@/components/audio/audio-constants';
+
+const DEFAULT_COUNTDOWN_START = 3;
 
 export enum AudioSource {
   URL = 'URL',
@@ -25,7 +28,8 @@ export type AudioPlayerState =
   | 'paused'
   | 'stopped'
   | 'canceled'
-  | 'recording';
+  | 'recording'
+  | 'countdown';
 
 export type AudioProviderCtxType = {
   blob: Blob | null;
@@ -35,6 +39,7 @@ export type AudioProviderCtxType = {
   mediaRecorder: MediaRecorder | null;
   state: AudioPlayerState;
   recordingTime: number;
+  recordingCountdown: number;
   progress: number | undefined;
   isRecordingModalOpen: boolean;
   isAudioLoading: boolean;
@@ -43,6 +48,7 @@ export type AudioProviderCtxType = {
   isAudioPlaying: boolean;
   isAudioStopped: boolean;
   isAudioPaused: boolean;
+  isAudioCountdown: boolean;
   isAudioTranscribing: boolean;
 
   startRecording: () => void;
@@ -67,6 +73,7 @@ export const AudioContextDefaultValues: AudioProviderCtxType = {
   transcription: null,
   mediaRecorder: null,
   recordingTime: 0,
+  recordingCountdown: DEFAULT_COUNTDOWN_START,
   progress: undefined,
   isRecordingModalOpen: false,
   isAudioLoading: false,
@@ -75,6 +82,7 @@ export const AudioContextDefaultValues: AudioProviderCtxType = {
   isAudioStopped: true,
   isAudioPaused: false,
   isAudioPlaying: false,
+  isAudioCountdown: false,
   isAudioTranscribing: false,
 
   // Handlers
@@ -108,6 +116,10 @@ export const useAppAudio = () => {
 
 export type AudioProviderProps = {
   children: React.ReactNode;
+  // No countdown by default
+  withCountdown?: boolean;
+  countdownStart?: number;
+  countdownDelay?: number;
   openModalOnRecord?: boolean;
   transcribeOnComplete?: boolean;
   handleOnTranscriptionComplete?: (transcription: string) => void;
@@ -118,6 +130,9 @@ export type AudioProviderProps = {
 
 export const AudioProvider = ({
   children,
+  withCountdown: withCountdownProp = false,
+  countdownStart: countdownStartProp = DEFAULT_COUNTDOWN_START,
+  countdownDelay: countdownDelayProp = 1000,
   openModalOnRecord: openModalOnRecordProp = false,
   transcribeOnComplete: transcribeOnCompleteProp = false,
   handleOnRecordComplete: handleOnRecordCompleteProp,
@@ -148,11 +163,47 @@ export const AudioProvider = ({
   );
   const [transcribing, setTranscribing] = useState(false);
 
+  // Countdown timer
+  const {
+    count: countdown,
+    setCount,
+    increment,
+    decrement,
+    reset: resetCounter,
+  } = useCounter(countdownStartProp);
+
+  // Convenience flags
   const isAudioRecording = audioState === 'recording';
   const isAudioCanceled = audioState === 'canceled';
   const isAudioStopped = audioState === 'stopped';
   const isAudioPaused = audioState === 'paused';
   const isAudioPlaying = audioState === 'playing';
+  const isAudioCountdown = audioState === 'countdown';
+
+  const isCountdownEnabled = withCountdownProp && Boolean(countdownStartProp);
+
+  /**
+   * Countdown Recording Timer:
+   * - If recording initiated, start the countdown until counter is at 0 then start recording
+   */
+  useInterval(
+    () => {
+      // If the countdown is at 0, start recording
+      if (mediaRecorder && countdown <= 0) {
+        setAudioState('recording');
+        mediaRecorder.start();
+        resetCounter();
+        return;
+      }
+
+      // Decrement the countdown
+      decrement();
+    },
+    // Delay in milliseconds or null to stop it
+    isAudioCountdown && mediaRecorder && isCountdownEnabled
+      ? countdownDelayProp
+      : null
+  );
 
   const transcribeAudioFile = async (file: Blob | File) => {
     setTranscribing(true);
@@ -281,12 +332,18 @@ export const AudioProvider = ({
       });
 
       recorder.addEventListener('dataavailable', handleDataAvailable);
-      recorder.start();
 
       setMediaRecorder(recorder);
-      setAudioState('recording');
 
-      handleInitRecordingTimeInterval();
+      // Start the record if countdown is disabled
+      if (!isCountdownEnabled) {
+        recorder.start();
+        setAudioState('recording');
+      } else {
+        setAudioState('countdown');
+        // handleInitRecordingTimeInterval();
+      }
+
       // timeInterval.current = window.setInterval(() => {
       //   setRecordingTime((prevTime) => prevTime + 1);
       // }, 1000);
@@ -385,6 +442,7 @@ export const AudioProvider = ({
         transcription: audioTranscription,
         mediaRecorder,
         recordingTime,
+        recordingCountdown: countdown,
         progress,
         isRecordingModalOpen: modalOpen,
         isAudioLoading: progress !== undefined,
@@ -393,6 +451,7 @@ export const AudioProvider = ({
         isAudioCanceled,
         isAudioStopped,
         isAudioPaused,
+        isAudioCountdown,
         isAudioTranscribing: transcribing,
 
         startRecording: handleStartRecording,
@@ -414,12 +473,14 @@ export const AudioProvider = ({
       audioState,
       modalOpen,
       progress,
+      countdown,
       recordingTime,
       mediaRecorder,
       isAudioRecording,
       isAudioCanceled,
       isAudioStopped,
       isAudioPaused,
+      isAudioCountdown,
       isAudioPlaying,
       setAudioFromRecording,
     ]

@@ -110,6 +110,7 @@ export function MultimodalInput({
     // isAudioLoading,
     isAudioPaused,
     isAudioRecording,
+    isAudioCountdown,
     isAudioTranscribing,
     // cancelAll: handleClearingAudio,
   } = useAppAudio();
@@ -232,6 +233,7 @@ export function MultimodalInput({
     <div className="relative flex w-full flex-col gap-4">
       {/* Suggestions */}
       {!isAudioRecording &&
+        !isAudioCountdown &&
         !isAudioTranscribing &&
         !isAudioPaused &&
         messages.length === 0 &&
@@ -270,7 +272,10 @@ export function MultimodalInput({
         )}
 
       {/* Audio Visuals  */}
-      {(isAudioRecording || isAudioTranscribing || isAudioPaused) && (
+      {(isAudioRecording ||
+        isAudioTranscribing ||
+        isAudioPaused ||
+        isAudioCountdown) && (
         <div className="flex w-full justify-center py-2">
           <AudioManagerVisualizer
             className="h-14 min-w-[initial] max-w-[68%] rounded-3xl"
@@ -324,7 +329,9 @@ export function MultimodalInput({
               ? 'Recording audio...'
               : isAudioPaused
                 ? 'Audio recording paused...'
-                : 'Send a message...'
+                : isAudioCountdown
+                  ? 'Starting audio recording...'
+                  : 'Send a message...'
         }
         value={input}
         onChange={handleInput}
@@ -352,13 +359,15 @@ export function MultimodalInput({
         className={cn(
           'absolute bottom-2 right-2 flex w-fit items-center justify-end gap-2 shadow-sm backdrop-blur-md',
           {
-            'rounded-2xl bg-background/20': !isAudioRecording && !isAudioPaused,
-            'rounded-full px-3': isAudioRecording || isAudioPaused,
+            'rounded-2xl bg-background/20':
+              !isAudioRecording && !isAudioPaused && !isAudioCountdown,
+            'rounded-full px-3':
+              isAudioRecording || isAudioPaused || isAudioCountdown,
           }
         )}
       >
         {/* Audio Recording Time */}
-        {(isAudioRecording || isAudioPaused) && (
+        {(isAudioRecording || isAudioPaused || isAudioCountdown) && (
           <AudioRecordingTime
             variant="default"
             className="bg-primary/50 text-xs font-semibold"
@@ -378,16 +387,20 @@ export function MultimodalInput({
             fileInputRef.current?.click();
           }}
           disabled={
-            disabled || isLoading || isAudioRecording || isAudioTranscribing
+            disabled ||
+            isLoading ||
+            isAudioRecording ||
+            isAudioTranscribing ||
+            isAudioCountdown
           }
-          dim={isAudioRecording || isAudioPaused}
+          dim={isAudioRecording || isAudioPaused || isAudioCountdown}
           className=""
         />
 
         {/* Clearing Input */}
         <MultimodalClearInputBtn
           handleOnClick={handleClearingInput}
-          dim={isAudioRecording || isAudioPaused}
+          dim={isAudioRecording || isAudioPaused || isAudioCountdown}
           disabled={isClearInputDisabled}
         />
 
@@ -399,7 +412,7 @@ export function MultimodalInput({
               setMessages((messages) => sanitizeUIMessages(messages));
             }}
             disabled={disabled}
-            dim={isAudioRecording || isAudioPaused}
+            dim={isAudioRecording || isAudioPaused || isAudioCountdown}
             className=""
           />
         ) : (
@@ -410,9 +423,10 @@ export function MultimodalInput({
             disabled={
               input.length === 0 ||
               uploadQueue.length > 0 ||
-              isAudioTranscribing
+              isAudioTranscribing ||
+              isAudioCountdown
             }
-            dim={isAudioRecording || isAudioPaused}
+            dim={isAudioRecording || isAudioPaused || isAudioCountdown}
             className=""
           />
         )}

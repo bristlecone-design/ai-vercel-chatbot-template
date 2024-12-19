@@ -26,10 +26,13 @@ export function AudioRecordingTime({
 }: AudioRecordingTimeProps) {
   const {
     recordingTime,
+    recordingCountdown,
     isAudioRecording,
+    isAudioCountdown,
     isAudioPaused,
     data: audioData,
   } = useAppAudio();
+
   const badgeVariant = variant
     ? variant
     : recordingTime
@@ -37,6 +40,7 @@ export function AudioRecordingTime({
       : 'outline';
 
   const formattedRecordingTime = formatTime(recordingTime);
+
   return (
     <Badge
       key={`audio-recording-time-${badgeVariant}`}
@@ -47,9 +51,11 @@ export function AudioRecordingTime({
         ? `Recording: ${formattedRecordingTime}`
         : isAudioPaused
           ? `Paused: ${formattedRecordingTime}`
-          : audioData
-            ? 'Ready to Record New'
-            : 'Ready to Record'}
+          : isAudioCountdown
+            ? `Starting in: ${recordingCountdown}`
+            : audioData
+              ? 'Ready to Record New'
+              : 'Ready to Record'}
     </Badge>
   );
 }
