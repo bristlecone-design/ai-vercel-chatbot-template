@@ -188,8 +188,8 @@ export const AudioProvider = ({
    */
   useInterval(
     () => {
-      // If the countdown is at 0, start recording
-      if (mediaRecorder && countdown <= 0) {
+      // If the countdown is at 1 (not 0), start recording
+      if (mediaRecorder && countdown <= 1) {
         setAudioState('recording');
         mediaRecorder.start();
         resetCounter();

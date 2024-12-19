@@ -24,6 +24,7 @@ import { useLocalStorage, useWindowSize } from 'usehooks-ts';
 
 import { cn, sanitizeUIMessages } from '@/lib/utils';
 
+import { AudioCountdownDialog } from './audio/audio-countdown-dialog';
 import {
   AudioManagerPauseResumeBtn,
   AudioManagerRecordBtn,
@@ -379,6 +380,9 @@ export function MultimodalInput({
 
         {/* Audio Recording */}
         <AudioManagerRecordBtn disabled={disabled} />
+
+        {/* Audio Modal Countdown */}
+        <AudioCountdownDialog />
 
         {/* Attachments */}
         <MultimodalAttachFilesBtn
