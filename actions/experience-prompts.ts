@@ -37,6 +37,7 @@ import {
   type GeneratedExperienceUserPrompt,
 } from '@/types/experience-prompts';
 import { AIGeneratedExperienceSingleTranslationSchema } from '@/types/experience-translations';
+import { appendGeoAndTimeToContext } from './action-utils';
 import { updateExperienceCTAs } from './experiences-updates';
 
 /**
@@ -46,14 +47,6 @@ import { updateExperienceCTAs } from './experiences-updates';
  *
  * @see https://sdk.vercel.ai/examples/next-app/basics/generating-object
  */
-
-function appendGeoAndTimeToContext(context: string, geo: Geo) {
-  return `${context}\n
-    User's Geo Location and Time:
-      ${geo.city ? `- ${geo.city}${geo.latitude && geo.longitude ? ` (${geo.latitude}, ${geo.longitude})` : ''}.` : ''}
-      - Current date is ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit', weekday: 'short' })}. 
-    `;
-}
 
 function getSystemInstructions(numOfPrompts = 3, geo: Geo = {}) {
   const baseInstructions = `
