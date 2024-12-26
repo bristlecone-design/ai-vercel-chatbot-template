@@ -11,6 +11,8 @@ import { useIsMounted } from 'usehooks-ts';
 import { cn } from '@/lib/utils';
 
 import { Spinner } from '../spinner';
+import { Button } from '../ui/button';
+import { IconAI } from '../ui/icons';
 import { DiscoveryUserSuggestionSkeleton } from './discovery-suggestions-skeletons';
 
 import type {
@@ -28,7 +30,7 @@ export type UseDiscoveryUserSuggestionsProps = {
 export type UseDiscoveryUserSuggestionsResponse = {
   generating: boolean;
   suggestions: AIGeneratedDiscoverySuggestions;
-  generateSuggestions: (input?: string) => Promise<void>;
+  generateSuggestions: (input?: string, append?: boolean) => Promise<void>;
 };
 
 export function useDiscoveryUserSuggestions(
@@ -47,7 +49,10 @@ export function useDiscoveryUserSuggestions(
   const [suggestions, setSuggestions] =
     useState<AIGeneratedDiscoverySuggestions>(defaultValues);
 
-  const handleGeneratingUserSuggestions = async (context?: string) => {
+  const handleGeneratingUserSuggestions = async (
+    context?: string,
+    append = false
+  ) => {
     if (generating) return;
 
     const {
@@ -68,13 +73,25 @@ export function useDiscoveryUserSuggestions(
       }
     );
 
+    // Store all the new suggestions in a temporary array
+    let newSuggestions: AIGeneratedDiscoverySuggestions = [];
+
     for await (const partialObject of readStreamableValue(
       generatedSuggestions
     )) {
       const partialGeneratedSuggestions = partialObject.suggestions || [];
       if (partialGeneratedSuggestions.length) {
-        setSuggestions([...defaultValues, ...partialGeneratedSuggestions]);
+        if (append) {
+          newSuggestions = [...partialGeneratedSuggestions];
+        } else {
+          setSuggestions([...defaultValues, ...partialGeneratedSuggestions]);
+        }
       }
+    }
+
+    // Update the suggestions with all of the new suggestions
+    if (newSuggestions.length) {
+      setSuggestions((prev) => [...prev, ...newSuggestions]);
     }
 
     setGenerating(false);
@@ -97,6 +114,8 @@ export type DiscoveryUserSuggestionsProps = {
   items?: AIGeneratedDiscoverySuggestions;
   itemClassName?: string;
   numOfSkeletons?: number;
+  enableGenerateMore?: boolean;
+  generateMoreContext?: string;
   opts?: StreamPersonalizedUserExperienceSuggestionsOpts;
   onItemSelect: (item: AIGeneratedSingleDiscoverySuggestionModel) => void;
 };
@@ -111,6 +130,8 @@ export function DiscoveryUserSuggestions({
   items,
   itemClassName,
   numOfSkeletons = 4,
+  enableGenerateMore = false,
+  generateMoreContext,
   opts = {},
   onItemSelect,
 }: DiscoveryUserSuggestionsProps) {
@@ -148,56 +169,86 @@ export function DiscoveryUserSuggestions({
       : 0;
 
   return (
-    <div className="relative grid w-full grid-cols-1 items-start gap-3 py-5 md:grid-cols-2">
-      {suggestions.map((suggestion, si) => {
-        const lastGenerated = si === suggestions.length - 1;
-        const lastIsGenerating = generating && lastGenerated;
-        return (
-          <motion.div
-            initial={{ opacity: 0.25, scale: 0.9, y: 0 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            // exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ delay: 0.05 * si }}
-            key={`suggested-action-${suggestion.genId}`}
+    <div className="relative flex w-full flex-col gap-2">
+      {
+        enableGenerateMore && (
+          <Button
+            size="off"
+            variant="ghost"
+            disabled={generating}
             className={cn(
-              'relative isolate overflow-hidden',
-              'flex cursor-pointer flex-col gap-2 p-2.5',
-              'rounded-lg border bg-muted/40 hover:bg-muted/50',
-              `before:absolute before:inset-0 before:-translate-x-full before:border-b before:border-t before:border-rose-100/10 before:hover:animate-[shimmer_2s_infinite]`,
-              itemClassName
+              'group',
+              'gap-1.5 self-end text-sm font-normal text-foreground/50 hover:bg-transparent hover:text-foreground/70',
+              {
+                'text-foreground/20': generating,
+              }
             )}
-            onClick={() => onItemSelect(suggestion)}
+            onClick={() => generateSuggestions(generateMoreContext, true)}
           >
-            <h3
-              className={cn('text-sm font-semibold brightness-65', {
-                'flex items-center gap-1': lastIsGenerating,
-              })}
-            >
-              {suggestion.label}
-              {lastIsGenerating && <Spinner className="" />}
-            </h3>
-            <p className={cn('truncate text-sm')}>{suggestion.title}</p>
-          </motion.div>
-        );
-      })}
-      {isMounted &&
-        isAppReady &&
-        Boolean(skeletonsToLoad) &&
-        [...Array(skeletonsToLoad)].map((_, idx) => {
-          return (
-            <DiscoveryUserSuggestionSkeleton
-              key={`recommendation-skeleton-${idx}`}
-              titleClassName={cn({
-                'w-4/5': idx % 2 === 0, // For indexes that are even
-                'w-3/4': idx % 2 !== 0, // For indexes that are odd
-              })}
-              labelClassName={cn({
-                'w-3/4': idx % 2 === 0, // For indexes that are even
-                'w-1/2': idx % 2 !== 0, // For indexes that are odd
-              })}
+            <IconAI
+              className={cn(
+                'transition-transform duration-300 group-hover:rotate-180',
+                {
+                  'animate-spin': generating,
+                }
+              )}
             />
+            <span className="sr-only">Generate</span>
+            <span className="">More</span>
+          </Button>
+        ) // TODO: Implement this feature
+      }
+      <div className="relative grid w-full grid-cols-1 items-start gap-3 md:grid-cols-2">
+        {suggestions.map((suggestion, si) => {
+          const lastGenerated = si === suggestions.length - 1;
+          const lastIsGenerating = generating && lastGenerated;
+          return (
+            <motion.div
+              initial={{ opacity: 0.25, scale: 0.9, y: 0 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              // exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ delay: 0.05 * si }}
+              key={`suggested-action-${suggestion.genId}`}
+              className={cn(
+                'relative isolate overflow-hidden',
+                'flex cursor-pointer flex-col gap-2 p-2.5',
+                'rounded-lg border bg-muted/40 hover:bg-muted/50',
+                `before:absolute before:inset-0 before:-translate-x-full before:border-b before:border-t before:border-rose-100/10 before:hover:animate-[shimmer_2s_infinite]`,
+                itemClassName
+              )}
+              onClick={() => onItemSelect(suggestion)}
+            >
+              <h3
+                className={cn('text-sm font-semibold brightness-65', {
+                  'flex items-center gap-1': lastIsGenerating,
+                })}
+              >
+                {suggestion.label}
+                {lastIsGenerating && <Spinner className="" />}
+              </h3>
+              <p className={cn('truncate text-sm')}>{suggestion.title}</p>
+            </motion.div>
           );
         })}
+        {isMounted &&
+          isAppReady &&
+          Boolean(skeletonsToLoad) &&
+          [...Array(skeletonsToLoad)].map((_, idx) => {
+            return (
+              <DiscoveryUserSuggestionSkeleton
+                key={`recommendation-skeleton-${idx}`}
+                titleClassName={cn({
+                  'w-4/5': idx % 2 === 0, // For indexes that are even
+                  'w-3/4': idx % 2 !== 0, // For indexes that are odd
+                })}
+                labelClassName={cn({
+                  'w-3/4': idx % 2 === 0, // For indexes that are even
+                  'w-1/2': idx % 2 !== 0, // For indexes that are odd
+                })}
+              />
+            );
+          })}
+      </div>
     </div>
   );
 }

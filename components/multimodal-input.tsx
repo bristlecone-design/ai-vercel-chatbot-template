@@ -240,6 +240,7 @@ export function MultimodalInput({
         attachments.length === 0 &&
         uploadQueue.length === 0 && (
           <DiscoveryUserSuggestions
+            enableGenerateMore
             numOfSkeletons={4}
             onItemSelect={async (item) => {
               window.history.replaceState({}, '', `/chat/${chatId}`);
