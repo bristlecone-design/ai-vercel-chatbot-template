@@ -312,7 +312,7 @@ export function MultimodalInput({
                 ? 'Audio recording paused...'
                 : isAudioCountdown
                   ? 'Starting audio recording...'
-                  : 'Send a request...'
+                  : 'What would you like to discover, share or ask?'
         }
         value={input}
         onChange={handleInput}

@@ -3,6 +3,9 @@ import { cn } from '@/lib/utils';
 export const shimmer =
   'relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_1.5s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent';
 
+export const shimmerBorder =
+  'relative isolate overflow-hidden shadow-xl before:border-t before:border-rose-100/10 before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite]';
+
 function Skeleton({
   className,
   ...props

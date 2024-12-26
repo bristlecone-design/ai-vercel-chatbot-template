@@ -160,7 +160,10 @@ export function DiscoveryUserSuggestions({
             transition={{ delay: 0.05 * si }}
             key={`suggested-action-${suggestion.genId}`}
             className={cn(
-              'flex cursor-pointer flex-col gap-2 rounded-lg border bg-muted/40 p-2.5',
+              'relative isolate overflow-hidden',
+              'flex cursor-pointer flex-col gap-2 p-2.5',
+              'rounded-lg border bg-muted/40 hover:bg-muted/50',
+              `before:absolute before:inset-0 before:-translate-x-full before:border-b before:border-t before:border-rose-100/10 before:hover:animate-[shimmer_2s_infinite]`,
               itemClassName
             )}
             onClick={() => onItemSelect(suggestion)}

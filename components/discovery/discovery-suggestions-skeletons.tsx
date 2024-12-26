@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 
 import { cn } from '@/lib/utils';
-import { Skeleton } from '@/components/ui/skeleton';
+import { BlockSkeleton, shimmer, Skeleton } from '@/components/ui/skeleton';
 
 export function DiscoveryUserSuggestionSkeleton({
   className,
@@ -18,6 +18,8 @@ export function DiscoveryUserSuggestionSkeleton({
     <motion.div
       className={cn(
         'flex flex-col gap-2 rounded-lg border bg-muted/40 p-2.5',
+        shimmer,
+        'before:animate-[shimmer_4.5s_infinite] before:via-white/5',
         className
       )}
       variants={{
@@ -45,8 +47,8 @@ export function DiscoveryUserSuggestionSkeleton({
         ease: 'easeIn',
       }}
     >
-      <Skeleton className={cn('h-5 w-4/5', titleClassName)} />
-      <Skeleton className={cn('h-4 w-3/4', labelClassName)} />
+      <BlockSkeleton className={cn('h-5 w-4/5', titleClassName)} />
+      <BlockSkeleton className={cn('h-4 w-3/4', labelClassName)} />
     </motion.div>
   );
 }
