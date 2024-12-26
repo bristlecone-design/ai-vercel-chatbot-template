@@ -182,7 +182,7 @@ export function Chat({
             className="min-h-[24px] min-w-[24px] shrink-0"
           />
         </div>
-        <form className="mx-auto flex w-full gap-2 bg-background px-4 pb-4 md:max-w-3xl md:pb-6">
+        <form className="mx-auto flex w-full gap-2 px-4 pb-4 md:max-w-3xl md:pb-6">
           <WithAudioProvider
             withCountdown
             transcribeOnComplete

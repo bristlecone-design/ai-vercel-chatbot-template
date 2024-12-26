@@ -14,13 +14,19 @@ export const discoverySuggestionType = z.enum(discoverySuggestionTypeList);
  * Schema for AI Generated Experience Prompts
  */
 export const AIGeneratedSingleDiscoverySuggestionSchema = z.object({
-  id: z.string().optional().describe('ID of discovery suggestion.'),
-  title: z.string().describe('Title of discovery suggestion.'),
+  id: z.string().optional().describe('User/developer defined ID'),
+  genId: z
+    .string()
+    .describe('Random unique ID of discovery suggestion.')
+    .max(8),
+  title: z.string().describe('Title of suggestion.'),
+  label: z.string().describe('Succinct Label of suggestion.').max(84),
   suggestion: z
     .string()
     .describe(
-      'Succinct, relevant discovery suggestion that is call-to-action oriented.',
-    ),
+      'Succinct relevant discovery suggestion that is call-to-action oriented; it combines the title and label for a more detailed suggestion.',
+    )
+    .max(84),
   type: string()
     .default('discover')
     .describe(

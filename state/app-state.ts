@@ -72,7 +72,11 @@ export interface AppStateContext {
   userFirstName: string | null;
   userLastName?: string | null;
   userAvatar: string;
+  userProfileBio: string;
   userProfileEmail: string;
+  userProfileProfession: string;
+  userProfileInterests: string[];
+  userProfileLocation: string;
   userProfilePermalink: string;
   userProfileLoading?: boolean;
 
@@ -90,6 +94,7 @@ export interface AppStateContext {
   handleGettingUserGeo: () => UserAppGeo;
 
   // User Data
+  handleGettingUserProfile: () => USER_PROFILE_MODEL | undefined;
   handleRefreshingUserProfile: (uid?: string) => void;
   handleUpdatingAuthUser: (
     user: USER_PROFILE_MODEL,
@@ -157,7 +162,11 @@ export const DEFAULT_APP_STATE: AppStateContext = {
   userFirstName: '',
   userLastName: '',
   userAvatar: '',
+  userProfileBio: '',
   userProfileEmail: '',
+  userProfileInterests: [],
+  userProfileLocation: '',
+  userProfileProfession: '',
   userProfilePermalink: '',
   userProfileLoading: false,
 
@@ -172,6 +181,7 @@ export const DEFAULT_APP_STATE: AppStateContext = {
   handleGettingUserGeo: () => ({}) as UserAppGeo,
 
   // User Data
+  handleGettingUserProfile: () => DEFAULT_USER_PROFILE_STATE,
   handleRefreshingUserProfile: () => {},
   handleUpdatingAuthUser: () => {},
   handleClearingCacheById: () => {},

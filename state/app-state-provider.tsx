@@ -153,9 +153,18 @@ export default function AppStateProvider({
     );
     const profileUserLastName = null;
 
+    const profileBio = userProfile?.bio || '';
+
     const profileEmail = userProfile?.email || userSession?.email || '';
 
+    const profileInterests = userProfile?.interests || [];
+
+    const profileLocation = userProfile?.location || userLocationProp || '';
+
+    const profileProfession = userProfile?.profession || '';
+
     const profileUsername = userProfile?.username || '';
+
     const profilePermalink = profileUsername
       ? getUserProfilePermalink(profileUsername)
       : '';
@@ -360,6 +369,11 @@ export default function AppStateProvider({
       }
     };
 
+    const handleGettingUserProfile = () => {
+      if (isReady) return userProfile;
+      return undefined;
+    };
+
     const handleSigningOut = async (redirectTo?: string) => {
       await mutateUserSession(undefined);
       await mutateUserProfile(undefined);
@@ -407,14 +421,18 @@ export default function AppStateProvider({
           isPreciseLocation,
 
           // Auth User
-          userProfile,
+          userProfile: isReady ? userProfile : undefined,
           userProfileUsername: activeUsername,
           userDisplayName: profileUserDisplayName,
           userFirstName: profileUserFirstName,
           userLastName: profileUserLastName,
           userAvatar: profileUserAvatar,
-          userProfilePermalink: profilePermalink,
+          userProfileBio: profileBio,
           userProfileEmail: profileEmail,
+          userProfileProfession: profileProfession,
+          userProfileInterests: profileInterests,
+          userProfileLocation: profileLocation,
+          userProfilePermalink: profilePermalink,
           userProfileLoading: isLoading && !userProfile,
 
           isUserAllowed,
@@ -427,6 +445,7 @@ export default function AppStateProvider({
           handleGettingUserGeo,
 
           // User Data
+          handleGettingUserProfile,
           handleRefreshingUserProfile,
           handleUpdatingAuthUser: handleUpdatingAuthUserProfile,
           handleClearingCacheById: handleClearingUserProfileCacheById,
@@ -466,6 +485,13 @@ export default function AppStateProvider({
         userSession,
         userProfile,
         userLocation,
+        userLatitude,
+        userLongitude,
+        profileBio,
+        profileEmail,
+        profileProfession,
+        profileInterests,
+        profileLocation,
       ]
     );
 

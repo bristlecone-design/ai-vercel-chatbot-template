@@ -1,5 +1,4 @@
 'use server';
-
 import { AIGeneratedDiscoverySuggestionsSchema } from '@/types/discovery-suggestions';
 import { openai } from '@ai-sdk/openai';
 import type { Geo } from '@vercel/functions';
@@ -74,6 +73,7 @@ export async function generatePersonalizedUserExperienceSuggestions(
     interests = [],
     excludePrompts = [],
     completedPrompts = [],
+    handleOnFinish,
   } = opts || {};
 
   const { object, usage } = await generateObject({
@@ -91,6 +91,10 @@ export async function generatePersonalizedUserExperienceSuggestions(
     ),
     schema: AIGeneratedDiscoverySuggestionsSchema,
   });
+
+  if (typeof handleOnFinish === 'function') {
+    handleOnFinish(object);
+  }
 
   return { usage, suggestions: object.suggestions };
 }
@@ -147,17 +151,22 @@ export async function streamPartialPersonalizedUserExperienceSuggestions(
   'use server';
 
   // Partial stream (e.g. good for RSC functions)
-  const usageStream = createStreamableValue();
   const partialStream = createStreamableValue();
   const finishedStream = createStreamableValue();
 
   (async () => {
+    // const wrappedModel = wrapLanguageModel({
+    //   model: openai('gpt-4o-mini'),
+    //   middleware: cacheMiddleware,
+    // });
+
     const {
       geolocation,
       numOfSuggestions,
       interests = [],
       excludePrompts = [],
       completedPrompts = [],
+      additionalContext,
       handleOnFinish,
     } = opts;
     const geo = await mapUserGeo(geolocation);
@@ -171,21 +180,20 @@ export async function streamPartialPersonalizedUserExperienceSuggestions(
         interests,
         excludePrompts,
         completedPrompts,
+        additionalContext,
       ),
       schema: AIGeneratedDiscoverySuggestionsSchema,
       onFinish: (object) => {
-        console.log(
-          'Finished streaming personalized user experience suggestions',
-        );
+        // console.log(
+        //   'Finished streaming personalized user experience suggestions',
+        // );
         if (typeof handleOnFinish === 'function') {
           handleOnFinish(object);
         }
+
+        finishedStream.done({ usage: streamUsage, suggestions: object });
       },
     });
-
-    if (streamUsage) {
-      usageStream.done(streamUsage);
-    }
 
     for await (const partialObject of partialObjectStream) {
       partialStream.update(partialObject);
@@ -195,8 +203,6 @@ export async function streamPartialPersonalizedUserExperienceSuggestions(
   })();
 
   return {
-    usage: usageStream.value,
     suggestions: partialStream.value,
-    finishedStream: finishedStream.value,
   };
 }

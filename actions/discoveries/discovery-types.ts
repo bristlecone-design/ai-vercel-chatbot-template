@@ -5,12 +5,13 @@ export type PersonalizedUserExperienceSuggestionsOpts = {
   geolocation?: Geo;
   instructions?: string;
   interests?: Array<string>;
+  additionalContext?: string;
   excludePrompts?: string[];
   completedPrompts?: string[];
+  handleOnFinish?: (object: any) => void;
 };
 
 export type StreamPersonalizedUserExperienceSuggestionsOpts =
   PersonalizedUserExperienceSuggestionsOpts & {
     fullStream?: boolean;
-    handleOnFinish?: (object: any) => void;
   };

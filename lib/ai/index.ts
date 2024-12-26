@@ -36,7 +36,7 @@ export const openaiModel = (apiIdentifier: OpenAIModels) => {
 
 export const customModel = (
   apiIdentifier: AllAIModels,
-  provider: AIModelProviders,
+  provider?: AIModelProviders,
 ) => {
   if (provider === 'anthropic') {
     return anthropicModel(apiIdentifier satisfies AnthropicAIModels);

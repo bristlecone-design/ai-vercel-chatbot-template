@@ -18,7 +18,6 @@ import type {
   Message,
 } from 'ai';
 import cx from 'classnames';
-import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { useLocalStorage, useWindowSize } from 'usehooks-ts';
 
@@ -31,6 +30,7 @@ import {
   AudioManagerVisualizer,
 } from './audio/audio-manager';
 import { AudioRecordingTime } from './audio/audio-recorder';
+import { DiscoveryUserSuggestions } from './discovery/discovery-suggestions';
 import {
   MultimodalAttachFilesBtn,
   MultimodalClearInputBtn,
@@ -38,7 +38,6 @@ import {
   MultimodalSubmitBtn,
 } from './multimodal-input-btns';
 import { PreviewAttachment } from './preview-attachment';
-import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
 
 const suggestedActions = [
@@ -240,36 +239,17 @@ export function MultimodalInput({
         messages.length === 0 &&
         attachments.length === 0 &&
         uploadQueue.length === 0 && (
-          <div className="grid w-full gap-2 sm:grid-cols-2">
-            {suggestedActions.map((suggestedAction, index) => (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                transition={{ delay: 0.05 * index }}
-                key={`suggested-action-${suggestedAction.title}-${index}`}
-                className={index > 1 ? 'hidden sm:block' : 'block'}
-              >
-                <Button
-                  variant="ghost"
-                  onClick={async () => {
-                    window.history.replaceState({}, '', `/chat/${chatId}`);
+          <DiscoveryUserSuggestions
+            numOfSkeletons={4}
+            onItemSelect={async (item) => {
+              window.history.replaceState({}, '', `/chat/${chatId}`);
 
-                    append({
-                      role: 'user',
-                      content: suggestedAction.action,
-                    });
-                  }}
-                  className="h-auto w-full flex-1 items-start justify-start gap-1 rounded-xl border px-4 py-3.5 text-left text-sm sm:flex-col"
-                >
-                  <span className="font-medium">{suggestedAction.title}</span>
-                  <span className="text-muted-foreground">
-                    {suggestedAction.label}
-                  </span>
-                </Button>
-              </motion.div>
-            ))}
-          </div>
+              append({
+                role: 'user',
+                content: item.suggestion,
+              });
+            }}
+          />
         )}
 
       {/* Audio Visuals  */}
@@ -332,7 +312,7 @@ export function MultimodalInput({
                 ? 'Audio recording paused...'
                 : isAudioCountdown
                   ? 'Starting audio recording...'
-                  : 'Send a message...'
+                  : 'Send a request...'
         }
         value={input}
         onChange={handleInput}

@@ -6,6 +6,7 @@ export function createDiscoverySuggestionPrompt(
   interests: PersonalizedUserExperienceSuggestionsOpts['interests'] = [],
   excludePrompts: PersonalizedUserExperienceSuggestionsOpts['excludePrompts'] = [],
   completedPrompts: PersonalizedUserExperienceSuggestionsOpts['completedPrompts'] = [],
+  additionalContext: PersonalizedUserExperienceSuggestionsOpts['additionalContext'] = '',
 ) {
   let inputToUse = input
     ? `Create ${numOfSuggestions} suggestions using the following context: ${input}`
@@ -21,6 +22,10 @@ export function createDiscoverySuggestionPrompt(
 
   if (completedPrompts.length) {
     inputToUse += `\nUser has completed prompts: ${completedPrompts.join(', ')}`;
+  }
+
+  if (additionalContext) {
+    inputToUse += `\nAdditional context: ${additionalContext}`;
   }
 
   return inputToUse;
