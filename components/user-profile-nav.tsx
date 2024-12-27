@@ -18,8 +18,6 @@ import { IconChevronDown } from './ui/icons';
 import { BlockSkeleton } from './ui/skeleton';
 import { UserAvatar } from './user-avatar';
 
-import { getBaseConfigKey } from '@/config/site-base';
-
 export function UserProfileNav() {
   const {
     isAuthenticated,
@@ -78,6 +76,17 @@ export function UserProfileNav() {
             <DropdownMenuSeparator />
           </React.Fragment>
         )}
+        <DropdownMenuItem
+          className="cursor-pointer"
+          onSelect={(event) => {
+            // console.log('onSelect invoked', event);
+          }}
+        >
+          <Link href="/" className="font-medium">
+            Discover &amp; Share
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         {isAuthenticated && (
           <React.Fragment>
             <DropdownMenuItem
@@ -93,21 +102,10 @@ export function UserProfileNav() {
             <DropdownMenuSeparator />
           </React.Fragment>
         )}
-        <DropdownMenuItem
-          className="cursor-pointer"
-          onSelect={(event) => {
-            // console.log('onSelect invoked', event);
-          }}
-        >
-          <Link href="/" className="font-medium">
-            {getBaseConfigKey('shortTitle')}
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <button
             type="button"
-            className="w-full cursor-pointer"
+            className="w-full cursor-pointer text-destructive brightness-150"
             onClick={() => {
               signOut({
                 redirectTo: '/',
