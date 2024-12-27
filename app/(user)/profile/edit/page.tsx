@@ -26,7 +26,7 @@ export async function generateMetadata(
   props: CommonPageProps,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const searchParams = await props.searchParams;
+  // const searchParams = await props.searchParams;
   const userSession = await getUserFromSession();
   // console.log(`**** user session`, { userSession });
 
