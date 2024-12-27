@@ -85,6 +85,7 @@ export interface AppStateContext {
   isProfilePublic?: boolean;
   isInPrivateBeta?: boolean | null;
   isAuthenticated: boolean;
+  isProfileReady: boolean;
   // isAuthUserOwnProfile: boolean;
 
   // Core Handlers
@@ -174,6 +175,7 @@ export const DEFAULT_APP_STATE: AppStateContext = {
   isAuthenticated: false,
   isProfilePublic: false,
   isInPrivateBeta: false,
+  isProfileReady: false,
 
   // Core Handlers
 

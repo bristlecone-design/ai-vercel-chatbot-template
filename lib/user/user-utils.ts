@@ -2,6 +2,10 @@ import type { User as UserDb } from '@/lib/db/schema';
 import type { AppUser } from '@/types/next-auth';
 import type { USER_PROFILE_MODEL, User } from '@/types/user';
 
+export function deriveUsernameFromEmail(email: string) {
+  return email.split('@')[0];
+}
+
 export function getUserInitialsFromName(name: string | undefined) {
   if (!name) return '';
   const nameParts = name.split(' ');

@@ -3,6 +3,8 @@ import 'server-only';
 import type { UserChat } from '@/types/chat-msgs';
 import { genSaltSync, hashSync } from 'bcrypt-ts';
 import { and, asc, desc, eq, gt, gte } from 'drizzle-orm';
+import { getErrorMessage } from '../errors';
+import { deriveUsernameFromEmail } from '../user/user-utils';
 import { db } from './connect';
 import {
   type Chat,
@@ -36,12 +38,17 @@ export async function getUser(email: string): Promise<Array<User>> {
 export async function createUser(email: string, password: string) {
   const salt = genSaltSync(10);
   const hash = hashSync(password, salt);
+  const username = deriveUsernameFromEmail(email);
 
   try {
-    return await db.insert(users).values({ email, password: hash, salt });
+    return await db
+      .insert(users)
+      .values({ email, password: hash, salt, username });
   } catch (error) {
-    console.error('Failed to create user in database');
-    throw error;
+    const errMsg = getErrorMessage(error);
+    const fullErrMsg = `Failed to create user in database: ${errMsg}`;
+    console.error(fullErrMsg);
+    throw fullErrMsg;
   }
 }
 

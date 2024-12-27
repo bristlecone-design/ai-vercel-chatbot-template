@@ -439,6 +439,7 @@ export default function AppStateProvider({
           isAuthenticated,
           isProfilePublic,
           isInPrivateBeta,
+          isProfileReady: isReady && !isLoading,
 
           // Core Handlers
           // User Geo

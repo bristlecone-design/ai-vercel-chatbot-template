@@ -1,6 +1,7 @@
 import { drizzleAdapter } from '@/lib/db/adapter';
 import { getUser } from '@/lib/db/queries';
 import type { User as DbUser } from '@/lib/db/schema';
+import { deriveUsernameFromEmail } from '@/lib/user/user-utils';
 import { compare } from 'bcrypt-ts';
 import NextAuth, { type Session, type User } from 'next-auth';
 import type { Adapter, AdapterUser } from 'next-auth/adapters';
@@ -30,6 +31,7 @@ export const {
         // console.log('github profile::', profile);
         // Map the profile to the expected schema in the database
         const username = profile.login;
+
         const avatar = profile.avatar_url;
         const blogUrl = profile.blog;
         const htmlUrl = profile.html_url;
@@ -66,7 +68,10 @@ export const {
       async profile(profile = {} as GoogleProfile) {
         // console.log('google profile::', profile);
         // Map the profile to the expected schema in the database
-        const username = profile.email?.split('@')[0];
+        const username = profile.email
+          ? deriveUsernameFromEmail(profile.email)
+          : null;
+
         const dbUser = {
           username,
           email: profile.email,
@@ -92,7 +97,7 @@ export const {
       async authorize({ email, password }: any) {
         const users = await getUser(email);
         if (users.length === 0) return null;
-        // biome-ignore lint: Forbidden non-null assertion.
+
         const passwordsMatch = await compare(password, users[0].password!);
         if (!passwordsMatch) return null;
         return users[0] as any;

@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import { Button } from './ui/button';
-import { IconChevronDown } from './ui/icons';
+import { IconChevronDown, IconProfileUserCircle } from './ui/icons';
 import { BlockSkeleton } from './ui/skeleton';
 import { UserAvatar } from './user-avatar';
 
@@ -24,6 +24,7 @@ export function UserProfileNav() {
   const isOnShareDiscover = currentPath === '/';
 
   const {
+    isProfileReady,
     isAuthenticated,
     userProfileEmail,
     userAvatar,
@@ -47,7 +48,12 @@ export function UserProfileNav() {
               className="rounded-full"
             />
           )}
-          {!userAvatar && <BlockSkeleton className="size-7 rounded-full" />}
+          {!userAvatar && !isProfileReady && (
+            <BlockSkeleton className="size-7 rounded-full" />
+          )}
+          {!userAvatar && isProfileReady && (
+            <IconProfileUserCircle className="size-5" />
+          )}
           <span className="hidden truncate sm:inline-block">
             {userProfileLoading ? (
               <BlockSkeleton className="h-6 w-20" />
