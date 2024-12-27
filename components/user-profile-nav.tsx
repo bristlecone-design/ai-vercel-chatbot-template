@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useAppState } from '@/state/app-state';
 import { signOut } from 'next-auth/react';
 
@@ -19,6 +20,9 @@ import { BlockSkeleton } from './ui/skeleton';
 import { UserAvatar } from './user-avatar';
 
 export function UserProfileNav() {
+  const currentPath = usePathname();
+  const isOnShareDiscover = currentPath === '/';
+
   const {
     isAuthenticated,
     userProfileEmail,
@@ -76,16 +80,31 @@ export function UserProfileNav() {
             <DropdownMenuSeparator />
           </React.Fragment>
         )}
-        <DropdownMenuItem
-          className="cursor-pointer"
-          onSelect={(event) => {
-            // console.log('onSelect invoked', event);
-          }}
-        >
-          <Link href="/" className="font-medium">
-            Discover &amp; Share
-          </Link>
-        </DropdownMenuItem>
+        {!isOnShareDiscover && (
+          <DropdownMenuItem
+            disabled={isOnShareDiscover}
+            className="cursor-pointer"
+            onSelect={(event) => {
+              // console.log('onSelect invoked', event);
+            }}
+          >
+            <Link href="/" className="font-medium">
+              Share &amp; Discover
+            </Link>
+          </DropdownMenuItem>
+        )}
+        {isOnShareDiscover && (
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onSelect={(event) => {
+              // console.log('onSelect invoked', event);
+            }}
+          >
+            <Link href="/" className="font-medium">
+              New Discovery
+            </Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         {isAuthenticated && (
           <React.Fragment>
