@@ -72,29 +72,35 @@ export function UserProfileForm({
 
   const userId = userProfile?.id;
 
-  const [userName, setUserNameValue] = useState<string>(userDisplayName || '');
+  const [userName, setUserNameValue] = useState<string>(
+    userProfileProp?.name || userDisplayName || ''
+  );
 
-  const [userBio, setUserBio] = useState<string>(userProfile?.bio || '');
+  const [userBio, setUserBio] = useState<string>(
+    userProfileProp?.bio || userProfile?.bio || ''
+  );
 
   const [userEmail, setUserEmailValue] = useState<string>(
-    userProfile?.email || ''
+    userProfileProp?.email || userProfile?.email || ''
   );
 
   const [userAvatar, setUserAvatar] = useState<string>(
-    userProfile?.avatar || userProfile?.image || ''
+    userProfileProp?.avatar || userProfile?.avatar || userProfile?.image || ''
   );
   // console.log(`**** userAvatar`, userAvatar);
 
   const [userUrl, setUserUrl] = useState<string>(
-    shortenUrl(userProfile?.url || '')
+    shortenUrl(userProfileProp?.url || userProfile?.url || '')
   );
 
   const [userUrlSocial, setUserUrlSocial] = useState<string>(
-    userProfile?.urlSocial || ''
+    userProfileProp?.urlSocial || userProfile?.urlSocial || ''
   );
 
   const [interestValue, setInterestValue] = useState<string>(
-    userProfile?.interests?.join(',') || ''
+    userProfileProp?.interests?.join(',') ||
+      userProfile?.interests?.join(',') ||
+      ''
   );
   const interestValueItems = interestValue
     .split(',')
@@ -102,7 +108,7 @@ export function UserProfileForm({
     .filter(Boolean);
 
   const [professionValue, setProfessionValue] = useState<string>(
-    userProfile?.profession || ''
+    userProfileProp?.profession || userProfile?.profession || ''
   );
   const professionValueItems = professionValue
     .split(',')
@@ -110,15 +116,18 @@ export function UserProfileForm({
     .filter(Boolean);
 
   const [organizationValue, setOrganizationValue] = useState<string>(
-    userProfile?.organization || userProfile?.company || ''
+    userProfileProp?.organization ||
+      userProfile?.organization ||
+      userProfile?.company ||
+      ''
   );
 
   const [locationValue, setLocationValue] = useState<string>(
-    userProfile?.location || ''
+    userProfileProp?.location || userProfile?.location || ''
   );
 
   const [publicVisibility, setPublicVisibility] = useState<boolean>(
-    userProfile?.public || false
+    userProfileProp?.public || userProfile?.public || false
   );
 
   const showNameToast = (name: string | undefined) => {
@@ -624,7 +633,7 @@ export function UserProfileForm({
                 id="name"
                 type="text"
                 name="name"
-                disabled={updating}
+                disabled={updating || !isReady}
                 // defaultValue={userName}
                 value={userName}
                 // value={userProfile?.name}
@@ -638,7 +647,7 @@ export function UserProfileForm({
               />
               {/* Loader/spinner component absolute positioned half way from top and bottom */}
               {(updating || !isReady) && (
-                <div className="absolute left-3 top-1/2 flex -translate-y-1/2 items-center justify-center rounded-lg bg-background/75">
+                <div className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center justify-center rounded-lg bg-background/75">
                   <Spinner className="" />
                 </div>
               )}
@@ -662,7 +671,7 @@ export function UserProfileForm({
                 id="bio"
                 name="bio"
                 maxLength={140}
-                disabled={updating}
+                disabled={updating || !isReady}
                 // defaultValue={userName}
                 value={userBio}
                 onBlur={onBioBlur}
@@ -710,7 +719,7 @@ export function UserProfileForm({
                 // createName="newGenreName"
                 // createLabel="Name:"
                 fullWidth
-                // disabled={updating}
+                disabled={updating || !isReady}
                 inputName="profession"
                 onValuesChange={onProfessionChange}
                 defaultValue={professionValueItems}
@@ -726,17 +735,17 @@ export function UserProfileForm({
             <div className="relative">
               <Input
                 disabled
-                className={cn('', inputClassName)}
+                required
                 id="email"
                 type="email"
                 name="email"
                 value={userEmail}
+                placeholder="Enter your email address"
                 onChange={(e) => {
                   e.preventDefault();
                 }}
-                placeholder="Enter your email address"
+                className={cn('', inputClassName)}
                 // defaultValue={user?.email}
-                required
               />
             </div>
           </div>
@@ -766,8 +775,8 @@ export function UserProfileForm({
                 id="organization"
                 type="text"
                 name="organization"
-                disabled={updating}
                 value={organizationValue}
+                disabled={updating || !isReady}
                 className={cn('', inputClassName)}
                 onChange={onOrganizationChange}
                 // defaultValue={user?.organization}
@@ -800,8 +809,8 @@ export function UserProfileForm({
                 // createName="newGenreName"
                 // createLabel="Name:"
                 fullWidth
-                // disabled={updating}
                 maxSelections={8}
+                disabled={updating || !isReady}
                 inputName="interests"
                 btnPlaceholder="Add Interests"
                 placeholder="Kayaking, Hiking, Stargazing, etc."
@@ -844,8 +853,8 @@ export function UserProfileForm({
                 type="text"
                 name="website"
                 // defaultValue={user?.interests}
-                disabled={updating}
                 value={userUrl}
+                disabled={updating || !isReady}
                 className={cn('', inputClassName)}
                 onChange={onUrlChange}
                 onKeyDown={onUrlKeyDown}
@@ -872,8 +881,8 @@ export function UserProfileForm({
                 type="text"
                 name="social"
                 // defaultValue={user?.interests}
-                disabled={updating}
                 value={userUrlSocial}
+                disabled={updating || !isReady}
                 className={cn('', inputClassName)}
                 onChange={onUrlSocialChange}
                 onKeyDown={onUrlSocialKeyDown}
@@ -892,8 +901,8 @@ export function UserProfileForm({
                 id="location"
                 type="text"
                 name="location"
-                disabled={updating}
                 value={locationValue}
+                disabled={updating || !isReady}
                 className={cn('', inputClassName)}
                 onChange={onLocationChange}
                 // defaultValue={user?.location}
@@ -929,7 +938,7 @@ export function UserProfileForm({
                 className=""
                 id="public"
                 name="public"
-                disabled={updating}
+                disabled={updating || !isReady}
                 value={publicVisibility ? 1 : 0}
                 checked={publicVisibility}
                 onCheckedChange={onPublicVisibilityChange}

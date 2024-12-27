@@ -118,7 +118,7 @@ export default async function UserProfileEditPage(props: CommonPageProps) {
           <UserProfileForm
             noTitle
             noSaveBtn
-            // userProfile={userProfile}
+            userProfile={userProfile}
             // formRef={formRef}
             // disabled={isFormProcessing || experienceCreated}
             // handleOnComplete={handleOnCreateExperienceComplete}
