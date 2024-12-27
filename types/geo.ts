@@ -1,7 +1,9 @@
 import type { Geo } from '@vercel/edge';
 import type { GeolocatedResult } from 'react-geolocated';
 
-export interface GeoResponse extends Geo {
+export interface GeoBase extends Geo {}
+
+export interface GeoResponse extends GeoBase {
   location: string;
   defaultCity?: string;
   parsedCity: string;

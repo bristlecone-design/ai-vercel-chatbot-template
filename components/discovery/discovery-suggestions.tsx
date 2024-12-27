@@ -8,6 +8,7 @@ import { readStreamableValue } from 'ai/rsc';
 import { motion } from 'framer-motion';
 import { useIsMounted } from 'usehooks-ts';
 
+import { getErrorMessage } from '@/lib/errors';
 import { cn } from '@/lib/utils';
 
 import { Spinner } from '../spinner';
@@ -19,10 +20,12 @@ import type {
   AIGeneratedDiscoverySuggestions,
   AIGeneratedSingleDiscoverySuggestionModel,
 } from '@/types/discovery-suggestions';
+import type { GeoBase } from '@/types/geo';
 
 export type UseDiscoveryUserSuggestionsProps = {
   runOnMount?: boolean;
-  initialRunPrompt?: string;
+  runOnParentReady?: boolean;
+  initialPrompt?: string;
   initialValues?: AIGeneratedDiscoverySuggestions;
   generateOpts?: StreamPersonalizedUserExperienceSuggestionsOpts;
 };
@@ -30,7 +33,7 @@ export type UseDiscoveryUserSuggestionsProps = {
 export type UseDiscoveryUserSuggestionsResponse = {
   generating: boolean;
   suggestions: AIGeneratedDiscoverySuggestions;
-  generateSuggestions: (input?: string, append?: boolean) => Promise<void>;
+  generateSuggestions: (input?: string, append?: boolean) => Promise<boolean>;
 };
 
 export function useDiscoveryUserSuggestions(
@@ -38,11 +41,16 @@ export function useDiscoveryUserSuggestions(
 ): UseDiscoveryUserSuggestionsResponse {
   const {
     runOnMount,
-    initialRunPrompt = '',
+    runOnParentReady,
+    initialPrompt = '',
     initialValues,
     generateOpts,
   } = props || {};
 
+  const isHookMountedCheck = useIsMounted();
+  const isHookMounted = isHookMountedCheck();
+
+  const [initialized, setInitialized] = useState(false);
   const [generating, setGenerating] = useState(false);
 
   const defaultValues = initialValues || [];
@@ -53,55 +61,70 @@ export function useDiscoveryUserSuggestions(
     context?: string,
     append = false
   ) => {
-    if (generating) return;
+    try {
+      if (generating) return true;
 
-    const {
-      interests,
-      geolocation,
-      numOfSuggestions = 4,
-      //   handleOnFinish,
-    } = generateOpts || {};
-
-    setGenerating(true);
-
-    const { suggestions: generatedSuggestions } = await generateUserSuggestions(
-      context,
-      {
-        numOfSuggestions,
-        geolocation,
+      const {
         interests,
-      }
-    );
+        geolocation,
+        numOfSuggestions = 4,
+        //   handleOnFinish,
+      } = generateOpts || {};
 
-    // Store all the new suggestions in a temporary array
-    let newSuggestions: AIGeneratedDiscoverySuggestions = [];
+      setGenerating(true);
 
-    for await (const partialObject of readStreamableValue(
-      generatedSuggestions
-    )) {
-      const partialGeneratedSuggestions = partialObject.suggestions || [];
-      if (partialGeneratedSuggestions.length) {
-        if (append) {
-          newSuggestions = [...partialGeneratedSuggestions];
-        } else {
-          setSuggestions([...defaultValues, ...partialGeneratedSuggestions]);
+      const { suggestions: generatedSuggestions } =
+        await generateUserSuggestions(context, {
+          numOfSuggestions,
+          geolocation,
+          interests,
+        });
+
+      // Store all the new suggestions in a temporary array
+      let newSuggestions: AIGeneratedDiscoverySuggestions = [];
+
+      for await (const partialObject of readStreamableValue(
+        generatedSuggestions
+      )) {
+        const partialGeneratedSuggestions = partialObject.suggestions || [];
+        if (partialGeneratedSuggestions.length) {
+          if (append) {
+            newSuggestions = [...partialGeneratedSuggestions];
+          } else {
+            setSuggestions([...defaultValues, ...partialGeneratedSuggestions]);
+          }
         }
       }
-    }
 
-    // Update the suggestions with all of the new suggestions
-    if (newSuggestions.length) {
-      setSuggestions((prev) => [...prev, ...newSuggestions]);
-    }
+      // Update the suggestions with all of the new suggestions
+      if (newSuggestions.length) {
+        setSuggestions((prev) => [...prev, ...newSuggestions]);
+      }
 
-    setGenerating(false);
+      setGenerating(false);
+
+      return true;
+    } catch (error) {
+      const errMsg = getErrorMessage(error);
+      console.error('Error generating user suggestions:', errMsg);
+      setGenerating(false);
+      return false;
+    }
   };
 
   useEffect(() => {
-    if (runOnMount) {
-      handleGeneratingUserSuggestions(initialRunPrompt);
+    const initialize = async () => {
+      const generatedResponse =
+        await handleGeneratingUserSuggestions(initialPrompt);
+      setInitialized(generatedResponse);
+    };
+
+    if (isHookMounted && !initialized) {
+      if (runOnMount || runOnParentReady) {
+        initialize();
+      }
     }
-  }, [runOnMount]);
+  }, [isHookMounted, initialized, runOnMount, runOnParentReady]);
 
   return {
     generating,
@@ -142,21 +165,27 @@ export function DiscoveryUserSuggestions({
     isReady: isAppReady,
     userProfileBio,
     userProfileInterests,
-    userProfileLocation,
     userProfileProfession,
+    userProfileLocation,
+    userLatitude,
+    userLongitude,
   } = useAppState();
+
+  const discoveryGeo = {
+    city: userProfileLocation,
+    latitude: userLatitude,
+    longitude: userLongitude,
+  } as GeoBase;
+
+  const isParentReady = isAppReady && isMounted && Boolean(userProfileLocation);
 
   const { generating, suggestions, generateSuggestions } =
     useDiscoveryUserSuggestions({
-      runOnMount: true,
+      runOnParentReady: isParentReady,
       initialValues: items,
       generateOpts: {
         ...(opts || {}),
-        geolocation: {
-          city: userProfileLocation,
-          latitude: userProfileLocation,
-          longitude: userProfileLocation,
-        },
+        geolocation: discoveryGeo,
         interests: opts?.interests || userProfileInterests,
         additionalContext: userProfileBio + userProfileProfession,
       },

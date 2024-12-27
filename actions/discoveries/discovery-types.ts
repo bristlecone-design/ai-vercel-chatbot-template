@@ -1,8 +1,8 @@
-import type { Geo } from '@vercel/functions';
+import type { GeoBase } from '@/types/geo';
 
 export type PersonalizedUserExperienceSuggestionsOpts = {
   numOfSuggestions?: number;
-  geolocation?: Geo;
+  geolocation?: GeoBase;
   instructions?: string;
   interests?: Array<string>;
   additionalContext?: string;
