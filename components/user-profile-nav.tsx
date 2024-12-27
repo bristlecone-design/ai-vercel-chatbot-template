@@ -70,9 +70,24 @@ export function UserProfileNav() {
             >
               <Link
                 href={userProfilePermalink}
-                className="brightness-65 truncate font-medium"
+                className="truncate text-xs font-medium brightness-65"
               >
                 {userProfileEmail}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </React.Fragment>
+        )}
+        {isAuthenticated && (
+          <React.Fragment>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onSelect={(event) => {
+                // console.log('onSelect invoked', event);
+              }}
+            >
+              <Link href="/profile/edit" className="font-medium">
+                Personalize
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />

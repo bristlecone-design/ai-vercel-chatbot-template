@@ -112,6 +112,9 @@ export default async function UserProfileEditPage(props: CommonPageProps) {
           <h2 className="flex items-start justify-between gap-2.5 sm:items-center">
             Edit Profile
           </h2>
+          <p>
+            Your profile is used to personalize your experience on the platform.
+          </p>
           <UserProfileForm
             noTitle
             noSaveBtn
