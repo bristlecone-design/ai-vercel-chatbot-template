@@ -3,9 +3,9 @@ import type { PersonalizedUserExperienceSuggestionsOpts } from './discovery-type
 export function createDiscoverySuggestionPrompt(
   input: string | undefined,
   numOfSuggestions = 4,
+  numOfExistingSuggestions = 0,
   interests: PersonalizedUserExperienceSuggestionsOpts['interests'] = [],
-  excludePrompts: PersonalizedUserExperienceSuggestionsOpts['excludePrompts'] = [],
-  completedPrompts: PersonalizedUserExperienceSuggestionsOpts['completedPrompts'] = [],
+  excludeSuggestions: PersonalizedUserExperienceSuggestionsOpts['excludeSuggestions'] = [],
   additionalContext: PersonalizedUserExperienceSuggestionsOpts['additionalContext'] = '',
 ) {
   let inputToUse = input
@@ -16,12 +16,12 @@ export function createDiscoverySuggestionPrompt(
     inputToUse += `\nInterests: ${interests.join(', ')}`;
   }
 
-  if (excludePrompts.length) {
-    inputToUse += `\nExclude prompts: ${excludePrompts.join(', ')}`;
+  if (excludeSuggestions.length) {
+    inputToUse += `\nExclude suggestions: ${excludeSuggestions.join(', ')}`;
   }
 
-  if (completedPrompts.length) {
-    inputToUse += `\nUser has completed prompts: ${completedPrompts.join(', ')}`;
+  if (numOfExistingSuggestions) {
+    inputToUse += `\nExisting suggestions count: ${numOfExistingSuggestions}`;
   }
 
   if (additionalContext) {

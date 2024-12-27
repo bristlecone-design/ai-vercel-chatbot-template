@@ -163,12 +163,13 @@ export async function streamPartialPersonalizedUserExperienceSuggestions(
     const {
       geolocation,
       numOfSuggestions,
+      numOfExistingSuggestions,
       interests = [],
-      excludePrompts = [],
-      completedPrompts = [],
+      excludeSuggestions = [],
       additionalContext,
       handleOnFinish,
     } = opts;
+
     const geo = await mapUserGeo(geolocation);
 
     const { usage: streamUsage, partialObjectStream } = streamObject({
@@ -177,15 +178,16 @@ export async function streamPartialPersonalizedUserExperienceSuggestions(
       prompt: createDiscoverySuggestionPrompt(
         input,
         numOfSuggestions,
+        numOfExistingSuggestions,
         interests,
-        excludePrompts,
-        completedPrompts,
+        excludeSuggestions,
         additionalContext,
       ),
       schema: AIGeneratedDiscoverySuggestionsSchema,
       onFinish: (object) => {
         // console.log(
         //   'Finished streaming personalized user experience suggestions',
+        //   JSON.stringify(object, null, 2),
         // );
         if (typeof handleOnFinish === 'function') {
           handleOnFinish(object);

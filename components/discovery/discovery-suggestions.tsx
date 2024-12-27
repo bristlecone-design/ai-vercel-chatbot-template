@@ -32,6 +32,7 @@ export type UseDiscoveryUserSuggestionsProps = {
 
 export type UseDiscoveryUserSuggestionsResponse = {
   generating: boolean;
+  generationCount: number;
   suggestions: AIGeneratedDiscoverySuggestions;
   generateSuggestions: (input?: string, append?: boolean) => Promise<boolean>;
 };
@@ -46,6 +47,13 @@ export function useDiscoveryUserSuggestions(
     initialValues,
     generateOpts,
   } = props || {};
+
+  const {
+    interests,
+    geolocation,
+    numOfSuggestions = 4,
+    //   handleOnFinish,
+  } = generateOpts || {};
 
   const isHookMountedCheck = useIsMounted();
   const isHookMounted = isHookMountedCheck();
@@ -64,41 +72,42 @@ export function useDiscoveryUserSuggestions(
     try {
       if (generating) return true;
 
-      const {
-        interests,
-        geolocation,
-        numOfSuggestions = 4,
-        //   handleOnFinish,
-      } = generateOpts || {};
-
       setGenerating(true);
 
       const { suggestions: generatedSuggestions } =
         await generateUserSuggestions(context, {
           numOfSuggestions,
+          numOfExistingSuggestions: suggestions.length,
+          excludeSuggestions: suggestions.map((s) => s.suggestion),
           geolocation,
           interests,
         });
-
-      // Store all the new suggestions in a temporary array
-      let newSuggestions: AIGeneratedDiscoverySuggestions = [];
 
       for await (const partialObject of readStreamableValue(
         generatedSuggestions
       )) {
         const partialGeneratedSuggestions = partialObject.suggestions || [];
         if (partialGeneratedSuggestions.length) {
-          if (append) {
-            newSuggestions = [...partialGeneratedSuggestions];
-          } else {
-            setSuggestions([...defaultValues, ...partialGeneratedSuggestions]);
+          const validSuggestions: AIGeneratedSingleDiscoverySuggestionModel[] =
+            partialGeneratedSuggestions.filter(
+              (s: AIGeneratedSingleDiscoverySuggestionModel) => {
+                // Check if the suggestion has the min. required properties
+                const isValid = s.genId && s.title;
+                return isValid;
+              }
+            );
+
+          if (validSuggestions.length) {
+            setSuggestions((prev) => {
+              const uniqueSuggestions = validSuggestions.filter(
+                (s, si) =>
+                  validSuggestions.findIndex((s2) => s.title === s2.title) ===
+                  si
+              );
+              return uniqueSuggestions;
+            });
           }
         }
-      }
-
-      // Update the suggestions with all of the new suggestions
-      if (newSuggestions.length) {
-        setSuggestions((prev) => [...prev, ...newSuggestions]);
       }
 
       setGenerating(false);
@@ -126,9 +135,15 @@ export function useDiscoveryUserSuggestions(
     }
   }, [isHookMounted, initialized, runOnMount, runOnParentReady]);
 
+  // Number of suggestions generated
+  const generationCount = generating
+    ? suggestions.length - numOfSuggestions
+    : suggestions.length;
+
   return {
     generating,
     suggestions,
+    generationCount,
     generateSuggestions: handleGeneratingUserSuggestions,
   };
 }
@@ -179,7 +194,7 @@ export function DiscoveryUserSuggestions({
 
   const isParentReady = isAppReady && isMounted && Boolean(userProfileLocation);
 
-  const { generating, suggestions, generateSuggestions } =
+  const { generating, suggestions, generationCount, generateSuggestions } =
     useDiscoveryUserSuggestions({
       runOnParentReady: isParentReady,
       initialValues: items,

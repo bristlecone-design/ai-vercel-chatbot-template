@@ -2,12 +2,13 @@ import type { GeoBase } from '@/types/geo';
 
 export type PersonalizedUserExperienceSuggestionsOpts = {
   numOfSuggestions?: number;
+  numOfExistingSuggestions?: number;
   geolocation?: GeoBase;
   instructions?: string;
   interests?: Array<string>;
   additionalContext?: string;
-  excludePrompts?: string[];
-  completedPrompts?: string[];
+  excludeSuggestions?: string[];
+  completedSuggestions?: string[];
   handleOnFinish?: (object: any) => void;
 };
 

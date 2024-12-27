@@ -24,3 +24,9 @@ export const areSimpleObjectsEqual = (
     ? obj1Keys.every((key) => obj1[key] === obj2[key])
     : false;
 };
+
+/**
+ * Is the givne object an empty object?
+ */
+export const isEmptyObject = (obj: SimpleObject): boolean =>
+  Object.keys(obj).length === 0;
