@@ -10,6 +10,7 @@ import { useIsMounted } from 'usehooks-ts';
 
 import { getErrorMessage } from '@/lib/errors';
 import { cn } from '@/lib/utils';
+import { useLocalStorage } from '@/hooks/use-local-storage';
 
 import { Spinner } from '../spinner';
 import { Button } from '../ui/button';
@@ -63,6 +64,10 @@ export function useDiscoveryUserSuggestions(
 
   const [initialized, setInitialized] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const [generationCount, setGenerationCount] = useLocalStorage<number>(
+    'genCount',
+    0
+  );
 
   const defaultValues = initialValues || [];
   const [suggestions, setSuggestions] =
@@ -82,7 +87,7 @@ export function useDiscoveryUserSuggestions(
       const { suggestions: generatedSuggestions } =
         await generateUserSuggestions(context, {
           numOfSuggestions: numToGenerate,
-          numOfExistingSuggestions: suggestions.length,
+          numOfExistingSuggestions: generationCount,
           excludeSuggestions: suggestions.map((s) => s.suggestion),
           geolocation,
           interests,
@@ -116,6 +121,7 @@ export function useDiscoveryUserSuggestions(
       }
 
       setGenerating(false);
+      setGenerationCount((prev) => prev + 1);
 
       return true;
     } catch (error) {
@@ -139,11 +145,6 @@ export function useDiscoveryUserSuggestions(
       }
     }
   }, [isHookMounted, initialized, runOnMount, runOnParentReady]);
-
-  // Number of suggestions generated
-  const generationCount = generating
-    ? suggestions.length - numOfSuggestionsProp
-    : suggestions.length;
 
   return {
     generating,

@@ -1,8 +1,13 @@
 'use server';
+import { cacheMiddleware } from '@/lib/ai/cache-middleware';
 import { AIGeneratedDiscoverySuggestionsSchema } from '@/types/discovery-suggestions';
 import { openai } from '@ai-sdk/openai';
 import type { Geo } from '@vercel/functions';
-import { generateObject, streamObject } from 'ai';
+import {
+  generateObject,
+  streamObject,
+  experimental_wrapLanguageModel as wrapLanguageModel,
+} from 'ai';
 import { createStreamableValue } from 'ai/rsc';
 import {
   getAndMapUserGeo,
@@ -68,11 +73,12 @@ export async function generatePersonalizedUserExperienceSuggestions(
 
   const {
     numOfSuggestions = 6,
+    numOfExistingSuggestions,
     geolocation,
     instructions,
     interests = [],
-    excludePrompts = [],
-    completedPrompts = [],
+    excludeSuggestions = [],
+    completedSuggestions = [],
     handleOnFinish,
   } = opts || {};
 
@@ -85,9 +91,10 @@ export async function generatePersonalizedUserExperienceSuggestions(
     prompt: createDiscoverySuggestionPrompt(
       input,
       numOfSuggestions,
+      numOfExistingSuggestions,
       interests,
-      excludePrompts,
-      completedPrompts,
+      excludeSuggestions,
+      // completedSuggestions,
     ),
     schema: AIGeneratedDiscoverySuggestionsSchema,
   });
@@ -107,11 +114,12 @@ export async function streamTextPersonalizedUserExperienceSuggestions(
 
   const {
     numOfSuggestions = 6,
+    numOfExistingSuggestions,
     geolocation,
     instructions,
     interests = [],
-    excludePrompts = [],
-    completedPrompts = [],
+    excludeSuggestions = [],
+    completedSuggestions = [],
     handleOnFinish,
   } = opts || {};
 
@@ -123,9 +131,10 @@ export async function streamTextPersonalizedUserExperienceSuggestions(
     prompt: createDiscoverySuggestionPrompt(
       input,
       numOfSuggestions,
+      numOfExistingSuggestions,
       interests,
-      excludePrompts,
-      completedPrompts,
+      excludeSuggestions,
+      // completedSuggestions,
     ),
     schema: AIGeneratedDiscoverySuggestionsSchema,
     onFinish: (object) => {
@@ -155,25 +164,29 @@ export async function streamPartialPersonalizedUserExperienceSuggestions(
   const finishedStream = createStreamableValue();
 
   (async () => {
-    // const wrappedModel = wrapLanguageModel({
-    //   model: openai('gpt-4o-mini'),
-    //   middleware: cacheMiddleware,
-    // });
-
     const {
+      useCache = true,
       geolocation,
       numOfSuggestions,
       numOfExistingSuggestions,
       interests = [],
       excludeSuggestions = [],
       additionalContext,
+      model = 'gpt-4o-mini',
       handleOnFinish,
     } = opts;
+
+    const llmModel = useCache
+      ? wrapLanguageModel({
+          model: openai(model),
+          middleware: cacheMiddleware,
+        })
+      : openai(model);
 
     const geo = await mapUserGeo(geolocation);
 
     const { usage: streamUsage, partialObjectStream } = streamObject({
-      model: openai('gpt-4o-mini'),
+      model: llmModel,
       system: getSystemDiscoverySuggestionInstructions(numOfSuggestions, geo),
       prompt: createDiscoverySuggestionPrompt(
         input,
