@@ -1,6 +1,7 @@
 import type { ComponentProps } from 'react';
 
-import { type SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
+import { cn } from '@/lib/utils';
+import { useSidebar, type SidebarTrigger } from '@/components/ui/sidebar';
 import { BetterTooltip } from '@/components/ui/tooltip';
 
 import { SidebarLeftIcon } from './icons';
@@ -16,7 +17,10 @@ export function SidebarToggle({
       <Button
         onClick={toggleSidebar}
         variant="outline"
-        className="md:px-2 md:h-fit"
+        className={cn(
+          'md:h-fit md:px-2',
+          'bg-transparent backdrop-blur-sm hover:bg-muted/40 hover:backdrop-blur-lg'
+        )}
       >
         <SidebarLeftIcon size={16} />
       </Button>

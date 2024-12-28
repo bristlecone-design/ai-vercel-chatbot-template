@@ -71,10 +71,14 @@ export function DiscoveryByline({
 }: DiscoveryBylineProps) {
   return (
     <p
-      className={cn('lead text-center text-foreground/75', {
-        'text-2xl': size === 'sm',
-        'text-lg sm:text-xl lg:text-2xl': size === 'default',
-      })}
+      className={cn(
+        'lead text-center text-foreground/75',
+        'max-w-xs sm:max-w-full',
+        {
+          'text-2xl': size === 'sm',
+          'text-lg sm:text-xl lg:text-2xl': size === 'default',
+        }
+      )}
     >
       {customText}
       {!customText && (

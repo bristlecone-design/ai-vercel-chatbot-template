@@ -12,7 +12,7 @@ import {
   removeFileFetch,
   uploadFileFetch,
 } from '@/lib/storage/vercel-blob-fetch';
-import { fetcher } from '@/lib/utils';
+import { cn, fetcher } from '@/lib/utils';
 import { ChatHeader } from '@/components/header-chat';
 import { PreviewMessage, ThinkingMessage } from '@/components/message';
 import { useScrollToBottom } from '@/components/use-scroll-to-bottom';
@@ -28,11 +28,15 @@ export function Chat({
   initialMessages,
   selectedModelId,
   disabled = false,
+  msgsContainerClassName,
+  className,
 }: {
   id: string;
   initialMessages: Array<Message>;
   selectedModelId: string;
+  msgsContainerClassName?: string;
   disabled?: boolean;
+  className?: string;
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -142,75 +146,86 @@ export function Chat({
 
   return (
     <>
-      <div className="flex h-dvh min-w-0 flex-col bg-background">
+      <div className={cn('flex h-dvh w-full min-w-0 flex-col', className)}>
         <ChatHeader selectedModelId={selectedModelId} />
         <div
-          ref={messagesContainerRef}
-          className="flex min-w-0 flex-1 flex-col gap-6 overflow-y-scroll pt-4"
-        >
-          {messages.length === 0 && (
-            <Overview
-              avatarNoProfileLink={isAudioRecording}
-              avatarPing={isAudioRecording}
-            />
+          className={cn(
+            'flex w-full grow flex-col items-center gap-2 self-center overflow-clip rounded-3xl md:max-w-3xl'
+            // msgsContainerClassName
           )}
-
-          {messages.map((message, index) => (
-            <PreviewMessage
-              key={message.id}
-              chatId={id}
-              message={message}
-              block={block}
-              setBlock={setBlock}
-              isLoading={isLoading && messages.length - 1 === index}
-              vote={
-                votes
-                  ? votes.find((vote) => vote.messageId === message.id)
-                  : undefined
-              }
-            />
-          ))}
-
-          {isLoading &&
-            messages.length > 0 &&
-            messages[messages.length - 1].role === 'user' && (
-              <ThinkingMessage />
+        >
+          <div
+            ref={messagesContainerRef}
+            className={cn(
+              'flex min-w-0 flex-1 flex-col gap-6 overflow-y-scroll pt-4',
+              'w-full',
+              msgsContainerClassName
+            )}
+          >
+            {messages.length === 0 && (
+              <Overview
+                avatarNoProfileLink={isAudioRecording}
+                avatarPing={isAudioRecording}
+              />
             )}
 
-          <div
-            ref={messagesEndRef}
-            className="min-h-[24px] min-w-[24px] shrink-0"
-          />
-        </div>
-        <form className="mx-auto flex w-full gap-2 px-4 pb-4 md:max-w-3xl md:pb-6">
-          <WithAudioProvider
-            withCountdown
-            transcribeOnComplete
-            // handleOnRecordComplete={handleOnAudioRecordingComplete}
-            handleOnTranscriptionComplete={handleOnAudioTranscriptionComplete}
-            handleOnRecordingStart={() => handleToggleAudioRecording(true)}
-            handleOnRecordingEnd={() => handleToggleAudioRecording(false)}
-          >
-            <MultimodalInput
-              chatId={id}
-              input={input}
-              disabled={disabled}
-              textareaRef={textareaRef}
-              setInput={setInput}
-              handleSubmit={handleSubmit}
-              isLoading={isLoading}
-              stop={stop}
-              attachments={attachments}
-              setAttachments={setAttachments}
-              removeAttachment={handleRemovingAttachment}
-              uploadFile={uploadFileFetch}
-              removeFile={removeFileFetch}
-              messages={messages}
-              setMessages={setMessages}
-              append={append}
+            {messages.map((message, index) => (
+              <PreviewMessage
+                key={message.id}
+                chatId={id}
+                message={message}
+                block={block}
+                setBlock={setBlock}
+                isLoading={isLoading && messages.length - 1 === index}
+                vote={
+                  votes
+                    ? votes.find((vote) => vote.messageId === message.id)
+                    : undefined
+                }
+              />
+            ))}
+
+            {isLoading &&
+              messages.length > 0 &&
+              messages[messages.length - 1].role === 'user' && (
+                <ThinkingMessage />
+              )}
+
+            <div
+              ref={messagesEndRef}
+              className="min-h-[24px] min-w-[24px] shrink-0"
             />
-          </WithAudioProvider>
-        </form>
+          </div>
+          <form className="mx-auto flex w-full gap-2 px-4 pb-4 md:pb-6">
+            <WithAudioProvider
+              withCountdown
+              transcribeOnComplete
+              // handleOnRecordComplete={handleOnAudioRecordingComplete}
+              handleOnTranscriptionComplete={handleOnAudioTranscriptionComplete}
+              handleOnRecordingStart={() => handleToggleAudioRecording(true)}
+              handleOnRecordingEnd={() => handleToggleAudioRecording(false)}
+            >
+              <MultimodalInput
+                chatId={id}
+                input={input}
+                disabled={disabled}
+                textareaRef={textareaRef}
+                setInput={setInput}
+                handleSubmit={handleSubmit}
+                isLoading={isLoading}
+                stop={stop}
+                attachments={attachments}
+                setAttachments={setAttachments}
+                removeAttachment={handleRemovingAttachment}
+                uploadFile={uploadFileFetch}
+                removeFile={removeFileFetch}
+                messages={messages}
+                setMessages={setMessages}
+                append={append}
+              />
+            </WithAudioProvider>
+          </form>
+        </div>
       </div>
 
       <AnimatePresence>

@@ -5,6 +5,7 @@ import type { AllAIModels } from './model-types';
 export interface Model {
   id: string;
   label: string;
+  labelLong?: string;
   apiIdentifier: AllAIModels;
   description: string;
 }
@@ -13,6 +14,7 @@ export const models: Array<Model> = [
   {
     id: 'gpt-4o-mini',
     label: 'Personalized Model',
+    labelLong: 'Personalized Discovery Model',
     apiIdentifier: 'gpt-4o-mini',
     description: 'Your personalized Experience Nevada model',
   },

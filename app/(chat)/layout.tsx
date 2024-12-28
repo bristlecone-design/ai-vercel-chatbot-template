@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import { cn } from '@/lib/utils';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/app-sidebar';
+import { DiscoveryBgImageContainer } from '@/components/bg-image-random-client';
 
 import { auth } from '../(auth)/auth';
 
@@ -21,13 +22,20 @@ export default async function Layout({
   return (
     <SidebarProvider defaultOpen={!isCollapsed}>
       <AppSidebar closeSidebarOnMount={!isAuthenticated} user={session?.user} />
-      <SidebarInset
-        className={cn({
-          'bg-background/50': !isAuthenticated,
-        })}
+      <DiscoveryBgImageContainer
+        noFullSize
+        showOnMobile
+        className="bg-transparent"
       >
-        {children}
-      </SidebarInset>
+        <SidebarInset
+          className={cn({
+            'bg-background/80': true,
+            // 'bg-background/80': !isAuthenticated,
+          })}
+        >
+          {children}
+        </SidebarInset>
+      </DiscoveryBgImageContainer>
     </SidebarProvider>
   );
 }

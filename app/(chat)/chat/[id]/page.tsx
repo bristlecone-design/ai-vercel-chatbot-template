@@ -69,6 +69,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
       disabled={disabledActions}
       initialMessages={convertToUIMessages(messagesFromDb)}
       selectedModelId={selectedModelId}
+      msgsContainerClassName=""
     />
   );
 }

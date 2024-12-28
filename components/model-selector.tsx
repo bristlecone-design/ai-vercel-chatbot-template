@@ -14,7 +14,8 @@ import {
 
 import { saveModelId } from '@/app/(chat)/actions';
 
-import { CheckCirclFillIcon, ChevronDownIcon } from './icons';
+import { CheckCirclFillIcon } from './icons';
+import { IconChevronDown } from './ui/icons';
 
 export function ModelSelector({
   selectedModelId,
@@ -36,19 +37,24 @@ export function ModelSelector({
       <DropdownMenuTrigger
         asChild
         className={cn(
-          'w-fit data-[state=open]:bg-accent data-[state=open]:text-accent-foreground',
+          'max-w-40 data-[state=open]:bg-accent data-[state=closed]:text-foreground/55 data-[state=open]:text-accent-foreground sm:w-fit sm:max-w-fit',
           className
         )}
       >
-        <Button variant="outline" className="gap-1.5 md:h-[34px] md:px-2">
-          {selectModel?.label}
-          <ChevronDownIcon />
+        <Button
+          variant="ghost"
+          className="gap-1.5 bg-transparent backdrop-blur-sm hover:bg-transparent hover:backdrop-blur-lg md:h-[34px] md:px-2"
+        >
+          <span className="truncate">
+            {selectModel?.labelLong || selectModel?.label}
+          </span>
+          <IconChevronDown />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="min-w-[300px]">
         {models.map((model) => (
           <DropdownMenuItem
-            key={model.id}
+            key={`${model.id}-${model.label}`}
             onSelect={() => {
               setOpen(false);
 

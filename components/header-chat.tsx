@@ -18,14 +18,14 @@ export function ChatHeader({ selectedModelId }: { selectedModelId: string }) {
   const { width: windowWidth } = useWindowSize();
 
   return (
-    <header className="sticky top-0 flex min-h-14 items-center justify-between gap-2 px-2 py-1.5 md:px-2">
-      <div className="flex items-center justify-start gap-2">
+    <header className="sticky top-0 flex min-h-14 w-full max-w-full items-center justify-between gap-2 px-2 py-1.5 md:px-2">
+      <div className="flex max-w-full items-center justify-start gap-2">
         <SidebarToggle />
         {(!open || windowWidth < 768) && (
           <BetterTooltip content="New Chat">
             <Button
               variant="outline"
-              className="order-2 ml-auto gap-1.5 px-2 md:order-1 md:ml-0 md:h-fit md:px-2"
+              className="order-2 ml-auto gap-1.5 bg-transparent px-2 backdrop-blur-sm hover:bg-muted/40 hover:backdrop-blur-lg md:order-1 md:ml-0 md:h-fit md:px-2"
               onClick={() => {
                 router.push('/');
                 router.refresh();

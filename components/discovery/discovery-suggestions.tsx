@@ -6,11 +6,10 @@ import type { StreamPersonalizedUserExperienceSuggestionsOpts } from '@/actions/
 import { useAppState } from '@/state/app-state';
 import { readStreamableValue } from 'ai/rsc';
 import { motion } from 'framer-motion';
-import { useIsMounted } from 'usehooks-ts';
+import { useIsMounted, useLocalStorage } from 'usehooks-ts';
 
 import { getErrorMessage } from '@/lib/errors';
 import { cn } from '@/lib/utils';
-import { useLocalStorage } from '@/hooks/use-local-storage';
 
 import { Spinner } from '../spinner';
 import { Button } from '../ui/button';
@@ -237,16 +236,19 @@ export function DiscoveryUserSuggestions({
             )}
             onClick={() => generateSuggestions(generateMoreContext)}
           >
-            <IconAI
-              className={cn(
-                'transition-transform duration-300 group-hover:rotate-180',
-                {
-                  'animate-spin': generating,
-                }
-              )}
-            />
+            {!generating && (
+              <IconAI
+                className={cn(
+                  'transition-transform duration-300 group-hover:rotate-180',
+                  {
+                    'animate-spin': generating,
+                  }
+                )}
+              />
+            )}
+            {generating && <Spinner />}
             <span className="sr-only">Generate</span>
-            <span className="">More</span>
+            <span className="">{generating ? 'Generating' : 'More'}</span>
           </Button>
         ) // TODO: Implement this feature
       }
@@ -264,7 +266,7 @@ export function DiscoveryUserSuggestions({
               className={cn(
                 'relative isolate overflow-hidden',
                 'flex cursor-pointer flex-col gap-2 p-2.5',
-                'rounded-lg border bg-muted/40 hover:bg-muted/50',
+                'rounded-lg border bg-transparent backdrop-blur-md hover:bg-muted/40 hover:backdrop-blur-lg',
                 `before:absolute before:inset-0 before:-translate-x-full before:border-b before:border-t before:border-rose-100/10 before:hover:animate-[shimmer_2s_infinite]`,
                 itemClassName
               )}

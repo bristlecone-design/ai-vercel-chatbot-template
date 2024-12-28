@@ -44,7 +44,7 @@ export function AppSidebar({
   return (
     <Sidebar className="group-data-[side=left]:border-r-0">
       <SidebarHeader>
-        <SidebarMenu>
+        <SidebarMenu className="">
           <div className="flex flex-row items-center justify-between">
             <Link
               href="/"

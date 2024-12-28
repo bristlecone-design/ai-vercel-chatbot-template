@@ -5,7 +5,6 @@ import { getCachedUserWaitlistCount } from '@/actions/user';
 import { DEFAULT_MODEL_NAME, models } from '@/lib/ai/models';
 import { genChatId } from '@/lib/id';
 import { getUserSession } from '@/lib/session';
-import { DiscoveryBgImageContainer } from '@/components/bg-image-random-client';
 import { Chat } from '@/components/chat';
 import { ExperienceSplashScreen } from '@/components/discovery/discovery-splash-screen';
 
@@ -31,11 +30,7 @@ async function DynamicChatView() {
 
 async function DynamicUnauthenticatedSplashView() {
   const waitlistCount = await getCachedUserWaitlistCount();
-  return (
-    <DiscoveryBgImageContainer noFullSize>
-      <ExperienceSplashScreen waitlistCount={waitlistCount} />
-    </DiscoveryBgImageContainer>
-  );
+  return <ExperienceSplashScreen waitlistCount={waitlistCount} />;
 }
 
 export default async function Page() {

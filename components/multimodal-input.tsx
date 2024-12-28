@@ -319,7 +319,7 @@ export function MultimodalInput({
         onChange={handleInput}
         disabled={disabled || isLoading || isAudioTranscribing}
         className={cx(
-          'max-h-[calc(75dvh)] min-h-[24px] resize-none overflow-auto rounded-xl bg-muted text-base',
+          'max-h-[calc(75dvh)] min-h-[24px] resize-none overflow-auto rounded-xl bg-background/40 text-base backdrop-blur-sm',
           className
         )}
         rows={3}

@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useAppState } from '@/state/app-state';
 import { signOut } from 'next-auth/react';
 
+import { cn } from '@/lib/utils';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,8 +40,16 @@ export function UserProfileNav() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button className="h-10 gap-1.5 bg-background text-foreground/70 hover:bg-muted hover:text-foreground">
+      <DropdownMenuTrigger
+        asChild
+        className={cn(
+          'data-[state=open] :text-accent-foreground w-fit data-[state=open]:bg-accent data-[state=closed]:text-foreground/55'
+        )}
+      >
+        <Button
+          variant="ghost"
+          className="gap-1.5 bg-transparent backdrop-blur-sm hover:bg-transparent hover:backdrop-blur-lg md:h-[34px] md:px-2"
+        >
           {userAvatar && (
             <UserAvatar
               src={userAvatar}

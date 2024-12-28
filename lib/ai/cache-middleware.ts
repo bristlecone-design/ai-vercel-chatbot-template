@@ -82,7 +82,7 @@ export const cacheMiddleware: LanguageModelV1Middleware = {
 
     // If cached, return a simulated ReadableStream that yields the cached result
     if (cached !== null) {
-      // console.log('Using cached response:');
+      console.log('Using cached response for LLM stream');
       // Format the timestamps in the cached response
       const formattedChunks = (cached as LanguageModelV1StreamPart[]).map(
         (p) => {
