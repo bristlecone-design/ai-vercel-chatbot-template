@@ -26,7 +26,7 @@ export const areSimpleObjectsEqual = (
 };
 
 /**
- * Is the givne object an empty object?
+ * Is the given object an empty object?
  */
 export const isEmptyObject = (obj: SimpleObject): boolean =>
   Object.keys(obj).length === 0;
