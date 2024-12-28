@@ -1,9 +1,20 @@
 import type { User as UserDb } from '@/lib/db/schema';
 import type { AppUser } from '@/types/next-auth';
 import type { USER_PROFILE_MODEL, User } from '@/types/user';
+import { generateNanoid } from '../id';
 
 export function deriveUsernameFromEmail(email: string) {
   return email.split('@')[0];
+}
+
+/**
+ * Append a unique suffix to a username
+ */
+export function appendUniqueSuffixToUsername(
+  username: string,
+  suffixLength = 2,
+) {
+  return `${username}-${generateNanoid(suffixLength)}`;
 }
 
 export function getUserInitialsFromName(name: string | undefined) {
@@ -95,6 +106,7 @@ export function mapAppUserToClientFriendlyUser(
     onboarded: user.onboarded,
     blocked: user.blocked,
     allowed: user.allowed,
+    // logins: user.logins,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
   };

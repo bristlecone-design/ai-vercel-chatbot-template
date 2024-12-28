@@ -212,6 +212,16 @@ export async function getUsernameByUserId(
 }
 
 /**
+ * Lookup to see if a user exists by username
+ */
+export async function doesUserExistByUsername(
+  username: string,
+): Promise<boolean> {
+  const count = await db.$count(users, eq(users.username, username));
+  return Boolean(count);
+}
+
+/**
  * Get a username by email
  */
 export async function getUsernameByEmail(

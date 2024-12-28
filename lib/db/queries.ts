@@ -1,10 +1,14 @@
 import 'server-only';
 
+import { doesUserExistByUsername } from '@/actions/user';
 import type { UserChat } from '@/types/chat-msgs';
 import { genSaltSync, hashSync } from 'bcrypt-ts';
 import { and, asc, desc, eq, gt, gte } from 'drizzle-orm';
 import { getErrorMessage } from '../errors';
-import { deriveUsernameFromEmail } from '../user/user-utils';
+import {
+  appendUniqueSuffixToUsername,
+  deriveUsernameFromEmail,
+} from '../user/user-utils';
 import { db } from './connect';
 import {
   type Chat,
@@ -35,15 +39,45 @@ export async function getUser(email: string): Promise<Array<User>> {
   }
 }
 
+export async function validateOrCreateUniqueUsername(
+  username: string,
+  generateUnique = true,
+  suffixLength = 2,
+) {
+  let validatedUsername = username;
+  const isUsernameTaken = await doesUserExistByUsername(validatedUsername);
+  console.log('isUsernameTaken', { isUsernameTaken, original: username });
+
+  if (isUsernameTaken && generateUnique) {
+    // Try one more time with a unique suffix
+    validatedUsername = appendUniqueSuffixToUsername(username, suffixLength);
+
+    return await validateOrCreateUniqueUsername(
+      validatedUsername,
+      false,
+      suffixLength,
+    );
+  }
+
+  return { taken: isUsernameTaken, username: validatedUsername };
+}
+
 export async function createUser(email: string, password: string) {
   const salt = genSaltSync(10);
   const hash = hashSync(password, salt);
-  const username = deriveUsernameFromEmail(email);
 
   try {
+    const username = deriveUsernameFromEmail(email);
+    const { taken: isUsernameTaken, username: validatedUsername } =
+      await validateOrCreateUniqueUsername(username);
+
+    if (isUsernameTaken) {
+      throw 'Username already exists';
+    }
+
     return await db
       .insert(users)
-      .values({ email, password: hash, salt, username });
+      .values({ email, password: hash, salt, username: validatedUsername });
   } catch (error) {
     const errMsg = getErrorMessage(error);
     const fullErrMsg = `Failed to create user in database: ${errMsg}`;
