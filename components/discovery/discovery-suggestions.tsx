@@ -34,7 +34,10 @@ export type UseDiscoveryUserSuggestionsResponse = {
   generating: boolean;
   generationCount: number;
   suggestions: AIGeneratedDiscoverySuggestions;
-  generateSuggestions: (input?: string, append?: boolean) => Promise<boolean>;
+  generateSuggestions: (
+    input?: string,
+    numToGenerate?: number
+  ) => Promise<boolean>;
 };
 
 export function useDiscoveryUserSuggestions(
@@ -51,7 +54,7 @@ export function useDiscoveryUserSuggestions(
   const {
     interests,
     geolocation,
-    numOfSuggestions = 4,
+    numOfSuggestions: numOfSuggestionsProp = 4,
     //   handleOnFinish,
   } = generateOpts || {};
 
@@ -67,16 +70,18 @@ export function useDiscoveryUserSuggestions(
 
   const handleGeneratingUserSuggestions = async (
     context?: string,
-    append = false
+    numToGenerateArg?: number
   ) => {
     try {
       if (generating) return true;
 
       setGenerating(true);
 
+      const numToGenerate = numToGenerateArg || numOfSuggestionsProp;
+
       const { suggestions: generatedSuggestions } =
         await generateUserSuggestions(context, {
-          numOfSuggestions,
+          numOfSuggestions: numToGenerate,
           numOfExistingSuggestions: suggestions.length,
           excludeSuggestions: suggestions.map((s) => s.suggestion),
           geolocation,
@@ -137,7 +142,7 @@ export function useDiscoveryUserSuggestions(
 
   // Number of suggestions generated
   const generationCount = generating
-    ? suggestions.length - numOfSuggestions
+    ? suggestions.length - numOfSuggestionsProp
     : suggestions.length;
 
   return {
@@ -178,21 +183,23 @@ export function DiscoveryUserSuggestions({
 
   const {
     isReady: isAppReady,
+    isProfileReady,
     userProfileBio,
     userProfileInterests,
     userProfileProfession,
     userProfileLocation,
+    userLocation,
     userLatitude,
     userLongitude,
   } = useAppState();
 
   const discoveryGeo = {
-    city: userProfileLocation,
+    city: userLocation || userProfileLocation,
     latitude: userLatitude,
     longitude: userLongitude,
   } as GeoBase;
 
-  const isParentReady = isAppReady && isMounted && Boolean(userProfileLocation);
+  const isParentReady = isAppReady && isMounted && isProfileReady;
 
   const { generating, suggestions, generationCount, generateSuggestions } =
     useDiscoveryUserSuggestions({
@@ -227,7 +234,7 @@ export function DiscoveryUserSuggestions({
                 'text-foreground/20': generating,
               }
             )}
-            onClick={() => generateSuggestions(generateMoreContext, true)}
+            onClick={() => generateSuggestions(generateMoreContext)}
           >
             <IconAI
               className={cn(
