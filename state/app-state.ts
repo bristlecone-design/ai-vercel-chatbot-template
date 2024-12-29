@@ -58,11 +58,12 @@ export interface AppStateContext {
   userId: string;
 
   // Geo
-  userLocation: UserAppGeo['location'];
   // userCountry: UserAppGeo['country'];
   // userRegion: UserAppGeo['region'];
   userLatitude: UserAppGeoCoordinates['latitude'];
   userLongitude: UserAppGeoCoordinates['longitude'];
+  userGeoLocation: UserAppGeo['location'];
+  userLocation: string; // Derived from Geo or User Profile
   isPreciseLocation: boolean;
 
   // Auth User
@@ -150,6 +151,7 @@ export const DEFAULT_APP_STATE: AppStateContext = {
 
   // Geo
   userLocation: '',
+  userGeoLocation: '',
   // userCountry: '',
   // userRegion: '',
   userLatitude: '',

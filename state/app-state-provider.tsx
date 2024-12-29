@@ -186,12 +186,15 @@ export default function AppStateProvider({
      * @note - We lean on the user's precise location for a more personalized experience. If they have not allowed location access, we will fallback to headers.
      */
     const [isPreciseLocation, setIsPreciseLocation] = useState(false);
-    const [userLocation, setUserLocation] = useLocalStorage(
+    const [userGeoLocation, setUserGeoLocation] = useLocalStorage(
       'user-location',
       userLocationProp
     );
     const [userLatitude, setUserLatitude] = useState('');
     const [userLongitude, setUserLongitude] = useState('');
+
+    // Derived User Location
+    const userLocation = userGeoLocation || profileLocation || '';
 
     const debouncedOnGeoSuccess = useDebouncedCallback(
       async (geoPosition) => {
@@ -224,7 +227,7 @@ export default function AppStateProvider({
           );
 
           if (location) {
-            setUserLocation(location);
+            setUserGeoLocation(location);
             await handleSettingGeoUserLocationToCookies(location);
           }
 
@@ -268,7 +271,7 @@ export default function AppStateProvider({
         setIsPreciseLocation(false);
         const { success, geo } = await getUserGeoFromHeaders();
         if (success && geo) {
-          if (geo.city) setUserLocation(geo.city);
+          if (geo.city) setUserGeoLocation(geo.city);
           if (geo.latitude) setUserLatitude(String(geo.latitude));
           if (geo.longitude) setUserLongitude(String(geo.longitude));
         }
@@ -294,14 +297,14 @@ export default function AppStateProvider({
     const handleSettingGeoUserLocationFromCookies = async () => {
       const userCookieLocation = await getGeoLocationCookie();
       if (userCookieLocation?.value) {
-        setUserLocation(userCookieLocation.value);
+        setUserGeoLocation(userCookieLocation.value);
       }
     };
 
     const handleSettingGeoUserLocationToCookies = async (
-      value = userLocation
+      value = userGeoLocation
     ) => {
-      if (userLocation) {
+      if (value) {
         await createGeoLocationCookie(value);
       }
     };
@@ -415,9 +418,10 @@ export default function AppStateProvider({
           userId: activeUserId,
 
           // User Geo Location
-          userLocation,
           userLatitude,
           userLongitude,
+          userGeoLocation,
+          userLocation,
           isPreciseLocation,
 
           // Auth User
@@ -485,6 +489,7 @@ export default function AppStateProvider({
         activeUserId,
         userSession,
         userProfile,
+        userGeoLocation,
         userLocation,
         userLatitude,
         userLongitude,
