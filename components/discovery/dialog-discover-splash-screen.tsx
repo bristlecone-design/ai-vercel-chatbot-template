@@ -87,6 +87,7 @@ export function DialogDiscoverSplashScreen({
       e.preventDefault();
       e.stopPropagation();
       router.push(href);
+      router.refresh();
     }
   };
 
