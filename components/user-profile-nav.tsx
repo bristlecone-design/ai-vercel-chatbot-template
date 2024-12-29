@@ -20,7 +20,11 @@ import { IconChevronDown, IconProfileUserCircle } from './ui/icons';
 import { BlockSkeleton } from './ui/skeleton';
 import { UserAvatar } from './user-avatar';
 
-export function UserProfileNav() {
+export interface UserProfileNavProps {
+  flipChevron?: boolean;
+}
+
+export function UserProfileNav({ flipChevron }: UserProfileNavProps) {
   const currentPath = usePathname();
   const isOnShareDiscover = currentPath === '/';
 
@@ -29,6 +33,7 @@ export function UserProfileNav() {
     isAuthenticated,
     userProfileEmail,
     userAvatar,
+    userEmail,
     userDisplayName,
     userProfilePermalink,
     userProfileLoading,
@@ -67,10 +72,14 @@ export function UserProfileNav() {
             {userProfileLoading ? (
               <BlockSkeleton className="h-6 w-20" />
             ) : (
-              userDisplayName
+              userDisplayName || userEmail
             )}
           </span>
-          <IconChevronDown className="" />
+          <IconChevronDown
+            className={cn('', {
+              'rotate-180 transform': flipChevron,
+            })}
+          />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent

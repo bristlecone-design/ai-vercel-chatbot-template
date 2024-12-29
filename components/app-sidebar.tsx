@@ -23,7 +23,8 @@ import {
 } from '@/components/ui/tooltip';
 import { PlusIcon } from '@/components/icons';
 import { SidebarHistory } from '@/components/sidebar-history';
-import { SidebarUserNav } from '@/components/sidebar-user-nav';
+
+import { UserProfileNav } from './user-profile-nav';
 
 export function AppSidebar({
   user,
@@ -86,7 +87,8 @@ export function AppSidebar({
         {user && (
           <SidebarGroup>
             <SidebarGroupContent>
-              <SidebarUserNav user={user} />
+              {/* <SidebarUserNav user={user} /> */}
+              <UserProfileNav flipChevron />
             </SidebarGroupContent>
           </SidebarGroup>
         )}
