@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+import { ThemeToggle } from './theme-toggle';
 import { Button } from './ui/button';
 import { IconChevronDown, IconProfileUserCircle } from './ui/icons';
 import { BlockSkeleton } from './ui/skeleton';
@@ -145,6 +146,16 @@ export function UserProfileNav({ flipChevron }: UserProfileNavProps) {
             <DropdownMenuSeparator />
           </React.Fragment>
         )}
+        <DropdownMenuItem
+          asChild
+          className=""
+          onSelect={(event) => {
+            // console.log('onSelect invoked', event);
+          }}
+        >
+          <ThemeToggle className="w-full flex-row-reverse justify-between" />
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <button
             type="button"
@@ -158,6 +169,7 @@ export function UserProfileNav({ flipChevron }: UserProfileNavProps) {
             Sign out
           </button>
         </DropdownMenuItem>
+        {/* Theme Toggle */}
       </DropdownMenuContent>
     </DropdownMenu>
   );
