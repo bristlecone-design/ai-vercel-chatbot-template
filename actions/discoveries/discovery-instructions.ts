@@ -33,7 +33,7 @@ export function getSystemDiscoverySuggestionInstructions(
     - Use the user’s preferred language if their context is non-English.
 
   6. Exclusions:
-    - Create unique activities the user has not already completed or excluded.
+    - Create unique activities the user has not already been presented with (existing) or excluded.
 
   7. General Suggestions:
     - Include at least one broadly applicable suggestion, e.g., "Explore {activity/food/outdoor rec.} in {city/town/Nevada}."

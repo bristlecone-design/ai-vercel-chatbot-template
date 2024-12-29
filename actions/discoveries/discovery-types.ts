@@ -10,6 +10,7 @@ export type PersonalizedUserExperienceSuggestionsOpts = {
   instructions?: string;
   interests?: Array<string>;
   additionalContext?: string;
+  currentSuggestions?: string[];
   excludeSuggestions?: string[];
   completedSuggestions?: string[];
   handleOnFinish?: (object: any) => void;

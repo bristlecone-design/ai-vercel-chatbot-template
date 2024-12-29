@@ -44,11 +44,13 @@ export type UseDiscoveryUserSuggestionsResponse = {
   suggestions: AIGeneratedDiscoverySuggestions;
   generateSuggestions: (
     input?: string,
+    useCachedSuggestions?: boolean,
     numToGenerate?: number
   ) => Promise<boolean>;
   // Same as generateSuggestions but increments the generation count to kick the cache
   generateFreshSuggestions: (
     input?: string,
+    useCachedSuggestions?: boolean,
     numToGenerate?: number
   ) => Promise<void>;
 };
@@ -82,11 +84,20 @@ export function useDiscoveryUserSuggestions(
   );
 
   const defaultValues = initialValues || [];
+
   const [suggestions, setSuggestions] =
     useState<AIGeneratedDiscoverySuggestions>(defaultValues);
 
+  const [priorSuggestions, setPriorSuggestions] = useLocalStorage<string[]>(
+    'priorSuggestions',
+    []
+  );
+
+  const [excludedSuggestions, setExcludedSuggestions] = useState<string[]>([]);
+
   const handleGeneratingUserSuggestions = async (
     context?: string,
+    useCachedSuggestions = true,
     numToGenerateArg?: number
   ) => {
     try {
@@ -97,17 +108,24 @@ export function useDiscoveryUserSuggestions(
 
       const numToGenerate = numToGenerateArg || numOfSuggestionsProp;
 
+      // const generateFreshSuggestions = !useCachedSuggestions;
+      // const currentSuggestions = suggestions.map((s) => s.suggestion);
+      // const newExcludedSuggestions = generateFreshSuggestions
+      //   ? suggestions.map((s) => s.suggestion)
+      //   : [];
+
       const { suggestions: generatedSuggestions } =
         await generateUserSuggestions(context, {
           numOfSuggestions: numToGenerate,
+          useCache: useCachedSuggestions,
           // numOfExistingSuggestions: generationCount,
-          excludeSuggestions: suggestions.length
-            ? suggestions.map((s) => s.suggestion)
-            : [],
+          currentSuggestions: priorSuggestions,
+          // excludeSuggestions: excludedSuggestions,
           geolocation,
           interests,
         });
 
+      // Update the suggestions state with the new suggestions
       for await (const partialObject of readStreamableValue(
         generatedSuggestions
       )) {
@@ -136,7 +154,18 @@ export function useDiscoveryUserSuggestions(
       }
 
       setGenerating(false);
-      // setGenerationCount((prev) => prev + 1);
+      setGenerationCount((prev) => prev + 1);
+
+      // Track the prior suggestions
+      // Start over if we've generated more than 3 times
+      // if (!generateFreshSuggestions && generationCount > 3) {
+      //   setPriorSuggestions(currentSuggestions);
+      // } else {
+      //   setPriorSuggestions((prev) => {
+      //     const uniqueSet = new Set([...prev, ...currentSuggestions]);
+      //     return Array.from(uniqueSet);
+      //   });
+      // }
 
       return true;
     } catch (error) {
@@ -151,8 +180,10 @@ export function useDiscoveryUserSuggestions(
   const handleRegenerateFreshSuggestions = async (
     ...args: Parameters<typeof handleGeneratingUserSuggestions>
   ) => {
+    const ctx = args[0];
+    const numToGenerate = args[2] || numOfSuggestionsProp;
     // setGenerationCount((prev) => prev + 1);
-    await handleGeneratingUserSuggestions(...args);
+    await handleGeneratingUserSuggestions(ctx, false, numToGenerate);
   };
 
   // Initialize the hook if requested
@@ -166,8 +197,6 @@ export function useDiscoveryUserSuggestions(
     if (isHookMounted && !initialized) {
       if (runOnMount || runOnParentReady) {
         initialize();
-      } else {
-        // setInitialized(true);
       }
     }
   }, [
@@ -198,7 +227,7 @@ export type DiscoveryUserSuggestionsProps = {
 };
 
 /**
- * Renders discovery suggestions to the user.
+ * Renders relevant discovery suggestions to the user.
  *
  * @note Consumes items from the corresponding hook @useDiscoveryUserSuggestions
  *
@@ -240,7 +269,6 @@ export function DiscoveryUserSuggestions({
 
   const isParentReady = isAppReady && isMounted && isProfileReady;
 
-  console.log('discoveryContext to use:', discoveryContext);
   const { generating, suggestions, generateFreshSuggestions } =
     useDiscoveryUserSuggestions({
       runOnParentReady: isParentReady,
@@ -277,14 +305,8 @@ export function DiscoveryUserSuggestions({
           )}
           onClick={() => {
             const newContext = generateTimestampContext('Fresh suggestions');
-            console.log(
-              'Generating fresh suggestions with context',
-              newContext
-            );
-
-            generateFreshSuggestions(newContext);
-
             setDiscoveryContext(newContext);
+            generateFreshSuggestions(newContext);
           }}
         >
           {!generating && (

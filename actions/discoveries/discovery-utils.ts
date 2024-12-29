@@ -5,6 +5,7 @@ export function createDiscoverySuggestionPrompt(
   numOfSuggestions = 4,
   numOfExistingSuggestions = 0,
   interests: PersonalizedUserExperienceSuggestionsOpts['interests'] = [],
+  currentSuggestions: PersonalizedUserExperienceSuggestionsOpts['currentSuggestions'] = [],
   excludeSuggestions: PersonalizedUserExperienceSuggestionsOpts['excludeSuggestions'] = [],
   additionalContext: PersonalizedUserExperienceSuggestionsOpts['additionalContext'] = '',
 ) {
@@ -14,6 +15,10 @@ export function createDiscoverySuggestionPrompt(
 
   if (interests.length) {
     inputToUse += `\nInterests: ${interests.join(', ')}`;
+  }
+
+  if (currentSuggestions.length) {
+    inputToUse += `\nCurrent suggestions: ${currentSuggestions.join(', ')}`;
   }
 
   if (excludeSuggestions.length) {
