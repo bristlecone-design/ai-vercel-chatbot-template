@@ -25,12 +25,12 @@ export const PreviewAttachment = ({
 
   const isImageType = contentType?.startsWith('image');
   const isAudioType = contentType?.startsWith('audio');
-  console.log('attachment in preview component', {
-    attachment,
-    isImageType,
-    isAudioType,
-    contentType,
-  });
+  // console.log('attachment in preview component', {
+  //   attachment,
+  //   isImageType,
+  //   isAudioType,
+  //   contentType,
+  // });
 
   return (
     <div className="relative flex flex-col gap-2">

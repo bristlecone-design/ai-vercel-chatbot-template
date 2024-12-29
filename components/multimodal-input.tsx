@@ -5,7 +5,6 @@ import {
   useCallback,
   useEffect,
   useRef,
-  useState,
   type ChangeEvent,
   type Dispatch,
   type SetStateAction,
@@ -65,6 +64,8 @@ export type MultimodalInputProps = {
   removeFile: (
     attachment: Attachment
   ) => Promise<{ success: boolean; url: string } | undefined>;
+  uploadQueue: Array<string>;
+  setUploadQueue: Dispatch<SetStateAction<Array<string>>>;
   attachments: Array<Attachment>;
   setAttachments: Dispatch<SetStateAction<Array<Attachment>>>;
   removeAttachment: (attachment: Attachment) => void;
@@ -89,6 +90,8 @@ export function MultimodalInput({
   setInput,
   isLoading,
   stop,
+  uploadQueue,
+  setUploadQueue,
   attachments,
   setAttachments,
   removeAttachment: removeAttachmentProp,
@@ -155,7 +158,6 @@ export function MultimodalInput({
   };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [uploadQueue, setUploadQueue] = useState<Array<string>>([]);
 
   const submitForm = useCallback(() => {
     window.history.replaceState({}, '', `/chat/${chatId}`);

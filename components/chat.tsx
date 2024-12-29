@@ -1,13 +1,15 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, type DragEvent } from 'react';
 import type { Attachment, Message } from 'ai';
 import { useChat } from 'ai/react';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import { toast } from 'sonner';
 import useSWR, { useSWRConfig } from 'swr';
 import { useWindowSize } from 'usehooks-ts';
 
 import type { Vote } from '@/lib/db/schema';
+import { getErrorMessage } from '@/lib/errors';
 import {
   removeFileFetch,
   uploadFileFetch,
@@ -22,6 +24,7 @@ import { Block, type UIBlock } from './block';
 import { BlockStreamHandler } from './block-stream-handler';
 import { MultimodalInput } from './multimodal-input';
 import { Overview } from './overview';
+import { IconAttachFiles } from './ui/icons';
 
 export function Chat({
   id,
@@ -94,7 +97,13 @@ export function Chat({
 
   const [isAudioRecording, setIsAudioRecording] = useState(false);
 
+  const [isDragging, setIsDragging] = useState(false);
+
+  const [uploadQueue, setUploadQueue] = useState<Array<string>>([]);
+
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);
+
+  const isUploading = uploadQueue.length > 0;
 
   const handleToggleAudioRecording = (nextState: boolean | undefined) => {
     if (typeof nextState === 'boolean') {
@@ -118,6 +127,62 @@ export function Chat({
   const handleOnAudioTranscriptionComplete = async (transcription: string) => {
     setInput(transcription);
     adjustTextAreaHeight();
+  };
+
+  const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = async (event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const droppedFiles = event.dataTransfer.files;
+    const droppedFilesArray = Array.from(droppedFiles);
+    if (droppedFilesArray.length > 0) {
+      setUploadQueue(droppedFilesArray.map((file) => file.name));
+
+      try {
+        // TODO: Handle validation of file types
+        const uploadPromises = droppedFilesArray.map((file) =>
+          uploadFileFetch(file)
+        );
+        const uploadedAttachments = await Promise.all(uploadPromises);
+        const successfullyUploadedAttachments = uploadedAttachments.filter(
+          (attachment) => attachment !== undefined
+        );
+
+        setAttachments((currentAttachments) => [
+          ...currentAttachments,
+          ...successfullyUploadedAttachments,
+        ]);
+      } catch (error) {
+        const errMsg = getErrorMessage(error);
+        const userMsg = `Error uploading dropped files: ${errMsg}`;
+        console.error(userMsg);
+        toast.error(userMsg);
+      } finally {
+        setUploadQueue([]);
+      }
+
+      // const validFiles = droppedFilesArray.filter(
+      //   (file) =>
+      //     file.type.startsWith('image/') || file.type.startsWith('text/')
+      // );
+      // if (validFiles.length === droppedFilesArray.length) {
+      //   const dataTransfer = new DataTransfer();
+      //   validFiles.forEach((file) => dataTransfer.items.add(file));
+      //   setFiles(dataTransfer.files);
+      // } else {
+      //   toast.error('Only image and text files are allowed!');
+      // }
+      // setFiles(droppedFiles);
+    }
+    setIsDragging(false);
   };
 
   // const handleOnAudioRecordingComplete = async (
@@ -144,12 +209,53 @@ export function Chat({
   // };
 
   return (
-    <>
+    <div
+      className="h-dvh"
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
+      {/* Drag-and-Drop UI */}
+      <AnimatePresence>
+        {isDragging && (
+          <motion.div
+            className="pointer-events-none fixed z-10 flex h-dvh w-full flex-row items-center justify-center gap-1 bg-background/75"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, scale: [1, 1.2, 1.5, 2] }}
+          >
+            <div className="flex size-[82%] max-w-md flex-col items-center justify-center gap-2 rounded-lg border-4 border-dashed border-border p-4 backdrop-blur-sm sm:min-w-164 md:gap-4">
+              <IconAttachFiles className="text-foreground/50 md:size-10" />
+              <h3 className="text-center text-lg leading-normal md:text-2xl">
+                Drag and Drop
+                <br />
+                Files Here
+              </h3>
+              {isUploading && (
+                <div className="flex flex-col gap-2 text-center text-foreground/50">
+                  <p className="">Attaching...</p>
+                  <ul className="list-none">
+                    {uploadQueue.map((fileName) => (
+                      <li key={fileName} className="">
+                        {fileName}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {/* Main Chat UI for User */}
       <div className={cn('flex h-dvh w-full min-w-0 flex-col', className)}>
         <ChatHeader selectedModelId={selectedModelId} />
         <div
           className={cn(
-            'flex w-full grow flex-col items-center gap-2 self-center overflow-clip p-2 py-10 md:max-w-3xl'
+            'flex w-full grow flex-col items-center gap-2 self-center overflow-clip p-2 py-10 transition-transform duration-200 md:max-w-3xl',
+            {
+              'scale-95': isDragging,
+            }
             // msgsContainerClassName
           )}
         >
@@ -213,6 +319,8 @@ export function Chat({
                 handleSubmit={handleSubmit}
                 isLoading={isLoading}
                 stop={stop}
+                uploadQueue={uploadQueue}
+                setUploadQueue={setUploadQueue}
                 attachments={attachments}
                 setAttachments={setAttachments}
                 removeAttachment={handleRemovingAttachment}
@@ -249,6 +357,6 @@ export function Chat({
       </AnimatePresence>
 
       <BlockStreamHandler streamingData={streamingData} setBlock={setBlock} />
-    </>
+    </div>
   );
 }
