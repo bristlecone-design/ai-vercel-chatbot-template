@@ -106,7 +106,6 @@ export function Chat({
   };
 
   const handleRemovingAttachment = (attachment: Attachment) => {
-    console.log('attachment to remove', attachment);
     setAttachments((prev) => {
       if (!prev || prev.length === 0) {
         return [];
