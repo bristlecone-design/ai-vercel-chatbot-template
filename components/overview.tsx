@@ -47,7 +47,7 @@ function OverviewAvatar({
         src={userAvatar}
         alt={userDisplayName ?? 'User'}
         className={cn(
-          'rounded-full border-4',
+          'rounded-full border-2',
           {
             'animate-pulse': ping,
           },
