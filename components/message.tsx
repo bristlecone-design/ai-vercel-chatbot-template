@@ -6,13 +6,14 @@ import cx from 'classnames';
 import { motion } from 'framer-motion';
 
 import type { Vote } from '@/lib/db/schema';
+import { cn } from '@/lib/utils';
 
 import type { UIBlock } from './block';
 import { ReactMarkdownExtended } from './content/md/markdown';
 import { DocumentToolCall, DocumentToolResult } from './document';
-import { SparklesIcon } from './icons';
 import { MessageActions } from './message-actions';
 import { PreviewAttachment } from './preview-attachment';
+import { IconAI } from './ui/icons';
 import { Weather } from './weather';
 
 export const PreviewMessage = ({
@@ -47,7 +48,11 @@ export const PreviewMessage = ({
       >
         {message.role === 'assistant' && (
           <div className="flex size-8 shrink-0 items-center justify-center rounded-full ring-1 ring-border">
-            <SparklesIcon size={14} />
+            <IconAI
+              className={cn('', {
+                'animate-spin': isLoading,
+              })}
+            />
           </div>
         )}
 
@@ -176,7 +181,7 @@ export const ThinkingMessage = () => {
         )}
       >
         <div className="flex size-8 shrink-0 items-center justify-center rounded-full ring-1 ring-border">
-          <SparklesIcon size={14} />
+          <IconAI className="animate-spin" />
         </div>
 
         <div className="flex w-full flex-col gap-2">

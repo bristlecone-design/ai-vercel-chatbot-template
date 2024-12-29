@@ -7,6 +7,7 @@ import { cn, randomRange } from '@/lib/utils';
 
 export type DiscoveryRandomBgImageProps = React.ComponentProps<'div'> & {
   className?: string;
+  scrimClassName?: string;
   containerClassName?: string;
   numImages?: number;
   bgImageNum?: number;
@@ -16,6 +17,7 @@ export const NUM_IMAGES = 30;
 
 export function DiscoveryRandomBgImage({
   className,
+  scrimClassName,
   containerClassName,
   numImages: numImagesProp = NUM_IMAGES,
   bgImageNum: bgImageNumProp,
@@ -55,7 +57,7 @@ export function DiscoveryRandomBgImage({
           opacity: 0,
         }}
         className={cn(
-          '-z-50 hidden size-full bg-background bg-cover hover:blur-none sm:fixed sm:block',
+          '-z-50 hidden size-full bg-cover hover:blur-none sm:fixed sm:block',
           className
         )}
         style={{
@@ -64,6 +66,13 @@ export function DiscoveryRandomBgImage({
             : 'none',
         }}
       />
+      {/* Scrim/Backdrop */}
+      <div
+        className={cn(
+          'fixed inset-0 top-0 -z-10 size-full select-none bg-background/65',
+          scrimClassName
+        )}
+      />
     </div>
   );
 }
@@ -71,6 +80,7 @@ export function DiscoveryRandomBgImage({
 export type DiscoveryBgImageContainerProps = React.ComponentProps<'div'> & {
   numImages?: DiscoveryRandomBgImageProps['numImages'];
   bgImageNum?: DiscoveryRandomBgImageProps['bgImageNum'];
+  bgImageClassName?: string;
   children: React.ReactNode;
   noFullSize?: boolean;
   showOnMobile?: boolean;
@@ -81,6 +91,7 @@ export function DiscoveryBgImageContainer({
   className,
   numImages,
   bgImageNum,
+  bgImageClassName,
   noFullSize = false,
   showOnMobile = false,
   children,
@@ -89,7 +100,7 @@ export function DiscoveryBgImageContainer({
   return (
     <div
       className={cn(
-        'relative flex items-start justify-center bg-background/65 sm:items-center',
+        'relative flex items-start justify-center sm:items-center',
         fullsizeClass,
         className
       )}
@@ -97,9 +108,12 @@ export function DiscoveryBgImageContainer({
       <DiscoveryRandomBgImage
         numImages={numImages}
         bgImageNum={bgImageNum}
-        className={cn({
-          block: showOnMobile,
-        })}
+        className={cn(
+          {
+            block: showOnMobile,
+          },
+          bgImageClassName
+        )}
       />
       {children}
     </div>
