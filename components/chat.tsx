@@ -150,15 +150,15 @@ export function Chat({
         <ChatHeader selectedModelId={selectedModelId} />
         <div
           className={cn(
-            'flex w-full grow flex-col items-center gap-2 self-center overflow-clip rounded-3xl md:max-w-3xl'
+            'flex w-full grow flex-col items-center gap-2 self-center overflow-clip p-2 py-10 md:max-w-3xl'
             // msgsContainerClassName
           )}
         >
           <div
             ref={messagesContainerRef}
             className={cn(
-              'flex min-w-0 flex-1 flex-col gap-6 overflow-y-scroll pt-4',
-              'w-full',
+              'flex min-w-0 flex-1 flex-col gap-6 overflow-y-scroll',
+              'size-full',
               msgsContainerClassName
             )}
           >
@@ -196,7 +196,7 @@ export function Chat({
               className="min-h-[24px] min-w-[24px] shrink-0"
             />
           </div>
-          <form className="mx-auto flex w-full gap-2 px-4 pb-4 md:pb-6">
+          <form className="mx-auto flex w-full gap-2 px-2 sm:px-0">
             <WithAudioProvider
               withCountdown
               transcribeOnComplete
