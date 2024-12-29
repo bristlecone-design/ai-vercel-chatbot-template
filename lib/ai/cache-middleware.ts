@@ -5,6 +5,7 @@ import type {
   LanguageModelV1StreamPart,
 } from 'ai';
 import { simulateReadableStream } from 'ai/test';
+import { md5 } from 'js-md5';
 
 /**
  * A cache middleware for the language model.
@@ -45,7 +46,7 @@ export const cacheMiddleware: LanguageModelV1Middleware = {
    */
   wrapGenerate: async ({ doGenerate, params }) => {
     const cacheParams = JSON.stringify(params);
-    const cacheKey = `cache:generate:${cacheParams}`;
+    const cacheKey = `cache:generate:${md5(cacheParams)}`;
 
     const cached = (await redis.get(cacheKey)) as Awaited<
       ReturnType<LanguageModelV1['doGenerate']>
@@ -75,7 +76,7 @@ export const cacheMiddleware: LanguageModelV1Middleware = {
    */
   wrapStream: async ({ doStream, params }) => {
     const cacheParams = JSON.stringify(params);
-    const cacheKey = `cache:stream:${cacheParams}`;
+    const cacheKey = `cache:stream:${md5(cacheParams)}`;
 
     // Check if the result is in the cache
     const cached = await redis.get(cacheKey);

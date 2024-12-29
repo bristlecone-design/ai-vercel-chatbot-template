@@ -22,10 +22,18 @@ import type {
 } from '@/types/discovery-suggestions';
 import type { GeoBase } from '@/types/geo';
 
+function generateTimestampContext(
+  ctx?: string,
+  fallbackCtx = 'New suggestions'
+) {
+  const timeSinceEpoch = new Date().getTime();
+  return `${ctx || fallbackCtx} ${timeSinceEpoch}`;
+}
+
 export type UseDiscoveryUserSuggestionsProps = {
   runOnMount?: boolean;
   runOnParentReady?: boolean;
-  initialPrompt?: string;
+  initialContext?: string;
   initialValues?: AIGeneratedDiscoverySuggestions;
   generateOpts?: StreamPersonalizedUserExperienceSuggestionsOpts;
 };
@@ -38,6 +46,11 @@ export type UseDiscoveryUserSuggestionsResponse = {
     input?: string,
     numToGenerate?: number
   ) => Promise<boolean>;
+  // Same as generateSuggestions but increments the generation count to kick the cache
+  generateFreshSuggestions: (
+    input?: string,
+    numToGenerate?: number
+  ) => Promise<void>;
 };
 
 export function useDiscoveryUserSuggestions(
@@ -46,7 +59,7 @@ export function useDiscoveryUserSuggestions(
   const {
     runOnMount,
     runOnParentReady,
-    initialPrompt = '',
+    initialContext = '',
     initialValues,
     generateOpts,
   } = props || {};
@@ -78,6 +91,7 @@ export function useDiscoveryUserSuggestions(
   ) => {
     try {
       if (generating) return true;
+      // if (!initialized) return false;
 
       setGenerating(true);
 
@@ -86,8 +100,10 @@ export function useDiscoveryUserSuggestions(
       const { suggestions: generatedSuggestions } =
         await generateUserSuggestions(context, {
           numOfSuggestions: numToGenerate,
-          numOfExistingSuggestions: generationCount,
-          excludeSuggestions: suggestions.map((s) => s.suggestion),
+          // numOfExistingSuggestions: generationCount,
+          excludeSuggestions: suggestions.length
+            ? suggestions.map((s) => s.suggestion)
+            : [],
           geolocation,
           interests,
         });
@@ -120,7 +136,7 @@ export function useDiscoveryUserSuggestions(
       }
 
       setGenerating(false);
-      setGenerationCount((prev) => prev + 1);
+      // setGenerationCount((prev) => prev + 1);
 
       return true;
     } catch (error) {
@@ -131,25 +147,43 @@ export function useDiscoveryUserSuggestions(
     }
   };
 
+  // Handle regeneration of suggestions
+  const handleRegenerateFreshSuggestions = async (
+    ...args: Parameters<typeof handleGeneratingUserSuggestions>
+  ) => {
+    // setGenerationCount((prev) => prev + 1);
+    await handleGeneratingUserSuggestions(...args);
+  };
+
+  // Initialize the hook if requested
   useEffect(() => {
     const initialize = async () => {
       const generatedResponse =
-        await handleGeneratingUserSuggestions(initialPrompt);
+        await handleGeneratingUserSuggestions(initialContext);
       setInitialized(generatedResponse);
     };
 
     if (isHookMounted && !initialized) {
       if (runOnMount || runOnParentReady) {
         initialize();
+      } else {
+        // setInitialized(true);
       }
     }
-  }, [isHookMounted, initialized, runOnMount, runOnParentReady]);
+  }, [
+    isHookMounted,
+    initialized,
+    initialContext,
+    runOnMount,
+    runOnParentReady,
+  ]);
 
   return {
     generating,
     suggestions,
     generationCount,
     generateSuggestions: handleGeneratingUserSuggestions,
+    generateFreshSuggestions: handleRegenerateFreshSuggestions,
   };
 }
 
@@ -158,7 +192,7 @@ export type DiscoveryUserSuggestionsProps = {
   itemClassName?: string;
   numOfSkeletons?: number;
   enableGenerateMore?: boolean;
-  generateMoreContext?: string;
+  initContext?: string;
   opts?: StreamPersonalizedUserExperienceSuggestionsOpts;
   onItemSelect: (item: AIGeneratedSingleDiscoverySuggestionModel) => void;
 };
@@ -174,12 +208,17 @@ export function DiscoveryUserSuggestions({
   itemClassName,
   numOfSkeletons = 4,
   enableGenerateMore = false,
-  generateMoreContext,
+  initContext: initContextProp = '',
   opts = {},
   onItemSelect,
 }: DiscoveryUserSuggestionsProps) {
   const isMountedCheck = useIsMounted();
   const isMounted = isMountedCheck();
+
+  const [discoveryContext, setDiscoveryContext] = useLocalStorage(
+    'discoveryCtx',
+    initContextProp
+  );
 
   const {
     isReady: isAppReady,
@@ -201,9 +240,11 @@ export function DiscoveryUserSuggestions({
 
   const isParentReady = isAppReady && isMounted && isProfileReady;
 
-  const { generating, suggestions, generationCount, generateSuggestions } =
+  console.log('discoveryContext to use:', discoveryContext);
+  const { generating, suggestions, generateFreshSuggestions } =
     useDiscoveryUserSuggestions({
       runOnParentReady: isParentReady,
+      initialContext: discoveryContext,
       initialValues: items,
       generateOpts: {
         ...(opts || {}),
@@ -221,37 +262,46 @@ export function DiscoveryUserSuggestions({
 
   return (
     <div className="relative flex w-full flex-col gap-2">
-      {
-        enableGenerateMore && (
-          <Button
-            size="off"
-            variant="ghost"
-            disabled={generating}
-            className={cn(
-              'group',
-              'gap-1.5 self-end text-sm font-normal text-foreground/50 hover:bg-transparent hover:text-foreground/70',
-              {
-                'text-foreground/20': generating,
-              }
-            )}
-            onClick={() => generateSuggestions(generateMoreContext)}
-          >
-            {!generating && (
-              <IconAI
-                className={cn(
-                  'transition-transform duration-300 group-hover:rotate-180',
-                  {
-                    'animate-spin': generating,
-                  }
-                )}
-              />
-            )}
-            {generating && <Spinner />}
-            <span className="sr-only">Generate</span>
-            <span className="">{generating ? 'Generating' : 'More'}</span>
-          </Button>
-        ) // TODO: Implement this feature
-      }
+      {enableGenerateMore && (
+        <Button
+          size="off"
+          variant="ghost"
+          type="button"
+          disabled={generating}
+          className={cn(
+            'group',
+            'gap-1.5 self-end text-sm font-normal text-foreground/50 hover:bg-transparent hover:text-foreground/70',
+            {
+              'text-foreground/20': generating,
+            }
+          )}
+          onClick={() => {
+            const newContext = generateTimestampContext('Fresh suggestions');
+            console.log(
+              'Generating fresh suggestions with context',
+              newContext
+            );
+
+            generateFreshSuggestions(newContext);
+
+            setDiscoveryContext(newContext);
+          }}
+        >
+          {!generating && (
+            <IconAI
+              className={cn(
+                'transition-transform duration-300 group-hover:rotate-180',
+                {
+                  'animate-spin': generating,
+                }
+              )}
+            />
+          )}
+          {generating && <Spinner />}
+          <span className="sr-only">Generate</span>
+          <span className="">{generating ? 'Generating' : 'More'}</span>
+        </Button>
+      )}
       <div className="relative grid w-full grid-cols-1 items-start gap-3 md:grid-cols-2">
         {suggestions.map((suggestion, si) => {
           const lastGenerated = si === suggestions.length - 1;
