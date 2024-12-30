@@ -30,7 +30,10 @@ export interface USER_INSERT_MODEL extends z.infer<typeof userInsertSchema> {}
 
 export interface USER_SELECT_MODEL extends z.infer<typeof userSelectSchema> {}
 
-export interface USER_MODEL extends z.infer<typeof userSelectSchema> {
+export interface USER_SELECT_MODEL extends z.infer<typeof userSelectSchema> {}
+
+export interface USER_MODEL
+  extends Omit<USER_SELECT_MODEL, 'investor' | 'partner'> {
   investor: INVESTOR_MODEL;
   partner: PARTNER_MODEL;
 

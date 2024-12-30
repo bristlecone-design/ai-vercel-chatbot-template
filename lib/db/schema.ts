@@ -1137,3 +1137,41 @@ export type AudioMedia = InferSelectModel<typeof audioMedia>;
 export const audioMediaSchema = createInsertSchema(audioMedia);
 
 export const audioMediaModelSchema = createSelectSchema(audioMedia);
+
+export const DiscoverySuggestion = pgTable('discoverySuggestion', {
+  id: text('id')
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => genId('ds')),
+  genId: text('genId'),
+  title: text('title').notNull(),
+  label: text('label').notNull(),
+  suggestion: text('suggestion').notNull(),
+  type: text('type').notNull(),
+  municipalities: text('municipalities')
+    .array()
+    .notNull()
+    .default(sql`ARRAY[]::text[]`),
+  activities: text('activities')
+    .array()
+    .notNull()
+    .default(sql`ARRAY[]::text[]`),
+  interests: text('interests').array().notNull().default(sql`ARRAY[]::text[]`),
+
+  // Visibility
+  public: boolean('public').default(false),
+
+  // Meta
+  meta: json('meta').default({}),
+
+  // Relationships
+  userId: text('userId').references(() => users.id),
+});
+
+export type DiscoverySuggestion = InferSelectModel<typeof DiscoverySuggestion>;
+
+export const discoverySuggestionInsertSchema =
+  createInsertSchema(DiscoverySuggestion);
+
+export const discoverySuggestionSchema =
+  createSelectSchema(DiscoverySuggestion);
