@@ -57,7 +57,7 @@ export function DiscoveryRandomBgImage({
           opacity: 0,
         }}
         className={cn(
-          '-z-50 hidden size-full bg-cover hover:blur-none sm:fixed sm:block',
+          'fixed -z-50 hidden size-full bg-cover hover:blur-none sm:block',
           className
         )}
         style={{
@@ -69,7 +69,7 @@ export function DiscoveryRandomBgImage({
       {/* Scrim/Backdrop */}
       <div
         className={cn(
-          'fixed inset-0 top-0 -z-10 size-full select-none bg-background/65',
+          'fixed inset-0 top-0 -z-10 size-full select-none bg-background/10 sm:bg-background/65',
           scrimClassName
         )}
       />
