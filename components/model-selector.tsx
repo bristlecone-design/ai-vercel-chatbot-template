@@ -14,8 +14,7 @@ import {
 
 import { saveModelId } from '@/app/(chat)/actions';
 
-import { CheckCirclFillIcon } from './icons';
-import { IconChevronDown } from './ui/icons';
+import { IconChevronDown, IconCircleCheck } from './ui/icons';
 
 export function ModelSelector({
   selectedModelId,
@@ -48,7 +47,11 @@ export function ModelSelector({
           <span className="truncate">
             {selectModel?.labelLong || selectModel?.label}
           </span>
-          <IconChevronDown />
+          <IconChevronDown
+            className={cn({
+              'text-success': open,
+            })}
+          />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="min-w-[300px]">
@@ -75,7 +78,7 @@ export function ModelSelector({
               )}
             </div>
             <div className="text-primary opacity-0 group-data-[active=true]/item:opacity-100 dark:text-primary-foreground">
-              <CheckCirclFillIcon />
+              <IconCircleCheck className="text-success" />
             </div>
           </DropdownMenuItem>
         ))}
