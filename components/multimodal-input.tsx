@@ -228,14 +228,13 @@ export function MultimodalInput({
   const isClearInputDisabled =
     !hasInputValue || isLoading || isAudioTranscribing || disabled;
 
+  const isAudioInProgress =
+    isAudioRecording || isAudioPaused || isAudioCountdown;
+
   return (
     <div className="relative flex w-full flex-col gap-4">
       {/* Suggestions */}
-      {!isAudioRecording &&
-        !isAudioCountdown &&
-        !isAudioTranscribing &&
-        !isAudioPaused &&
-        messages.length === 0 &&
+      {messages.length === 0 &&
         attachments.length === 0 &&
         uploadQueue.length === 0 && (
           <DiscoveryUserSuggestions
@@ -249,14 +248,12 @@ export function MultimodalInput({
                 content: item.suggestion,
               });
             }}
+            className={isAudioInProgress ? 'invisible -translate-y-20' : ''}
           />
         )}
 
       {/* Audio Visuals  */}
-      {(isAudioRecording ||
-        isAudioTranscribing ||
-        isAudioPaused ||
-        isAudioCountdown) && (
+      {isAudioInProgress && (
         <div className="flex w-full justify-center py-2">
           <AudioManagerVisualizer
             className="h-14 min-w-[initial] max-w-[68%] rounded-3xl"

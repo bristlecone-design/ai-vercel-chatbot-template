@@ -222,6 +222,7 @@ export type DiscoveryUserSuggestionsProps = {
   numOfSkeletons?: number;
   enableGenerateMore?: boolean;
   initContext?: string;
+  className?: string;
   opts?: StreamPersonalizedUserExperienceSuggestionsOpts;
   onItemSelect: (item: AIGeneratedSingleDiscoverySuggestionModel) => void;
 };
@@ -238,6 +239,7 @@ export function DiscoveryUserSuggestions({
   numOfSkeletons = 4,
   enableGenerateMore = false,
   initContext: initContextProp = '',
+  className,
   opts = {},
   onItemSelect,
 }: DiscoveryUserSuggestionsProps) {
@@ -289,7 +291,12 @@ export function DiscoveryUserSuggestions({
       : 0;
 
   return (
-    <div className="relative flex w-full flex-col gap-2">
+    <div
+      className={cn(
+        'relative flex w-full flex-col gap-2 transition-transform duration-200',
+        className
+      )}
+    >
       {enableGenerateMore && (
         <Button
           size="off"
@@ -338,7 +345,7 @@ export function DiscoveryUserSuggestions({
               className={cn(
                 'relative isolate overflow-hidden',
                 'flex cursor-pointer flex-col gap-2 p-2.5',
-                'rounded-lg border bg-transparent backdrop-blur-md hover:bg-muted/40 hover:backdrop-blur-lg',
+                'rounded-lg border border-rose-50/5 bg-muted/20 backdrop-blur-md hover:bg-muted/40 hover:backdrop-blur-lg',
                 `before:absolute before:inset-0 before:-translate-x-full before:border-b before:border-t before:border-rose-100/10 before:hover:animate-[shimmer_2s_infinite]`,
                 itemClassName
               )}
