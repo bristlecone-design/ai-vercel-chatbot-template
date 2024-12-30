@@ -328,7 +328,9 @@ export function DiscoveryUserSuggestions({
           )}
           {generating && <Spinner />}
           <span className="sr-only">Generate</span>
-          <span className="">{generating ? 'Generating' : 'More'}</span>
+          <span className="">
+            {generating ? 'Generating' : 'More Suggestions'}
+          </span>
         </Button>
       )}
       <div className="relative grid w-full grid-cols-1 items-start gap-3 md:grid-cols-2">

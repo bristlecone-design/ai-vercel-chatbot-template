@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Metadata, ResolvingMetadata } from 'next';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { UserProfileForm } from '@/features/profile/user-profile-form';
 
@@ -113,7 +114,11 @@ export default async function UserProfileEditPage(props: CommonPageProps) {
             Edit Profile
           </h2>
           <p>
-            Your profile is used to personalize your experience on the platform.
+            Your profile is used to personalize your{' '}
+            <Link href="/" className="link-primary">
+              discovery experience
+            </Link>{' '}
+            on the platform.
           </p>
           <UserProfileForm
             noTitle

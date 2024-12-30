@@ -1,6 +1,5 @@
 import { memo } from 'react';
 import Link from 'next/link';
-import { getUserProfilePermalink } from '@/features/experiences/utils/experience-utils';
 import { useAppState } from '@/state/app-state';
 import { motion } from 'framer-motion';
 
@@ -21,14 +20,17 @@ function OverviewAvatar({
   noProfileLink?: boolean;
 }) {
   const appState = useAppState();
-  const { userAvatar, userProfileUsername, userDisplayName } = appState;
+  const { isAuthenticated, userAvatar, userProfileUsername, userDisplayName } =
+    appState;
 
   if (!userAvatar) return null;
 
-  const userProfilePermalink =
-    userProfileUsername && !noProfileLink
-      ? getUserProfilePermalink(userProfileUsername)
-      : '';
+  // const userProfilePermalink =
+  //   userProfileUsername && !noProfileLink
+  //     ? getUserProfilePermalink(userProfileUsername)
+  //     : '';
+  const userProfileEditPermalink =
+    isAuthenticated && !noProfileLink ? '/profile/edit' : '';
 
   const renderedAvatar = (
     <div
@@ -58,8 +60,8 @@ function OverviewAvatar({
     </div>
   );
 
-  return userProfilePermalink ? (
-    <Link href={userProfilePermalink}>{renderedAvatar}</Link>
+  return userProfileEditPermalink ? (
+    <Link href={userProfileEditPermalink}>{renderedAvatar}</Link>
   ) : (
     renderedAvatar
   );
