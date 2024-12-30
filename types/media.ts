@@ -1,7 +1,11 @@
 import type { Media } from '@/lib/db/schema';
+import type { Attachment } from 'ai';
 import type { PhotoThumbnail } from './photo';
 import type { USER_PROFILE_MODEL } from './user';
 
+export interface MediaAttachment extends Attachment {
+  // Add more attachment properties here
+}
 export interface MediaModel extends Media {
   User?: USER_PROFILE_MODEL;
 }

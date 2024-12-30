@@ -10,12 +10,7 @@ import {
   type SetStateAction,
 } from 'react';
 import { useAppAudio } from '@/state/app-audio-provider';
-import type {
-  Attachment,
-  ChatRequestOptions,
-  CreateMessage,
-  Message,
-} from 'ai';
+import type { ChatRequestOptions, CreateMessage, Message } from 'ai';
 import cx from 'classnames';
 import { toast } from 'sonner';
 import { useLocalStorage, useWindowSize } from 'usehooks-ts';
@@ -39,6 +34,8 @@ import {
 import { PreviewAttachment } from './preview-attachment';
 import { Textarea } from './ui/textarea';
 
+import type { MediaAttachment } from '@/types/media';
+
 const suggestedActions = [
   {
     title: 'What is the weather',
@@ -60,15 +57,15 @@ export type MultimodalInputProps = {
   setInput: (value: string) => void;
   isLoading: boolean;
   stop: () => void;
-  uploadFile: (file: File) => Promise<Attachment | undefined>;
+  uploadFile: (file: File) => Promise<MediaAttachment | undefined>;
   removeFile: (
-    attachment: Attachment
+    attachment: MediaAttachment
   ) => Promise<{ success: boolean; url: string } | undefined>;
   uploadQueue: Array<string>;
   setUploadQueue: Dispatch<SetStateAction<Array<string>>>;
-  attachments: Array<Attachment>;
-  setAttachments: Dispatch<SetStateAction<Array<Attachment>>>;
-  removeAttachment: (attachment: Attachment) => void;
+  attachments: Array<MediaAttachment>;
+  setAttachments: Dispatch<SetStateAction<Array<MediaAttachment>>>;
+  removeAttachment: (attachment: MediaAttachment) => void;
   messages: Array<Message>;
   setMessages: Dispatch<SetStateAction<Array<Message>>>;
   append: (
@@ -208,7 +205,7 @@ export function MultimodalInput({
   );
 
   const handleRemovingAttachment = useCallback(
-    async (attachment: Attachment) => {
+    async (attachment: MediaAttachment) => {
       if (attachment.url) {
         const res = await removeFile(attachment);
 

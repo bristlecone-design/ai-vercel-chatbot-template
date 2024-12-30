@@ -1,12 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import type { Attachment } from 'ai';
 import { motion } from 'framer-motion';
 
 import { LoaderIcon } from './icons';
 import { Button } from './ui/button';
 import { IconAudioLines, IconCircleX } from './ui/icons';
+
+import type { MediaAttachment } from '@/types/media';
 
 export const PreviewAttachment = ({
   attachment,
@@ -14,10 +15,10 @@ export const PreviewAttachment = ({
   allowRemove = false,
   handleOnRemove,
 }: {
-  attachment: Attachment;
+  attachment: MediaAttachment;
   isUploading?: boolean;
   allowRemove?: boolean;
-  handleOnRemove?: (attachment: Attachment) => void;
+  handleOnRemove?: (attachment: MediaAttachment) => void;
 }) => {
   const { name, url, contentType } = attachment;
 
@@ -25,12 +26,12 @@ export const PreviewAttachment = ({
 
   const isImageType = contentType?.startsWith('image');
   const isAudioType = contentType?.startsWith('audio');
-  // console.log('attachment in preview component', {
-  //   attachment,
-  //   isImageType,
-  //   isAudioType,
-  //   contentType,
-  // });
+  console.log('attachment in preview component', {
+    attachment,
+    isImageType,
+    isAudioType,
+    contentType,
+  });
 
   return (
     <div className="relative flex flex-col gap-2">

@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState, type DragEvent } from 'react';
-import type { Attachment, Message } from 'ai';
+import type { Message } from 'ai';
 import { useChat } from 'ai/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { toast } from 'sonner';
@@ -25,6 +25,8 @@ import { BlockStreamHandler } from './block-stream-handler';
 import { MultimodalInput } from './multimodal-input';
 import { Overview } from './overview';
 import { IconAttachFiles } from './ui/icons';
+
+import type { MediaAttachment } from '@/types/media';
 
 export function Chat({
   id,
@@ -101,7 +103,7 @@ export function Chat({
 
   const [uploadQueue, setUploadQueue] = useState<Array<string>>([]);
 
-  const [attachments, setAttachments] = useState<Array<Attachment>>([]);
+  const [attachments, setAttachments] = useState<Array<MediaAttachment>>([]);
 
   const isUploading = uploadQueue.length > 0;
 
@@ -114,7 +116,7 @@ export function Chat({
     setIsAudioRecording((prev) => !prev);
   };
 
-  const handleRemovingAttachment = (attachment: Attachment) => {
+  const handleRemovingAttachment = (attachment: MediaAttachment) => {
     setAttachments((prev) => {
       if (!prev || prev.length === 0) {
         return [];
