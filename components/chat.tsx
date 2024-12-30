@@ -305,7 +305,7 @@ export function Chat({
           </div>
           <form className="mx-auto flex w-full gap-2 px-2 sm:px-0">
             <WithAudioProvider
-              withCountdown
+              // withCountdown
               transcribeOnComplete
               // handleOnRecordComplete={handleOnAudioRecordingComplete}
               handleOnTranscriptionComplete={handleOnAudioTranscriptionComplete}
