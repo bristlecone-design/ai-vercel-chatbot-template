@@ -1,7 +1,7 @@
 'use client';
 
-import type { Dispatch, SetStateAction } from 'react';
-import type { Message } from 'ai';
+import React, { type Dispatch, type SetStateAction } from 'react';
+import { ExperienceAttachmentGalleryDialog } from '@/features/experiences/posts/experience-attachment-gallery-dialog';
 import cx from 'classnames';
 import { motion } from 'framer-motion';
 
@@ -16,6 +16,8 @@ import { PreviewAttachment } from './preview-attachment';
 import { IconAI } from './ui/icons';
 import { Weather } from './weather';
 
+import type { ChatMessage } from '@/types/chat-msgs';
+
 export const PreviewMessage = ({
   chatId,
   message,
@@ -25,12 +27,17 @@ export const PreviewMessage = ({
   isLoading,
 }: {
   chatId: string;
-  message: Message;
+  message: ChatMessage;
   block: UIBlock;
   setBlock: Dispatch<SetStateAction<UIBlock>>;
   vote: Vote | undefined;
   isLoading: boolean;
 }) => {
+  const [showGallery, setShowGallery] = React.useState(false);
+  const [gallerySelectedIndex, setGallerySelectedIndex] = React.useState(0);
+
+  const attachments = message.experimental_attachments || [];
+
   return (
     <motion.div
       className="group/message mx-auto w-full max-w-3xl px-4"
@@ -138,14 +145,27 @@ export const PreviewMessage = ({
             </div>
           )}
 
-          {message.experimental_attachments && (
+          {/* Attachments */}
+          {attachments.length > 0 && (
             <div className="flex flex-row gap-2">
-              {message.experimental_attachments.map((attachment) => (
+              {attachments.map((attachment, index) => (
                 <PreviewAttachment
                   key={attachment.url}
                   attachment={attachment}
+                  handleOnEnlarge={() => {
+                    setGallerySelectedIndex(index);
+                    setShowGallery(true);
+                  }}
                 />
               ))}
+
+              {showGallery && (
+                <ExperienceAttachmentGalleryDialog
+                  open={showGallery}
+                  handleOnClose={() => setShowGallery(false)}
+                  attachments={attachments}
+                />
+              )}
             </div>
           )}
 

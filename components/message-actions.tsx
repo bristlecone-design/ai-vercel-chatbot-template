@@ -4,7 +4,7 @@ import { useSWRConfig } from 'swr';
 import { useCopyToClipboard } from 'usehooks-ts';
 
 import type { Vote } from '@/lib/db/schema';
-import { getMessageIdFromAnnotations } from '@/lib/utils';
+import { cn, getMessageIdFromAnnotations } from '@/lib/utils';
 
 import { CopyIcon, ThumbDownIcon, ThumbUpIcon } from './icons';
 import { Button } from './ui/button';
@@ -40,8 +40,11 @@ export function MessageActions({
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
-              className="py-1 px-2 h-fit text-muted-foreground"
               variant="outline"
+              className={cn(
+                'h-fit bg-background/50 px-2 py-1 text-muted-foreground'
+                // 'bg-transparent backdrop-blur-sm hover:bg-muted/20 hover:backdrop-blur-lg'
+              )}
               onClick={async () => {
                 await copyToClipboard(message.content as string);
                 toast.success('Copied to clipboard!');
@@ -56,9 +59,13 @@ export function MessageActions({
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
-              className="py-1 px-2 h-fit text-muted-foreground !pointer-events-auto"
+              variant="ghost"
+              className={cn(
+                '!pointer-events-auto',
+                'h-fit bg-background/50 px-2 py-1 text-muted-foreground'
+                // 'bg-transparent backdrop-blur-sm hover:bg-muted/20 hover:backdrop-blur-lg'
+              )}
               disabled={vote?.isUpvoted}
-              variant="outline"
               onClick={async () => {
                 const messageId = getMessageIdFromAnnotations(message);
 
@@ -80,7 +87,7 @@ export function MessageActions({
                         if (!currentVotes) return [];
 
                         const votesWithoutCurrent = currentVotes.filter(
-                          (vote) => vote.messageId !== message.id,
+                          (vote) => vote.messageId !== message.id
                         );
 
                         return [
@@ -92,7 +99,7 @@ export function MessageActions({
                           },
                         ];
                       },
-                      { revalidate: false },
+                      { revalidate: false }
                     );
 
                     return 'Upvoted Response!';
@@ -110,8 +117,12 @@ export function MessageActions({
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
-              className="py-1 px-2 h-fit text-muted-foreground !pointer-events-auto"
-              variant="outline"
+              variant="ghost"
+              className={cn(
+                '!pointer-events-auto',
+                'h-fit bg-background/50 px-2 py-1 text-muted-foreground'
+                // 'bg-transparent backdrop-blur-sm hover:bg-muted/20 hover:backdrop-blur-lg'
+              )}
               disabled={vote && !vote.isUpvoted}
               onClick={async () => {
                 const messageId = getMessageIdFromAnnotations(message);
@@ -134,7 +145,7 @@ export function MessageActions({
                         if (!currentVotes) return [];
 
                         const votesWithoutCurrent = currentVotes.filter(
-                          (vote) => vote.messageId !== message.id,
+                          (vote) => vote.messageId !== message.id
                         );
 
                         return [
@@ -146,7 +157,7 @@ export function MessageActions({
                           },
                         ];
                       },
-                      { revalidate: false },
+                      { revalidate: false }
                     );
 
                     return 'Downvoted Response!';

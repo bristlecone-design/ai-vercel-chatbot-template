@@ -7,11 +7,13 @@
 import { ACCEPTED_MEDIA_TYPE_FILE_EXTENSIONS } from '../images';
 
 import type { ExperienceMediaModel } from '@/types/experiences';
+
 import type {
   MediaAudio,
   MediaAudioTextToSpeech,
   MediaModel,
 } from '@/types/media';
+
 import type { PhotoBasicExifData } from '@/types/photo';
 
 export function isExternalUrl(url: string): boolean {
@@ -24,6 +26,11 @@ export function isRelativeUrl(url: string): boolean {
 
 export function isAbsoluteUrl(url: string): boolean {
   return url.startsWith('http') || url.startsWith('https');
+}
+
+export function getFileExtension(urlPath: string): string {
+  const parts = urlPath.split('.');
+  return parts.length > 1 ? parts[parts.length - 1] : '';
 }
 
 /**

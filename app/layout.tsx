@@ -1,11 +1,11 @@
 import { GeistMono } from 'geist/font/mono';
 import { GeistSans } from 'geist/font/sans';
-import { Toaster } from 'sonner';
 
 import { getUserSession } from '@/lib/session';
 import { cn } from '@/lib/utils';
 import { Providers } from '@/components/providers';
 import { TailwindIndicator } from '@/components/tailwind-indicator';
+import { Toaster } from '@/components/toaster';
 
 import '@/styles/globals.css';
 

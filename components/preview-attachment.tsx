@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 
+import { cn } from '@/lib/utils';
+
 import { LoaderIcon } from './icons';
 import { Button } from './ui/button';
 import { IconAudioLines, IconCircleX } from './ui/icons';
@@ -14,11 +16,13 @@ export const PreviewAttachment = ({
   isUploading = false,
   allowRemove = false,
   handleOnRemove,
+  handleOnEnlarge,
 }: {
   attachment: MediaAttachment;
   isUploading?: boolean;
   allowRemove?: boolean;
   handleOnRemove?: (attachment: MediaAttachment) => void;
+  handleOnEnlarge?: (attachment: MediaAttachment) => void;
 }) => {
   const { name, url, contentType } = attachment;
 
@@ -26,12 +30,9 @@ export const PreviewAttachment = ({
 
   const isImageType = contentType?.startsWith('image');
   const isAudioType = contentType?.startsWith('audio');
-  console.log('attachment in preview component', {
-    attachment,
-    isImageType,
-    isAudioType,
-    contentType,
-  });
+
+  const enableEnlargeView =
+    !isUploading && !deleted && typeof handleOnEnlarge === 'function';
 
   return (
     <div className="relative flex flex-col gap-2">
@@ -44,10 +45,17 @@ export const PreviewAttachment = ({
               key={`${url}-${deleted}`}
               src={url}
               alt={name ?? 'An image attachment'}
-              className="size-full rounded-md object-cover"
+              className={cn('size-full rounded-md object-cover', {
+                'cursor-pointer': enableEnlargeView,
+              })}
               initial={{ opacity: 0 }}
               animate={{ opacity: deleted ? 0 : 1 }}
               exit={{ opacity: 0 }}
+              onClick={() => {
+                if (enableEnlargeView) {
+                  handleOnEnlarge(attachment);
+                }
+              }}
             />
           ) : isAudioType ? (
             <Button variant="ghost" className="p-1">
