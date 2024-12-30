@@ -1,4 +1,5 @@
 import type {
+  UserType,
   followsSelectSchema,
   userInsertSchema,
   userProfileSchema,
@@ -25,6 +26,9 @@ export const partnerSchema = z.object({
 });
 
 export interface PARTNER_MODEL extends z.infer<typeof partnerSchema> {}
+
+// Alias for UserType
+export type USER_ROLES = UserType;
 
 export interface USER_INSERT_MODEL extends z.infer<typeof userInsertSchema> {}
 

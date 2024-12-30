@@ -39,11 +39,19 @@ export const entityEnum = pgEnum('entityType', [
   'other',
 ]);
 
+// E.g. entityTypeSchema.ENUM
+export const entityTypeSchema = createSelectSchema(entityEnum);
+
+export type EntityType = z.infer<typeof entityTypeSchema>;
+
 /**
  * User
  */
-
 export const userType = pgEnum('userType', ['user', 'admin', 'system']);
+
+export const userTypeSchema = createSelectSchema(userType);
+
+export type UserType = z.infer<typeof userTypeSchema>;
 
 export const users = pgTable('user', {
   id: text('id')
@@ -635,12 +643,20 @@ export const postType = pgEnum('postType', [
   'other',
 ]);
 
+export const postTypeSchema = createSelectSchema(postType);
+
+export type PostType = z.infer<typeof postTypeSchema>;
+
 export const postVisibilityType = pgEnum('PostVisibilityType', [
   'public',
   'private',
   'followers',
   'authenticated',
 ]);
+
+export const postVisibilityTypeSchema = createSelectSchema(postVisibilityType);
+
+export type PostVisibilityType = z.infer<typeof postVisibilityTypeSchema>;
 
 // Create a drizzle table from the prisma Post model above
 export const posts = pgTable(
@@ -691,6 +707,10 @@ export const experienceType = pgEnum('experienceType', [
   'discover',
   'experience',
 ]);
+
+export const experienceTypeSchema = createSelectSchema(experienceType);
+
+export type ExperienceType = z.infer<typeof experienceTypeSchema>;
 
 export const experiences = pgTable(
   'experience',
@@ -1138,7 +1158,23 @@ export const audioMediaSchema = createInsertSchema(audioMedia);
 
 export const audioMediaModelSchema = createSelectSchema(audioMedia);
 
-export const DiscoverySuggestion = pgTable('discoverySuggestion', {
+export const discoverySuggestionEnum = pgEnum('discoverySuggestionType', [
+  'discover',
+  'experience',
+  'share',
+  'learn',
+  'other',
+]);
+
+export const discoverySuggestionEnumSchema = createSelectSchema(
+  discoverySuggestionEnum,
+);
+
+export type DiscoverySuggestionEnum = z.infer<
+  typeof discoverySuggestionEnumSchema
+>;
+
+export const discoverySuggestion = pgTable('discoverySuggestion', {
   id: text('id')
     .notNull()
     .primaryKey()
@@ -1147,7 +1183,7 @@ export const DiscoverySuggestion = pgTable('discoverySuggestion', {
   title: text('title').notNull(),
   label: text('label').notNull(),
   suggestion: text('suggestion').notNull(),
-  type: text('type').notNull(),
+  type: discoverySuggestionEnum().default('discover'),
   municipalities: text('municipalities')
     .array()
     .notNull()
@@ -1168,10 +1204,10 @@ export const DiscoverySuggestion = pgTable('discoverySuggestion', {
   userId: text('userId').references(() => users.id),
 });
 
-export type DiscoverySuggestion = InferSelectModel<typeof DiscoverySuggestion>;
+export type DiscoverySuggestion = InferSelectModel<typeof discoverySuggestion>;
 
 export const discoverySuggestionInsertSchema =
-  createInsertSchema(DiscoverySuggestion);
+  createInsertSchema(discoverySuggestion);
 
 export const discoverySuggestionSchema =
-  createSelectSchema(DiscoverySuggestion);
+  createSelectSchema(discoverySuggestion);

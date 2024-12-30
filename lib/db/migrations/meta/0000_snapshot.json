@@ -1,113 +1,9 @@
 {
-  "id": "5e35aaff-956e-4b1b-98b2-1b284803bd16",
+  "id": "f477329e-f86b-49e8-bcf3-c388476ca7d6",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.discoverySuggestion": {
-      "name": "discoverySuggestion",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "genId": {
-          "name": "genId",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "title": {
-          "name": "title",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "label": {
-          "name": "label",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "suggestion": {
-          "name": "suggestion",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "type": {
-          "name": "type",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "municipalities": {
-          "name": "municipalities",
-          "type": "text[]",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "ARRAY[]::text[]"
-        },
-        "activities": {
-          "name": "activities",
-          "type": "text[]",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "ARRAY[]::text[]"
-        },
-        "interests": {
-          "name": "interests",
-          "type": "text[]",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "ARRAY[]::text[]"
-        },
-        "public": {
-          "name": "public",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "meta": {
-          "name": "meta",
-          "type": "json",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'{}'::json"
-        },
-        "userId": {
-          "name": "userId",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "discoverySuggestion_userId_user_id_fk": {
-          "name": "discoverySuggestion_userId_user_id_fk",
-          "tableFrom": "discoverySuggestion",
-          "tableTo": "user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.account": {
       "name": "account",
       "schema": "",
@@ -733,6 +629,112 @@
         "collaborator_userId_user_id_fk": {
           "name": "collaborator_userId_user_id_fk",
           "tableFrom": "collaborator",
+          "tableTo": "user",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.discoverySuggestion": {
+      "name": "discoverySuggestion",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "genId": {
+          "name": "genId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "label": {
+          "name": "label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "suggestion": {
+          "name": "suggestion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "discoverySuggestionType",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'discover'"
+        },
+        "municipalities": {
+          "name": "municipalities",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "ARRAY[]::text[]"
+        },
+        "activities": {
+          "name": "activities",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "ARRAY[]::text[]"
+        },
+        "interests": {
+          "name": "interests",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "ARRAY[]::text[]"
+        },
+        "public": {
+          "name": "public",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "meta": {
+          "name": "meta",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'{}'::json"
+        },
+        "userId": {
+          "name": "userId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "discoverySuggestion_userId_user_id_fk": {
+          "name": "discoverySuggestion_userId_user_id_fk",
+          "tableFrom": "discoverySuggestion",
           "tableTo": "user",
           "columnsFrom": [
             "userId"
@@ -3485,6 +3487,17 @@
     }
   },
   "enums": {
+    "public.discoverySuggestionType": {
+      "name": "discoverySuggestionType",
+      "schema": "public",
+      "values": [
+        "discover",
+        "experience",
+        "share",
+        "learn",
+        "other"
+      ]
+    },
     "public.entityType": {
       "name": "entityType",
       "schema": "public",

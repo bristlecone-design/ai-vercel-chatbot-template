@@ -1,23 +1,9 @@
+CREATE TYPE "public"."discoverySuggestionType" AS ENUM('discover', 'experience', 'share', 'learn', 'other');--> statement-breakpoint
 CREATE TYPE "public"."entityType" AS ENUM('place', 'post', 'guide', 'discovery', 'experience', 'embedding', 'content', 'generic', 'event', 'research', 'other');--> statement-breakpoint
 CREATE TYPE "public"."experienceType" AS ENUM('post', 'discover', 'experience');--> statement-breakpoint
 CREATE TYPE "public"."postType" AS ENUM('general', 'article', 'collaboration', 'other');--> statement-breakpoint
 CREATE TYPE "public"."PostVisibilityType" AS ENUM('public', 'private', 'followers', 'authenticated');--> statement-breakpoint
 CREATE TYPE "public"."userType" AS ENUM('user', 'admin', 'system');--> statement-breakpoint
-CREATE TABLE "discoverySuggestion" (
-	"id" text PRIMARY KEY NOT NULL,
-	"genId" text,
-	"title" text NOT NULL,
-	"label" text NOT NULL,
-	"suggestion" text NOT NULL,
-	"type" text NOT NULL,
-	"municipalities" text[] DEFAULT ARRAY[]::text[] NOT NULL,
-	"activities" text[] DEFAULT ARRAY[]::text[] NOT NULL,
-	"interests" text[] DEFAULT ARRAY[]::text[] NOT NULL,
-	"public" boolean DEFAULT false,
-	"meta" json DEFAULT '{}'::json,
-	"userId" text
-);
---> statement-breakpoint
 CREATE TABLE "account" (
 	"userId" text NOT NULL,
 	"type" text NOT NULL,
@@ -91,6 +77,21 @@ CREATE TABLE "collaborator" (
 	"updatedAt" timestamp DEFAULT now() NOT NULL,
 	"active" boolean DEFAULT false,
 	"blocked" boolean DEFAULT false,
+	"meta" json DEFAULT '{}'::json,
+	"userId" text
+);
+--> statement-breakpoint
+CREATE TABLE "discoverySuggestion" (
+	"id" text PRIMARY KEY NOT NULL,
+	"genId" text,
+	"title" text NOT NULL,
+	"label" text NOT NULL,
+	"suggestion" text NOT NULL,
+	"type" "discoverySuggestionType" DEFAULT 'discover',
+	"municipalities" text[] DEFAULT ARRAY[]::text[] NOT NULL,
+	"activities" text[] DEFAULT ARRAY[]::text[] NOT NULL,
+	"interests" text[] DEFAULT ARRAY[]::text[] NOT NULL,
+	"public" boolean DEFAULT false,
 	"meta" json DEFAULT '{}'::json,
 	"userId" text
 );
@@ -471,7 +472,6 @@ CREATE TABLE "vote" (
 	CONSTRAINT "vote_chatId_messageId_pk" PRIMARY KEY("chatId","messageId")
 );
 --> statement-breakpoint
-ALTER TABLE "discoverySuggestion" ADD CONSTRAINT "discoverySuggestion_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "account" ADD CONSTRAINT "account_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "audioMedia" ADD CONSTRAINT "audioMedia_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "audioMedia" ADD CONSTRAINT "audioMedia_mediaId_media_id_fk" FOREIGN KEY ("mediaId") REFERENCES "public"."media"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
@@ -487,6 +487,7 @@ ALTER TABLE "chat" ADD CONSTRAINT "chat_userId_user_id_fk" FOREIGN KEY ("userId"
 ALTER TABLE "collaboratorMedia" ADD CONSTRAINT "collaboratorMedia_collaboratorId_collaborator_id_fk" FOREIGN KEY ("collaboratorId") REFERENCES "public"."collaborator"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "collaboratorMedia" ADD CONSTRAINT "collaboratorMedia_mediaId_media_id_fk" FOREIGN KEY ("mediaId") REFERENCES "public"."media"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "collaborator" ADD CONSTRAINT "collaborator_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "discoverySuggestion" ADD CONSTRAINT "discoverySuggestion_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "docSuggestion" ADD CONSTRAINT "docSuggestion_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "docSuggestion" ADD CONSTRAINT "docSuggestion_documentId_documentCreatedAt_document_id_createdAt_fk" FOREIGN KEY ("documentId","documentCreatedAt") REFERENCES "public"."document"("id","createdAt") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "document" ADD CONSTRAINT "document_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint

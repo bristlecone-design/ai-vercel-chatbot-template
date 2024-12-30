@@ -1,14 +1,13 @@
+import {
+  type DiscoverySuggestionEnum,
+  discoverySuggestionEnumSchema,
+} from '@/lib/db/schema';
 import { string, z } from 'zod';
 
-const discoverySuggestionTypeList = [
-  'discover',
-  'experience',
-  'share',
-  'learn',
-  'other',
-] as const;
-
-export const discoverySuggestionType = z.enum(discoverySuggestionTypeList);
+// Values of the enum
+export const discoverySuggestionTypeList = Object.keys(
+  discoverySuggestionEnumSchema.Enum,
+) as DiscoverySuggestionEnum[];
 
 /**
  * Schema for AI Generated Experience Prompts
