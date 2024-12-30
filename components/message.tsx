@@ -2,7 +2,6 @@
 
 import React, { type Dispatch, type SetStateAction } from 'react';
 import { ExperienceAttachmentGalleryDialog } from '@/features/experiences/posts/experience-attachment-gallery-dialog';
-import cx from 'classnames';
 import { motion } from 'framer-motion';
 
 import type { Vote } from '@/lib/db/schema';
@@ -46,8 +45,9 @@ export const PreviewMessage = ({
       data-role={message.role}
     >
       <div
-        className={cx(
-          'flex w-full gap-4 rounded-xl group-data-[role=user]/message:ml-auto group-data-[role=user]/message:w-fit group-data-[role=user]/message:max-w-2xl group-data-[role=user]/message:bg-tertiary/80 group-data-[role=user]/message:px-3 group-data-[role=user]/message:py-2 group-data-[role=user]/message:text-muted-foreground',
+        className={cn(
+          'flex w-full gap-4 rounded-xl group-data-[role=user]/message:ml-auto group-data-[role=user]/message:w-fit group-data-[role=user]/message:max-w-2xl group-data-[role=user]/message:bg-tertiary/70 group-data-[role=user]/message:px-3 group-data-[role=user]/message:py-2 group-data-[role=user]/message:text-muted-foreground',
+          'group-data-[role=user]/message:backdrop-blur-sm',
           'group-data-[role=assistant]/message:bg-muted/40',
           'group-data-[role=assistant]/message:backdrop-blur-md',
           'group-data-[role=assistant]/message:px-3',
@@ -55,7 +55,11 @@ export const PreviewMessage = ({
         )}
       >
         {message.role === 'assistant' && (
-          <div className="flex size-8 shrink-0 items-center justify-center rounded-full ring-1 ring-border">
+          <div
+            className={cn(
+              'flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 ring-1 ring-border backdrop-blur-sm'
+            )}
+          >
             <IconAI
               className={cn('', {
                 'animate-spin': isLoading,
@@ -115,7 +119,7 @@ export const PreviewMessage = ({
                 return (
                   <div
                     key={toolCallId}
-                    className={cx({
+                    className={cn({
                       skeleton: ['getWeather'].includes(toolName),
                     })}
                   >
@@ -194,7 +198,7 @@ export const ThinkingMessage = () => {
       data-role={role}
     >
       <div
-        className={cx(
+        className={cn(
           'flex w-full gap-4 rounded-xl group-data-[role=user]/message:ml-auto group-data-[role=user]/message:w-fit group-data-[role=user]/message:max-w-2xl group-data-[role=user]/message:px-3 group-data-[role=user]/message:py-2',
           {
             'group-data-[role=user]/message:bg-muted': true,
