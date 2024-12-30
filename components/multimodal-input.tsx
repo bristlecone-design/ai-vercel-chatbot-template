@@ -232,7 +232,7 @@ export function MultimodalInput({
     isAudioRecording || isAudioPaused || isAudioCountdown;
 
   return (
-    <div className="relative flex w-full flex-col gap-4">
+    <div className="relative flex w-full flex-col gap-4 pb-12 sm:pb-0">
       {/* Suggestions */}
       {messages.length === 0 &&
         attachments.length === 0 &&

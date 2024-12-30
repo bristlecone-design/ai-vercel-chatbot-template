@@ -61,6 +61,7 @@ export function UserProfileNav({ flipChevron }: UserProfileNavProps) {
               src={userAvatar}
               alt={userDisplayName ?? 'User Avatar'}
               className="rounded-full"
+              sizeClassName="size-7"
             />
           )}
           {!userAvatar && !isProfileReady && (
