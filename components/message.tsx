@@ -68,7 +68,7 @@ export const PreviewMessage = ({
           </div>
         )}
 
-        <div className="flex w-full flex-col gap-2">
+        <div className="group flex w-full flex-col gap-2 overflow-visible">
           {message.content && (
             <div className="flex flex-col gap-4">
               <ReactMarkdownExtended>
@@ -176,6 +176,7 @@ export const PreviewMessage = ({
 
           <MessageActions
             key={`action-${message.id}`}
+            onlyCopy={message.role === 'user'}
             chatId={chatId}
             message={message}
             vote={vote}
