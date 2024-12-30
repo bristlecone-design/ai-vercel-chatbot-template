@@ -68,7 +68,7 @@ export const PreviewMessage = ({
           </div>
         )}
 
-        <div className="group flex w-full flex-col gap-2 overflow-visible">
+        <div className="group flex w-full flex-col gap-2">
           {message.content && (
             <div className="flex flex-col gap-4">
               <ReactMarkdownExtended>

@@ -1,6 +1,8 @@
 'use client';
 
+import type { Ref } from 'react';
 import { useRouter } from 'next/navigation';
+import { useMeasure, useWindowScroll } from 'react-use';
 import { useWindowSize } from 'usehooks-ts';
 
 import { cn } from '@/lib/utils';
@@ -16,10 +18,23 @@ import { UserProfileNav } from './user-profile-nav';
 export function ChatHeader({ selectedModelId }: { selectedModelId: string }) {
   const router = useRouter();
   const { open } = useSidebar();
+
   const { width: windowWidth } = useWindowSize();
+  const { y: windowY } = useWindowScroll();
+  const [ref, { height: headerHeight }] = useMeasure();
+
+  const isScrolling = windowY > headerHeight;
 
   return (
-    <header className="sticky top-0 flex min-h-14 w-full max-w-full items-center justify-between gap-2 px-2 py-1.5 md:px-2">
+    <header
+      ref={ref as Ref<HTMLElement> | undefined}
+      className={cn(
+        'sticky top-0 z-10 flex min-h-14 w-full max-w-full items-center justify-between gap-2 px-2 py-1.5 md:px-2',
+        {
+          'backdrop-blur-sm': isScrolling,
+        }
+      )}
+    >
       <div className="flex max-w-full items-center justify-start gap-2">
         <SidebarToggle />
         {(!open || windowWidth < 768) && (

@@ -212,7 +212,7 @@ export function Chat({
 
   return (
     <div
-      className="h-dvh"
+      className=""
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
