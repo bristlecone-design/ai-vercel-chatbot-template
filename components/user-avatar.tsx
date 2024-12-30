@@ -20,7 +20,7 @@ export function UserAvatar({
   alt = 'Avatar',
   className = '',
   containerClassName = '',
-  sizeClassName = 'size-7',
+  sizeClassName = 'size-full',
   fallbackClassName,
   initials = 'NV',
   noShimmer,
