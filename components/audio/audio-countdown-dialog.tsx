@@ -3,13 +3,11 @@
 import { useAppAudio } from '@/state/app-audio-provider';
 import { motion } from 'framer-motion';
 
-import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 
 export function AudioCountdownDialog() {
@@ -21,9 +19,9 @@ export function AudioCountdownDialog() {
 
   return (
     <Dialog modal open>
-      <DialogTrigger asChild>
-        <Button variant="outline">Edit Profile</Button>
-      </DialogTrigger>
+      {/* <DialogTrigger asChild>
+        <Button variant="outline">CTA</Button>
+      </DialogTrigger> */}
       <DialogContent
         noCloseBtn
         className="border-none bg-transparent p-0 backdrop-blur-sm sm:max-w-[425px]"

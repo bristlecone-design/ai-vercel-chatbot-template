@@ -248,7 +248,9 @@ export function MultimodalInput({
                 content: item.suggestion,
               });
             }}
-            className={isAudioInProgress ? 'invisible -translate-y-20' : ''}
+            className={
+              isAudioInProgress ? 'hidden -translate-y-20 sm:invisible' : ''
+            }
           />
         )}
 
