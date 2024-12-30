@@ -69,7 +69,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
       disabled={disabledActions}
       initialMessages={convertToUIMessages(messagesFromDb)}
       selectedModelId={selectedModelId}
-      msgsContainerClassName="backdrop-blur-sm bg-accent/10 sm:p-4 sm:rounded-3xl sm:border sm:border-border/40"
+      // msgsContainerClassName="backdrop-blur-sm bg-accent/10 sm:p-4 sm:rounded-3xl sm:border sm:border-border/40"
     />
   );
 }

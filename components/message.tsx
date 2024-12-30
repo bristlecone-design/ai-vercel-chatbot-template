@@ -47,8 +47,9 @@ export const PreviewMessage = ({
     >
       <div
         className={cx(
-          'flex w-full gap-4 rounded-xl group-data-[role=user]/message:ml-auto group-data-[role=user]/message:w-fit group-data-[role=user]/message:max-w-2xl group-data-[role=user]/message:bg-tertiary/75 group-data-[role=user]/message:px-3 group-data-[role=user]/message:py-2 group-data-[role=user]/message:text-muted-foreground',
-          'group-data-[role=assistant]/message:bg-muted/50',
+          'flex w-full gap-4 rounded-xl group-data-[role=user]/message:ml-auto group-data-[role=user]/message:w-fit group-data-[role=user]/message:max-w-2xl group-data-[role=user]/message:bg-tertiary/80 group-data-[role=user]/message:px-3 group-data-[role=user]/message:py-2 group-data-[role=user]/message:text-muted-foreground',
+          'group-data-[role=assistant]/message:bg-muted/40',
+          'group-data-[role=assistant]/message:backdrop-blur-md',
           'group-data-[role=assistant]/message:px-3',
           'group-data-[role=assistant]/message:py-2'
         )}
