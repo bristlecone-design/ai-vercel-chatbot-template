@@ -69,7 +69,7 @@ export function DiscoveryRandomBgImage({
       {/* Scrim/Backdrop */}
       <div
         className={cn(
-          'fixed inset-0 top-0 -z-10 size-full select-none bg-background/10 sm:bg-background/65',
+          'fixed inset-0 top-0 -z-10 size-full select-none bg-background/75 sm:bg-background/65',
           scrimClassName
         )}
       />
