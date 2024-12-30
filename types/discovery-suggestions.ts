@@ -1,6 +1,7 @@
 import {
   type DiscoverySuggestionEnum,
   discoverySuggestionEnumSchema,
+  discoverySuggestionInsertSchema as discoverySuggestionSchema,
 } from '@/lib/db/schema';
 import { string, z } from 'zod';
 
@@ -9,41 +10,48 @@ export const discoverySuggestionTypeList = Object.keys(
   discoverySuggestionEnumSchema.Enum,
 ) as DiscoverySuggestionEnum[];
 
+const dsShape = discoverySuggestionSchema.shape;
+
 /**
  * Schema for AI Generated Experience Prompts
  */
-export const AIGeneratedSingleDiscoverySuggestionSchema = z.object({
-  id: z.string().optional().describe('User/developer defined ID'),
-  genId: z
-    .string()
-    .describe('Random unique ID of discovery suggestion.')
-    .max(8),
-  title: z.string().describe('Title of suggestion.'),
-  label: z.string().describe('Succinct Label of suggestion.').max(84),
-  suggestion: z
-    .string()
-    .describe(
-      'Succinct relevant discovery suggestion that is call-to-action oriented; it combines the title and label for a more detailed suggestion.',
-    )
-    .max(84),
-  type: string()
-    .default('discover')
-    .describe(
-      `Classify the type of discovery suggestion. Can only be one of:  ${discoverySuggestionTypeList.join(', ')}`,
-    ),
-  municipalities: z
-    .array(z.string())
-    .optional()
-    .describe('Inferred municipalities of suggestion.'),
-  activities: z
-    .array(z.string())
-    .optional()
-    .describe('Inferred activities of suggestion from instructions or context'),
-  interests: z
-    .array(z.string())
-    .optional()
-    .describe('Inferred interests of suggestion from instructions or context'),
-});
+export const AIGeneratedSingleDiscoverySuggestionSchema =
+  discoverySuggestionSchema
+    .omit({
+      userId: true,
+      meta: true,
+      public: true,
+    })
+    .extend({
+      id: dsShape.id.describe('User/developer defined ID'),
+      genId: dsShape.genId.describe(
+        'Random unique ID of discovery suggestion.',
+      ),
+      title: dsShape.title.describe('Title of suggestion.'),
+      label: dsShape.label.describe('Succinct Label of suggestion.'),
+      suggestion: dsShape.suggestion.describe(
+        'Succinct relevant discovery suggestion that is call-to-action oriented; it combines the title and label for a more detailed suggestion.',
+      ),
+      type: string()
+        .default('discover')
+        .describe(
+          `Classify the type of discovery suggestion. Can only be one of: ${discoverySuggestionTypeList.join(
+            ', ',
+          )}`,
+        ),
+
+      municipalities: dsShape.municipalities.describe(
+        'Inferred municipalities of suggestion.',
+      ),
+
+      activities: dsShape.activities.describe(
+        'Inferred activities of suggestion from instructions or context',
+      ),
+
+      interests: dsShape.interests.describe(
+        'Inferred interests of suggestion from instructions or context',
+      ),
+    });
 
 export type AIGeneratedSingleDiscoverySuggestionModel = z.infer<
   typeof AIGeneratedSingleDiscoverySuggestionSchema
