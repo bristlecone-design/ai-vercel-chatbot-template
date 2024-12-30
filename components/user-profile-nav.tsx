@@ -153,7 +153,10 @@ export function UserProfileNav({ flipChevron }: UserProfileNavProps) {
             // console.log('onSelect invoked', event);
           }}
         >
-          <ThemeToggle className="w-full flex-row-reverse justify-between" />
+          <ThemeToggle
+            disabled
+            className="w-full flex-row-reverse justify-between"
+          />
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>

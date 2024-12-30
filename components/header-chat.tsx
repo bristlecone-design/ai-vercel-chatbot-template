@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useWindowSize } from 'usehooks-ts';
 
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { BetterTooltip } from '@/components/ui/tooltip';
 import { ModelSelector } from '@/components/model-selector';
@@ -24,8 +25,11 @@ export function ChatHeader({ selectedModelId }: { selectedModelId: string }) {
         {(!open || windowWidth < 768) && (
           <BetterTooltip content="New Chat">
             <Button
-              variant="outline"
-              className="order-2 ml-auto gap-1.5 bg-transparent px-2 backdrop-blur-sm hover:bg-muted/40 hover:backdrop-blur-lg md:order-1 md:ml-0 md:h-fit md:px-2"
+              variant="ghost"
+              className={cn(
+                'order-2 ml-auto gap-1.5 px-2 md:order-1 md:ml-0 md:h-fit md:px-2',
+                'bg-transparent backdrop-blur-sm hover:bg-muted/20 hover:backdrop-blur-lg'
+              )}
               onClick={() => {
                 router.push('/');
                 router.refresh();

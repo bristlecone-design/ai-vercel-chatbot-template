@@ -16,10 +16,10 @@ export function SidebarToggle({
     <BetterTooltip content="Toggle Sidebar" align="start">
       <Button
         onClick={toggleSidebar}
-        variant="outline"
+        variant="ghost"
         className={cn(
           'md:h-fit md:px-2',
-          'bg-transparent backdrop-blur-sm hover:bg-muted/40 hover:backdrop-blur-lg'
+          'bg-transparent backdrop-blur-sm hover:bg-muted/20 hover:backdrop-blur-lg'
         )}
       >
         <SidebarLeftIcon size={16} />

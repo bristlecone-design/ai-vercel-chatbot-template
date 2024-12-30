@@ -8,9 +8,11 @@ import { Button } from '@/components/ui/button';
 import { IconMoon, IconSun } from '@/components/ui/icons';
 
 export function ThemeToggle({
+  disabled,
   noLabel,
   className,
 }: {
+  disabled?: boolean;
   className?: string;
   noLabel?: boolean;
 }) {
@@ -22,6 +24,7 @@ export function ThemeToggle({
       type="button"
       variant="ghost"
       size={noLabel ? 'icon' : 'default'}
+      disabled={disabled}
       onClick={() => {
         startTransition(() => {
           setTheme(theme === 'light' ? 'dark' : 'light');
