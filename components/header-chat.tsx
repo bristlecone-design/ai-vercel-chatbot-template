@@ -29,9 +29,9 @@ export function ChatHeader({ selectedModelId }: { selectedModelId: string }) {
     <header
       ref={ref as Ref<HTMLElement> | undefined}
       className={cn(
-        'sticky top-0 z-10 flex min-h-14 w-full max-w-full items-center justify-between gap-2 overflow-hidden px-2 py-1.5 md:px-2',
+        'sticky top-0 z-10 flex min-h-14 w-full max-w-full items-center justify-between gap-2 overflow-hidden px-2 py-1.5 transition-all duration-150 md:px-2',
         {
-          'backdrop-blur-sm': isScrolling,
+          'top-0 backdrop-blur-sm sm:top-0': isScrolling,
         }
       )}
     >
