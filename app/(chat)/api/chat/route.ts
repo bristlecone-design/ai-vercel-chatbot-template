@@ -4,13 +4,14 @@ import {
   createDataStreamResponse,
   streamObject,
   streamText,
+  tool,
 } from 'ai';
 import { z } from 'zod';
 
 import { auth } from '@/app/(auth)/auth';
 import { customModel } from '@/lib/ai';
 import { models } from '@/lib/ai/models';
-import { systemPrompt } from '@/lib/ai/prompts';
+import { SYSTEM_PROMPTS, allTools, toolsSansDiscover } from '@/lib/ai/prompts';
 import {
   deleteChatById,
   getChatById,
@@ -35,21 +36,12 @@ export const maxDuration = 300;
 
 // export const runtime = 'edge';
 
-type AllowedTools =
-  | 'createDocument'
-  | 'updateDocument'
-  | 'requestSuggestions'
-  | 'getWeather';
-
-const blocksTools: AllowedTools[] = [
-  'createDocument',
-  'updateDocument',
-  'requestSuggestions',
-];
-
-const weatherTools: AllowedTools[] = ['getWeather'];
-
-const allTools: AllowedTools[] = [...blocksTools, ...weatherTools];
+type POST_PARAMS = {
+  id: string;
+  modelId: string;
+  messages: Array<Message>;
+  discoverEnabled?: boolean;
+};
 
 export async function DELETE(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -83,12 +75,9 @@ export async function DELETE(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const {
-    id,
-    messages,
-    modelId,
-  }: { id: string; messages: Array<Message>; modelId: string } =
-    await request.json();
+  const body: POST_PARAMS = await request.json();
+  const { id, modelId, messages, discoverEnabled = false } = body;
+  // console.log('chat post body data', JSON.stringify(body, null, 2));
 
   const session = await auth();
 
@@ -132,6 +121,9 @@ export async function POST(request: Request) {
     ],
   });
 
+  const llmModel = customModel(model.apiIdentifier);
+  const activeTools = discoverEnabled ? allTools : toolsSansDiscover;
+
   return createDataStreamResponse({
     execute: (dataStream) => {
       dataStream.writeData({
@@ -140,12 +132,72 @@ export async function POST(request: Request) {
       });
 
       const result = streamText({
-        model: customModel(model.apiIdentifier),
-        system: systemPrompt,
+        model: llmModel,
+        system: SYSTEM_PROMPTS.all,
         messages: coreMessages,
         maxSteps: 5,
-        experimental_activeTools: allTools,
+        toolChoice: 'auto',
+        experimental_activeTools: activeTools,
         tools: {
+          discover: tool({
+            description:
+              'Discover new experiences, connections, suggestions, collaborations, opportunities and specific knowledge based on user interests and preferences.',
+            parameters: z.object({
+              location: z.string().optional(),
+              interests: z.array(z.string()).optional(),
+            }),
+            execute: async (args, meta) => {
+              const { location, interests } = args;
+              // const { abortSignal, toolCallId, messages } = meta;
+              // console.log('discover tool args', args);
+
+              const id = generateUUID();
+              const discoveryText = '';
+
+              dataStream.writeData({
+                type: 'id',
+                content: id,
+              });
+
+              const { fullStream } = streamText({
+                model: llmModel,
+                system: SYSTEM_PROMPTS.discovery,
+                prompt: `${userMessage.content}. ${discoverEnabled ? 'Discover enabled for user' : 'Discover disabled, inform user'}`,
+                experimental_continueSteps: true,
+                onStepFinish: (step) => {
+                  dataStream.writeData({
+                    type: 'step',
+                    content: `Completed step: ${JSON.stringify(step)}`,
+                  });
+                },
+              });
+
+              // for await (const delta of fullStream) {
+              //   const { type } = delta;
+
+              //   if (type === 'text-delta') {
+              //     const { textDelta } = delta;
+
+              //     discoveryText += textDelta;
+              //     dataStream.writeData({
+              //       type: 'text-delta',
+              //       content: textDelta,
+              //     });
+              //   }
+              // }
+
+              // dataStream.writeData({ type: 'finish', content: '' });
+
+              if (session.user?.id) {
+                // TODO: Save discovery chat
+              }
+
+              return {
+                id,
+                content: discoveryText,
+              };
+            },
+          }),
           getWeather: {
             description: 'Get the current weather at a location',
             parameters: z.object({
@@ -186,7 +238,7 @@ export async function POST(request: Request) {
               });
 
               const { fullStream } = streamText({
-                model: customModel(model.apiIdentifier),
+                model: llmModel,
                 system:
                   'Write about the given topic. Markdown is supported. Use headings wherever appropriate.',
                 prompt: title,
@@ -251,7 +303,7 @@ export async function POST(request: Request) {
               });
 
               const { fullStream } = streamText({
-                model: customModel(model.apiIdentifier),
+                model: llmModel,
                 system:
                   'You are a helpful writing assistant. Based on the description, please update the piece of writing.',
                 experimental_providerMetadata: {
@@ -303,7 +355,7 @@ export async function POST(request: Request) {
               };
             },
           },
-          requestSuggestions: {
+          requestDocumentSuggestions: {
             description: 'Request suggestions for a document',
             parameters: z.object({
               documentId: z
@@ -327,7 +379,7 @@ export async function POST(request: Request) {
               > = [];
 
               const { elementStream } = streamObject({
-                model: customModel(model.apiIdentifier),
+                model: llmModel,
                 system:
                   'You are a help writing assistant. Given a piece of writing, please offer suggestions to improve the piece of writing and describe the change. It is very important for the edits to contain full sentences instead of just words. Max 5 suggestions.',
                 prompt: document.content,

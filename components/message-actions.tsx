@@ -1,4 +1,4 @@
-import type { Message } from 'ai';
+import type { ChatRequestOptions, Message } from 'ai';
 import { toast } from 'sonner';
 import { useSWRConfig } from 'swr';
 import { useCopyToClipboard } from 'usehooks-ts';
@@ -8,6 +8,7 @@ import { cn, getMessageIdFromAnnotations } from '@/lib/utils';
 
 import { CopyIcon, ThumbDownIcon, ThumbUpIcon } from './icons';
 import { Button } from './ui/button';
+import { IconRefreshAlt } from './ui/icons';
 import {
   Tooltip,
   TooltipContent,
@@ -15,19 +16,25 @@ import {
   TooltipTrigger,
 } from './ui/tooltip';
 
+export type MessageActionsProps = {
+  onlyCopy?: boolean;
+  chatId: string;
+  message: Message;
+  vote: Vote | undefined;
+  isLoading: boolean;
+  reload?: (
+    chatRequestOptions?: ChatRequestOptions
+  ) => Promise<string | null | undefined>;
+};
+
 export function MessageActions({
   onlyCopy,
   chatId,
   message,
   vote,
   isLoading,
-}: {
-  onlyCopy?: boolean;
-  chatId: string;
-  message: Message;
-  vote: Vote | undefined;
-  isLoading: boolean;
-}) {
+  reload,
+}: MessageActionsProps) {
   const { mutate } = useSWRConfig();
   const [_, copyToClipboard] = useCopyToClipboard();
 
@@ -42,7 +49,7 @@ export function MessageActions({
     <TooltipProvider delayDuration={0}>
       <div
         className={cn('flex flex-row gap-2', {
-          'absolute bottom-1.5 right-1.5 hidden group-hover:block': isUser,
+          'absolute bottom-1.5 right-1.5 hidden gap-1 group-hover:flex': isUser,
         })}
       >
         <Tooltip>
@@ -181,6 +188,36 @@ export function MessageActions({
                 }}
               >
                 <ThumbDownIcon />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Downvote Response</TooltipContent>
+          </Tooltip>
+        )}
+
+        {typeof reload === 'function' && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                className={cn(
+                  '!pointer-events-auto',
+                  'h-fit bg-background/50 px-2 py-1 text-muted-foreground'
+                  // 'bg-transparent backdrop-blur-sm hover:bg-muted/20 hover:backdrop-blur-lg'
+                )}
+                disabled={vote && !vote.isUpvoted}
+                onClick={async () => {
+                  const regenResponse = reload();
+
+                  toast.promise(regenResponse, {
+                    loading: 'Regenerting last response...',
+                    success: () => {
+                      return 'Regeneration Complete!';
+                    },
+                    error: 'Failed to regenerate response.',
+                  });
+                }}
+              >
+                <IconRefreshAlt />
               </Button>
             </TooltipTrigger>
             <TooltipContent>Downvote Response</TooltipContent>

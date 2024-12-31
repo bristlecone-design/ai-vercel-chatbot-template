@@ -1,6 +1,8 @@
 'use client';
 
 import { useRef, useState, type DragEvent } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { useAppState } from '@/state/app-state';
 import type { Message } from 'ai';
 import { useChat } from 'ai/react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -21,12 +23,21 @@ import { useScrollToBottom } from '@/components/use-scroll-to-bottom';
 
 import { WithAudioProvider } from './audio/audio-manager';
 import { Block, type UIBlock } from './block';
-import { BlockStreamHandler } from './block-stream-handler';
 import { MultimodalInput } from './multimodal-input';
 import { Overview } from './overview';
 import { IconAttachFiles } from './ui/icons';
 
 import type { MediaAttachment } from '@/types/media';
+
+export interface ChatProps {
+  id: string;
+  initialMessages: Message[];
+  selectedModelId: string;
+  disabled?: boolean;
+  msgsContainerClassName?: string;
+  notAllowedToDiscover?: boolean;
+  className?: string;
+}
 
 export function Chat({
   id,
@@ -34,15 +45,26 @@ export function Chat({
   selectedModelId,
   disabled = false,
   msgsContainerClassName,
+  notAllowedToDiscover: notAllowedToDiscoverProp = false,
   className,
-}: {
-  id: string;
-  initialMessages: Array<Message>;
-  selectedModelId: string;
-  msgsContainerClassName?: string;
-  disabled?: boolean;
-  className?: string;
-}) {
+}: ChatProps) {
+  const searchParams = useSearchParams();
+  const notInBetaQueryParam = searchParams.get('notInBeta') === 'true';
+
+  const { isInPrivateBeta } = useAppState();
+
+  const [showNotInBetaDialog, setShowNotInBetaDialog] = useState(
+    notAllowedToDiscoverProp
+  );
+
+  const derivedAllowedToDiscover = isInPrivateBeta || !notInBetaQueryParam;
+
+  // console.log('notAllowedToChatProp params', {
+  //   notAllowedToDiscoverProp,
+  //   notInBetaQueryParam,
+  //   derivedAllowedToDiscover,
+  // });
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const adjustTextAreaHeight = () => {
@@ -63,14 +85,25 @@ export function Chat({
     append,
     isLoading,
     stop,
+    reload,
     data: streamingData,
   } = useChat({
-    body: { id, modelId: selectedModelId },
+    body: {
+      id,
+      modelId: selectedModelId,
+      discoverEnabled: derivedAllowedToDiscover,
+    },
     initialMessages,
+    onToolCall({ toolCall }) {
+      if (toolCall.toolName === 'discover') {
+        toast.info('Discovering...');
+      }
+    },
     onFinish: () => {
       mutate('/api/history');
     },
   });
+  // console.log('useChat messages and custom data', { messages, streamingData });
 
   const { width: windowWidth = 1920, height: windowHeight = 1080 } =
     useWindowSize();
@@ -283,6 +316,7 @@ export function Chat({
                 message={message}
                 block={block}
                 setBlock={setBlock}
+                reload={reload}
                 isLoading={isLoading && messages.length - 1 === index}
                 vote={
                   votes
@@ -358,7 +392,11 @@ export function Chat({
         )}
       </AnimatePresence>
 
-      <BlockStreamHandler streamingData={streamingData} setBlock={setBlock} />
+      {/* <BlockStreamHandler streamingData={streamingData} setBlock={setBlock} /> */}
+
+      {/* {showNotInBetaDialog && (
+        <DialogDiscoverSplashScreen lightOverlay={false} />
+      )} */}
     </div>
   );
 }

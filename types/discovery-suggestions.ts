@@ -27,10 +27,12 @@ export const AIGeneratedSingleDiscoverySuggestionSchema =
       genId: dsShape.genId.describe(
         'Random unique ID of discovery suggestion.',
       ),
-      title: dsShape.title.describe('Title of suggestion.'),
-      label: dsShape.label.describe('Succinct Label of suggestion.'),
+      title: dsShape.title.describe('Classification of suggestion.'),
+      action: dsShape.action.describe(
+        'Action of corresponding title suggestion.',
+      ),
       suggestion: dsShape.suggestion.describe(
-        'Succinct relevant discovery suggestion that is call-to-action oriented; it combines the title and label for a more detailed suggestion.',
+        'Succinct relevant complete suggestion; it combines the title and action for a more detailed, call-to-action suggestion.',
       ),
       type: string()
         .default('discover')

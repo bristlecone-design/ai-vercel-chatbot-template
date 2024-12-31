@@ -113,6 +113,7 @@ export const {
         token.picture = user.image || null;
         token.name = user.name || null;
         token.username = user.username || null;
+        token.privateBeta = user.privateBeta || false;
       }
 
       return token;
@@ -130,6 +131,7 @@ export const {
       if (session.user) {
         session.user.id = token.id as string;
         session.user.username = token.username as string;
+        session.user.privateBeta = token.privateBeta as boolean;
       }
 
       return session;

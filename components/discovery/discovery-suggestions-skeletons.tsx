@@ -8,11 +8,11 @@ import { BlockSkeleton, shimmer, Skeleton } from '@/components/ui/skeleton';
 export function DiscoveryUserSuggestionSkeleton({
   className,
   titleClassName,
-  labelClassName,
+  actionClassName,
 }: {
   className?: string;
   titleClassName?: string;
-  labelClassName?: string;
+  actionClassName?: string;
 }) {
   return (
     <motion.div
@@ -48,7 +48,7 @@ export function DiscoveryUserSuggestionSkeleton({
       }}
     >
       <BlockSkeleton className={cn('h-5 w-4/5', titleClassName)} />
-      <BlockSkeleton className={cn('h-4 w-3/4', labelClassName)} />
+      <BlockSkeleton className={cn('h-4 w-3/4', actionClassName)} />
     </motion.div>
   );
 }
@@ -81,7 +81,7 @@ export function DiscoveryUserSuggestionsSkeletonsSection({
                   'w-4/5': idx % 2 === 0, // For indexes that are even
                   'w-3/4': idx % 2 !== 0, // For indexes that are odd
                 })}
-                labelClassName={cn({
+                actionClassName={cn({
                   'w-3/4': idx % 2 === 0, // For indexes that are even
                   'w-1/2': idx % 2 !== 0, // For indexes that are odd
                 })}

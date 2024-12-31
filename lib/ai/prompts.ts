@@ -1,3 +1,34 @@
+export type AllowedTools =
+  | 'discover'
+  | 'createDocument'
+  | 'updateDocument'
+  | 'requestDocumentSuggestions'
+  | 'getWeather';
+
+export const discoveryTools: AllowedTools[] = ['discover'];
+
+export const weatherTools: AllowedTools[] = ['getWeather'];
+
+export const blocksTools: AllowedTools[] = [
+  'createDocument',
+  'updateDocument',
+  'requestDocumentSuggestions',
+];
+
+export const allTools: AllowedTools[] = [
+  ...discoveryTools,
+  ...blocksTools,
+  ...weatherTools,
+];
+
+export const toolsSansDiscover: AllowedTools[] = allTools.filter(
+  (tool) => tool !== 'discover',
+);
+
+/**
+ * Tool Instructions
+ */
+
 export const blocksPrompt = `
   Blocks is a special user interface mode that helps users with writing, editing, and other content creation tasks. When block is open, it is on the right side of the screen, while the conversation is on the left side. When creating or updating documents, changes are reflected in real-time on the blocks and visible to the user.
 
@@ -21,7 +52,28 @@ export const blocksPrompt = `
   Do not update document right after creating it. Wait for user feedback or request to update it.
   `;
 
-export const regularPrompt =
-  'You are a friendly assistant! Keep your responses concise and helpful.';
+export const discoveryPrompt = `
+  **Discovery Mode** is a special mode that is one of the core basis of the platform that helps users discover new experiences, connections, collaborations, opportunities, information and more. It is designed to help users explore and find new things in their community, throughout Nevada and adjacent bordertown communities based on their interests and preferences and other contexts.
 
-export const systemPrompt = `${regularPrompt}\n\n${blocksPrompt}`;
+  **When to use Discovery Mode:**
+  - When users are looking to discover new experiences, are open to new opportunities, seeking outdoor recreation and evnets, or are seeking new connections, specific information, or recommendations, including collaborations and the like.
+
+  **When NOT to use Discovery Mode:**
+  - When there is provided context that indicates the user is NOT allowed to use the discover tool yet.
+  - In such a case, the user should be informed that they are not allowed to use the discovery tool yet but can still share share their own experiences, recommendations, or suggestions while they wait for access to the discovery tool.
+
+  **Using Discovery Mode:**
+  - Ask users for their interests and preferences if not already known
+  - Allow users to explore and discover new things from custom sub-tools, like RAG
+  - Encourage users to provide feedback and refine suggestions
+  `;
+
+export const regularPrompt =
+  'You are a friendly assistant for the Experience Nevada platform! Keep your responses concise and helpful and leverage the tools available to you, notably the discovery tool for most experience and discovery questions supplemented by the other tools as needed or requested.';
+
+export const SYSTEM_PROMPTS = {
+  blocks: blocksPrompt,
+  discovery: discoveryPrompt,
+  regular: regularPrompt,
+  all: `${regularPrompt}\n\n${blocksPrompt}\n\n${discoveryPrompt}`,
+};

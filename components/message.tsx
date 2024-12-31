@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils';
 import type { UIBlock } from './block';
 import { ReactMarkdownExtended } from './content/md/markdown';
 import { DocumentToolCall, DocumentToolResult } from './document';
-import { MessageActions } from './message-actions';
+import { MessageActions, type MessageActionsProps } from './message-actions';
 import { PreviewAttachment } from './preview-attachment';
 import { IconAI } from './ui/icons';
 import { Weather } from './weather';
@@ -24,6 +24,7 @@ export const PreviewMessage = ({
   setBlock,
   vote,
   isLoading,
+  reload,
 }: {
   chatId: string;
   message: ChatMessage;
@@ -31,6 +32,7 @@ export const PreviewMessage = ({
   setBlock: Dispatch<SetStateAction<UIBlock>>;
   vote: Vote | undefined;
   isLoading: boolean;
+  reload?: MessageActionsProps['reload'];
 }) => {
   const [showGallery, setShowGallery] = React.useState(false);
   const [gallerySelectedIndex, setGallerySelectedIndex] = React.useState(0);
@@ -181,6 +183,7 @@ export const PreviewMessage = ({
             message={message}
             vote={vote}
             isLoading={isLoading}
+            reload={reload}
           />
         </div>
       </div>

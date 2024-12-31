@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { cookies } from 'next/headers';
 import { getCachedUserWaitlistCount } from '@/actions/user';
+import type { Session } from 'next-auth';
 
 import { DEFAULT_MODEL_NAME, models } from '@/lib/ai/models';
 import { genChatId } from '@/lib/id';
@@ -8,7 +9,11 @@ import { getUserSession } from '@/lib/session';
 import { Chat } from '@/components/chat';
 import { ExperienceSplashScreen } from '@/components/discovery/discovery-splash-screen';
 
-async function DynamicChatView() {
+async function DynamicAuthenicatedChatView({
+  user,
+}: {
+  user: Session['user'];
+}) {
   const id = genChatId();
 
   const cookieStore = await cookies();
@@ -24,6 +29,7 @@ async function DynamicChatView() {
       id={id}
       initialMessages={[]}
       selectedModelId={selectedModelId}
+      notAllowedToDiscover={user.privateBeta !== true}
     />
   );
 }
@@ -38,7 +44,7 @@ export default async function Page() {
 
   return (
     <Suspense fallback={''}>
-      {session && <DynamicChatView />}
+      {session && <DynamicAuthenicatedChatView user={session.user} />}
       {!session && <DynamicUnauthenticatedSplashView />}
     </Suspense>
   );

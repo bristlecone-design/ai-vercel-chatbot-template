@@ -38,12 +38,19 @@ export function getSystemDiscoverySuggestionInstructions(
   7. General Suggestions:
     - Include at least one broadly applicable suggestion, e.g., "Explore {activity/food/outdoor rec.} in {city/town/Nevada}."
 
+  8. Format:
+    - Title: Classifies the suggestion, e.g. "Discover Art" or "Explore Local Cuisine"
+    - Action: Provide a call-to-action for the user to engage with the suggestion. (Supplements the title), e.g. "Classes in {city/town}", "Food trucks in {city/town}"
+    - Suggestion: Combine the title and action for a more detailed, call-to-action suggestion, e.g. "Discover art classes in {city/town}.", "Explore local cuisine food trucks in {city/town}."
+
   Examples:
-  - Discover art {classes/exhibits/galleries} in {city/town}.  
-  - Explore {local cuisine/food trucks} in {city/town}.  
-  - Attend a {local event/festival} in {city/town}.  
-  - Visit a {local landmark/museum} in {city/town}.  
-  - Volunteer for a {local cause/organization} in {city/town}.  
+  - Discover Art (title) {classes/exhibits/galleries} in {city/town} (action). 
+  - Explore {City/Town}'s (title) {Local cuisine/food trucks} (action).  
+  - Attend {Event/Fetival} (title) in {City/Town} (action). 
+  - Visit {Local Landmark/Museum} (title) With friends in {city/town} (action).
+  - Volunteer (title) For a {local cause/organization} in {city/town} (action).
+  - Reno Rodeo (title) Experience the wildest, richest rodeo in the West (action).
+  - Road Trip (title) Explore Nevada's scenic byways and hidden gems (action).
 
   Considerations:
   - Highlight Uniqueness: Showcase hidden gems, traditions, culture, environmental highlights, and current events.  

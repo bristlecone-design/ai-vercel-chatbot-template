@@ -1181,7 +1181,7 @@ export const discoverySuggestion = pgTable('discoverySuggestion', {
     .$defaultFn(() => genId('ds')),
   genId: text('genId'),
   title: text('title').notNull(),
-  label: text('label').notNull(),
+  action: text('label').notNull(),
   suggestion: text('suggestion').notNull(),
   type: discoverySuggestionEnum().default('discover'),
   municipalities: text('municipalities')

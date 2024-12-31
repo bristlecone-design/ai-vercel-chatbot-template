@@ -358,10 +358,10 @@ export function DiscoveryUserSuggestions({
                   'flex items-center gap-1': lastIsGenerating,
                 })}
               >
-                {suggestion.label}
+                {suggestion.title}
                 {lastIsGenerating && <Spinner className="" />}
               </h3>
-              <p className={cn('truncate text-sm')}>{suggestion.title}</p>
+              <p className={cn('truncate text-sm')}>{suggestion.action}</p>
             </motion.div>
           );
         })}
@@ -376,7 +376,7 @@ export function DiscoveryUserSuggestions({
                   'w-4/5': idx % 2 === 0, // For indexes that are even
                   'w-3/4': idx % 2 !== 0, // For indexes that are odd
                 })}
-                labelClassName={cn({
+                actionClassName={cn({
                   'w-3/4': idx % 2 === 0, // For indexes that are even
                   'w-1/2': idx % 2 !== 0, // For indexes that are odd
                 })}
