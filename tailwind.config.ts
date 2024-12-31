@@ -104,7 +104,10 @@ const config: Config = {
           foreground: 'hsl(var(--accent-foreground))',
         },
 
-        border: 'hsl(var(--border))',
+        border: {
+          DEFAULT: 'hsl(var(--border))',
+          alt: 'hsl(var(--border-alt))',
+        },
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
         chart: {

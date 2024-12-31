@@ -40,6 +40,7 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 240 5.9% 90%;
+    --border-alt: 244 63% 94%; /* Rose 500 */
     --input: 240 5.9% 90%;
     --ring: 240 5.9% 10%;
     --radius: 0.5rem;
@@ -193,14 +194,14 @@
     @apply cursor-pointer;
     @apply whitespace-normal text-[inherit] brightness-100;
     @apply underline decoration-foreground/40 decoration-1 underline-offset-2;
-    @apply hover:decoration-link-prose/80 hover:underline hover:decoration-2 hover:underline-offset-4 hover:brightness-110;
+    @apply hover:underline hover:decoration-link-prose/80 hover:decoration-2 hover:underline-offset-4 hover:brightness-110;
   }
 
   .link-prose {
     @apply cursor-pointer;
-    @apply text-link-prose whitespace-normal brightness-100;
+    @apply whitespace-normal text-link-prose brightness-100;
     @apply underline decoration-foreground/40 decoration-1 underline-offset-2;
-    @apply hover:decoration-link-prose/80 hover:underline hover:decoration-2 hover:underline-offset-4 hover:brightness-110;
+    @apply hover:underline hover:decoration-link-prose/80 hover:decoration-2 hover:underline-offset-4 hover:brightness-110;
   }
 
   .no-init-underline {
