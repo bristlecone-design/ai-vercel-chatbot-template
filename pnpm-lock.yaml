@@ -303,8 +303,8 @@ importers:
         specifier: 7.1.3
         version: 7.1.3
       focus-trap-react:
-        specifier: 11.0.1
-        version: 11.0.1(@types/react-dom@19.0.2(@types/react@19.0.2))(@types/react@19.0.2)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218)
+        specifier: 11.0.2
+        version: 11.0.2(@types/react-dom@19.0.2(@types/react@19.0.2))(@types/react@19.0.2)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218)
       framer-motion:
         specifier: 11.15.0
         version: 11.15.0(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218)
@@ -4524,8 +4524,8 @@ packages:
   flatted@3.3.2:
     resolution: {integrity: sha512-AiwGJM8YcNOaobumgtng+6NHuOqC3A7MixFeDafM3X9cIUM+xUXoS5Vfgf+OihAYe20fxqNM9yPBXJzRtZ/4eA==}
 
-  focus-trap-react@11.0.1:
-    resolution: {integrity: sha512-vxv2lglW41sBgREiVbWUMf0QzCDn84lCQhfdyELNPkfsH2VdB3XheEYBk2HK/XhpghBtbkXCGORPX6otehi+uw==}
+  focus-trap-react@11.0.2:
+    resolution: {integrity: sha512-x9sNgXhaWyq1idKW11pJftDZ3WIWgpXc9aWEU3GmLNjso3RHzyaPCBjxftoEXYJZDoq5iUlLThZ3GUf7csyJBA==}
     peerDependencies:
       '@types/react': ^18.0.0 || ^19.0.0
       '@types/react-dom': ^18.0.0 || ^19.0.0
@@ -10986,7 +10986,7 @@ snapshots:
 
   flatted@3.3.2: {}
 
-  focus-trap-react@11.0.1(@types/react-dom@19.0.2(@types/react@19.0.2))(@types/react@19.0.2)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218):
+  focus-trap-react@11.0.2(@types/react-dom@19.0.2(@types/react@19.0.2))(@types/react@19.0.2)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218):
     dependencies:
       '@types/react': 19.0.2
       '@types/react-dom': 19.0.2(@types/react@19.0.2)
