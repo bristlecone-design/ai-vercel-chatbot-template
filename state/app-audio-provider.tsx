@@ -314,9 +314,9 @@ export const AudioProvider = ({
       if (!isCountdownEnabled) {
         recorder.start();
         setAudioState('recording');
+        handleInitRecordingTimeInterval();
       } else {
         setAudioState('countdown');
-        // handleInitRecordingTimeInterval();
       }
 
       // timeInterval.current = window.setInterval(() => {
@@ -408,7 +408,8 @@ export const AudioProvider = ({
 
   /**
    * Countdown Recording Timer:
-   * - If recording initiated, start the countdown until counter is at 0 then start recording
+   * - If isCountdownEnabled, start the countdown timer
+   * - Until counter is at 0 then start recording
    */
   useInterval(
     () => {
