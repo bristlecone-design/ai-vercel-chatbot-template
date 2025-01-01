@@ -37,3 +37,14 @@ export const formatCountDescriptive = (
   singular = '',
   plural = 's',
 ) => `${verb} in ${count} ${noun}${count === 1 ? singular : plural}`;
+
+/**
+ * Capitalize the first letter of the first word in a string
+ */
+export const uppercaseFirstLetter = (string: string) => {
+  if (!string || string.length <= 1 || typeof string !== 'string') {
+    return string;
+  }
+
+  return string.charAt(0).toLocaleUpperCase() + string.slice(1);
+};

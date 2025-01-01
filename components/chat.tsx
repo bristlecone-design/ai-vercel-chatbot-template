@@ -3,7 +3,7 @@
 import { useRef, useState, type DragEvent } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useAppState } from '@/state/app-state';
-import type { Message } from 'ai';
+import type { ChatRequestOptions, Message } from 'ai';
 import { useChat } from 'ai/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { toast } from 'sonner';
@@ -103,7 +103,6 @@ export function Chat({
       mutate('/api/history');
     },
   });
-  // console.log('useChat messages and custom data', { messages, streamingData });
 
   const { width: windowWidth = 1920, height: windowHeight = 1080 } =
     useWindowSize();
@@ -139,6 +138,18 @@ export function Chat({
   const [attachments, setAttachments] = useState<Array<MediaAttachment>>([]);
 
   const isUploading = uploadQueue.length > 0;
+
+  // Leverages reload to refresh the chat messages
+  const handleRegenerateLastAssistantResponse = async (
+    chatRequestOptions?: ChatRequestOptions
+  ): Promise<string | null | undefined> => {
+    return reload({
+      ...(chatRequestOptions || {}),
+      body: {
+        regenerateResponse: true,
+      },
+    });
+  };
 
   const handleToggleAudioRecording = (nextState: boolean | undefined) => {
     if (typeof nextState === 'boolean') {
@@ -316,7 +327,7 @@ export function Chat({
                 message={message}
                 block={block}
                 setBlock={setBlock}
-                reload={reload}
+                reload={handleRegenerateLastAssistantResponse}
                 isLoading={isLoading && messages.length - 1 === index}
                 vote={
                   votes

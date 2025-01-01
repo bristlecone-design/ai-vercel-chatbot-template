@@ -9,6 +9,7 @@ import { motion } from 'framer-motion';
 import { useIsMounted, useLocalStorage } from 'usehooks-ts';
 
 import { getErrorMessage } from '@/lib/errors';
+import { uppercaseFirstLetter } from '@/lib/strings';
 import { cn } from '@/lib/utils';
 
 import { Spinner } from '../spinner';
@@ -361,7 +362,9 @@ export function DiscoveryUserSuggestions({
                 {suggestion.title}
                 {lastIsGenerating && <Spinner className="" />}
               </h3>
-              <p className={cn('truncate text-sm')}>{suggestion.action}</p>
+              <p className={cn('truncate text-sm')}>
+                {uppercaseFirstLetter(suggestion.action)}
+              </p>
             </motion.div>
           );
         })}

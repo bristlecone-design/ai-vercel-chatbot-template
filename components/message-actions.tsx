@@ -22,6 +22,7 @@ export type MessageActionsProps = {
   message: Message;
   vote: Vote | undefined;
   isLoading: boolean;
+  noEnableRegen?: boolean;
   reload?: (
     chatRequestOptions?: ChatRequestOptions
   ) => Promise<string | null | undefined>;
@@ -33,6 +34,7 @@ export function MessageActions({
   message,
   vote,
   isLoading,
+  noEnableRegen = true, // Disabled by default
   reload,
 }: MessageActionsProps) {
   const { mutate } = useSWRConfig();
@@ -44,6 +46,7 @@ export function MessageActions({
     return null;
 
   const isUser = message.role === 'user';
+  const isAssistant = message.role === 'assistant';
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -194,7 +197,7 @@ export function MessageActions({
           </Tooltip>
         )}
 
-        {typeof reload === 'function' && (
+        {isAssistant && !noEnableRegen && typeof reload === 'function' && (
           <Tooltip>
             <TooltipTrigger asChild>
               <Button

@@ -1,30 +1,3 @@
-export type AllowedTools =
-  | 'discover'
-  | 'createDocument'
-  | 'updateDocument'
-  | 'requestDocumentSuggestions'
-  | 'getWeather';
-
-export const discoveryTools: AllowedTools[] = ['discover'];
-
-export const weatherTools: AllowedTools[] = ['getWeather'];
-
-export const blocksTools: AllowedTools[] = [
-  'createDocument',
-  'updateDocument',
-  'requestDocumentSuggestions',
-];
-
-export const allTools: AllowedTools[] = [
-  ...discoveryTools,
-  ...blocksTools,
-  ...weatherTools,
-];
-
-export const toolsSansDiscover: AllowedTools[] = allTools.filter(
-  (tool) => tool !== 'discover',
-);
-
 /**
  * Tool Instructions
  */
@@ -52,7 +25,7 @@ export const blocksPrompt = `
   Do not update document right after creating it. Wait for user feedback or request to update it.
   `;
 
-export const discoveryPrompt = `
+export const discoveryActivePrompt = `
   **Discovery Mode** is a special mode that is one of the core basis of the platform that helps users discover new experiences, connections, collaborations, opportunities, information and more. It is designed to help users explore and find new things in their community, throughout Nevada and adjacent bordertown communities based on their interests and preferences and other contexts.
 
   **When to use Discovery Mode:**
@@ -68,12 +41,17 @@ export const discoveryPrompt = `
   - Encourage users to provide feedback and refine suggestions
   `;
 
+export const discoveryInactivePrompt = `
+  Discovery Mode is currently disabled for this user. Please inform the user that they are not allowed to use the discovery tool yet but can still share their own experiences, recommendations, or suggestions while they wait for access to the discovery tool in early 2025.
+  `;
+
 export const regularPrompt =
   'You are a friendly assistant for the Experience Nevada platform! Keep your responses concise and helpful and leverage the tools available to you, notably the discovery tool for most experience and discovery questions supplemented by the other tools as needed or requested.';
 
 export const SYSTEM_PROMPTS = {
   blocks: blocksPrompt,
-  discovery: discoveryPrompt,
+  discovery: discoveryActivePrompt,
+  discoveryInactive: discoveryInactivePrompt,
   regular: regularPrompt,
-  all: `${regularPrompt}\n\n${blocksPrompt}\n\n${discoveryPrompt}`,
+  base: `${regularPrompt}\n\n${blocksPrompt}\n\n${discoveryActivePrompt}`,
 };
