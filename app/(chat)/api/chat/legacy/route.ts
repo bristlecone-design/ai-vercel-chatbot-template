@@ -31,7 +31,7 @@ import {
 
 import { allTools } from '@/lib/ai/tools/types';
 import { genId } from '@/lib/id';
-import { generateTitleFromUserMessage } from '../../actions';
+import { generateTitleFromUserMessage } from '../../../actions';
 
 export const maxDuration = 300;
 
