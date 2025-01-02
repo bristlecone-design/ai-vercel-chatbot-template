@@ -18,11 +18,11 @@ importers:
         specifier: 1.0.9
         version: 1.0.9(zod@3.24.1)
       '@ai-sdk/openai':
-        specifier: 1.0.11
-        version: 1.0.11(zod@3.24.1)
+        specifier: 1.0.12
+        version: 1.0.12(zod@3.24.1)
       '@ai-sdk/togetherai':
-        specifier: 0.0.14
-        version: 0.0.14(zod@3.24.1)
+        specifier: 0.0.15
+        version: 0.0.15(zod@3.24.1)
       '@auth/drizzle-adapter':
         specifier: 1.7.4
         version: 1.7.4
@@ -246,8 +246,8 @@ importers:
         specifier: 0.10.0
         version: 0.10.0
       ai:
-        specifier: 4.0.22
-        version: 4.0.22(react@19.0.0-rc-65e06cb7-20241218)(zod@3.24.1)
+        specifier: 4.0.23
+        version: 4.0.23(react@19.0.0-rc-65e06cb7-20241218)(zod@3.24.1)
       bcrypt-ts:
         specifier: 5.0.3
         version: 5.0.3
@@ -630,8 +630,8 @@ packages:
     peerDependencies:
       zod: ^3.0.0
 
-  '@ai-sdk/openai@1.0.11':
-    resolution: {integrity: sha512-qI9s7Slma5i5bB4yYVlFdcG3PNDwdqivPT1Dr8adDX92nSSpILjgFIooS5yys9sXjvvcfOi/WXbDvVhLSRRlvg==}
+  '@ai-sdk/openai@1.0.12':
+    resolution: {integrity: sha512-w/fe7UJLbTAnSYO/o0phdVYC/Xzt/N75I6H4CRj5Zx+etbnNgTrfgFxYNxUY2kEhAeZZvuSm4xwVzWPKX741rw==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.0.0
@@ -661,8 +661,8 @@ packages:
       zod:
         optional: true
 
-  '@ai-sdk/togetherai@0.0.14':
-    resolution: {integrity: sha512-M6qrrD28GnoOh/L38+RR0qk9TQ57+9vI0B4bwLCsSGTzvS5K6gq3v3hoj1H7YfkXTBEOs4FENvQOoWKc6NdkQw==}
+  '@ai-sdk/togetherai@0.0.15':
+    resolution: {integrity: sha512-7mkr+Bvvkyqst6xXNwm3HO9rf6YFQ+Hb1+leor3GvZ61QvuLqP3znw7YBBoAXM6nosz56aYQprNj5DpyUFNF6A==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.0.0
@@ -3540,8 +3540,8 @@ packages:
     resolution: {integrity: sha512-5GG/5IbQQpC9FpkRGsSvZI5QYeSCzlJHdpBQntCsuTOxhKD8lqKhrleg2Yi7yvMIf82Ycmmqln9U8V9qwEiJew==}
     engines: {node: '>= 8.0.0'}
 
-  ai@4.0.22:
-    resolution: {integrity: sha512-yvcjWtofI2HZwgT3jMkoNnDUhAY+S9cOvZ6xbbOzrS0ZeFl1/gcbasFnwAqUJ7uL/t72/3a0Vy/pKg6N19A2Mw==}
+  ai@4.0.23:
+    resolution: {integrity: sha512-eQaAZGYVCBHBblWHl+SBGfuacyy0r4Mq7ASDPK6MqshWPRSF7wpumM4v8b65cX5MrofVeZh+dnlgYGI3ydoRMA==}
     engines: {node: '>=18'}
     peerDependencies:
       react: ^18 || ^19 || ^19.0.0-rc
@@ -7002,7 +7002,7 @@ snapshots:
       '@ai-sdk/provider-utils': 2.0.5(zod@3.24.1)
       zod: 3.24.1
 
-  '@ai-sdk/openai@1.0.11(zod@3.24.1)':
+  '@ai-sdk/openai@1.0.12(zod@3.24.1)':
     dependencies:
       '@ai-sdk/provider': 1.0.3
       '@ai-sdk/provider-utils': 2.0.5(zod@3.24.1)
@@ -7031,7 +7031,7 @@ snapshots:
       react: 19.0.0-rc-65e06cb7-20241218
       zod: 3.24.1
 
-  '@ai-sdk/togetherai@0.0.14(zod@3.24.1)':
+  '@ai-sdk/togetherai@0.0.15(zod@3.24.1)':
     dependencies:
       '@ai-sdk/openai-compatible': 0.0.13(zod@3.24.1)
       '@ai-sdk/provider': 1.0.3
@@ -9892,7 +9892,7 @@ snapshots:
     dependencies:
       humanize-ms: 1.2.1
 
-  ai@4.0.22(react@19.0.0-rc-65e06cb7-20241218)(zod@3.24.1):
+  ai@4.0.23(react@19.0.0-rc-65e06cb7-20241218)(zod@3.24.1):
     dependencies:
       '@ai-sdk/provider': 1.0.3
       '@ai-sdk/provider-utils': 2.0.5(zod@3.24.1)
