@@ -17,6 +17,29 @@ import { Weather } from './weather';
 
 import type { ChatMessage } from '@/types/chat-msgs';
 
+export const MessageIconAI = ({
+  isLoading,
+  className,
+}: {
+  isLoading: boolean;
+  className?: string;
+}) => {
+  return (
+    <div
+      className={cn(
+        'ring-border-alt/30 mt-1.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 ring-1 backdrop-blur-sm',
+        className
+      )}
+    >
+      <IconAI
+        className={cn('', {
+          'animate-spin': isLoading,
+        })}
+      />
+    </div>
+  );
+};
+
 export const PreviewMessage = ({
   chatId,
   message,
@@ -57,17 +80,7 @@ export const PreviewMessage = ({
         )}
       >
         {message.role === 'assistant' && (
-          <div
-            className={cn(
-              'flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 ring-1 ring-border backdrop-blur-sm'
-            )}
-          >
-            <IconAI
-              className={cn('', {
-                'animate-spin': isLoading,
-              })}
-            />
-          </div>
+          <MessageIconAI isLoading={isLoading} className="" />
         )}
 
         <div className="group flex w-full flex-col gap-2">
@@ -209,9 +222,7 @@ export const ThinkingMessage = () => {
           }
         )}
       >
-        <div className="flex size-8 shrink-0 items-center justify-center rounded-full ring-1 ring-border">
-          <IconAI className="animate-spin" />
-        </div>
+        <MessageIconAI isLoading={true} className="" />
 
         <div className="flex w-full flex-col gap-2">
           <div className="flex flex-col gap-4 text-muted-foreground">
