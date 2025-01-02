@@ -333,8 +333,8 @@ importers:
         specifier: 0.16.19
         version: 0.16.19
       langchain:
-        specifier: 0.3.8
-        version: 0.3.8(@langchain/core@0.3.27(openai@4.77.0(encoding@0.1.13)(zod@3.24.1)))(axios@1.7.9)(cheerio@1.0.0)(encoding@0.1.13)(openai@4.77.0(encoding@0.1.13)(zod@3.24.1))
+        specifier: 0.3.9
+        version: 0.3.9(@langchain/core@0.3.27(openai@4.77.0(encoding@0.1.13)(zod@3.24.1)))(axios@1.7.9)(cheerio@1.0.0)(encoding@0.1.13)(openai@4.77.0(encoding@0.1.13)(zod@3.24.1))
       lowlight:
         specifier: 3.3.0
         version: 3.3.0
@@ -5083,12 +5083,13 @@ packages:
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
 
-  langchain@0.3.8:
-    resolution: {integrity: sha512-EiAHFgBdThuXFmIx9j81wjdPItpRsw0Ck4r5dyhB74gyhehRGna/UK2CTqeKVnIUM/f4g4JbxUgAU4voXljDMw==}
+  langchain@0.3.9:
+    resolution: {integrity: sha512-uteRutI03Bt9f53nZmx8mWfJXkf6VlFVRuOprRJ0mWdCpkTP359sxrH4v6w4TokLiziPC/aMay662kmOz0dHlA==}
     engines: {node: '>=18'}
     peerDependencies:
       '@langchain/anthropic': '*'
       '@langchain/aws': '*'
+      '@langchain/cerebras': '*'
       '@langchain/cohere': '*'
       '@langchain/core': '>=0.2.21 <0.4.0'
       '@langchain/google-genai': '*'
@@ -5105,6 +5106,8 @@ packages:
       '@langchain/anthropic':
         optional: true
       '@langchain/aws':
+        optional: true
+      '@langchain/cerebras':
         optional: true
       '@langchain/cohere':
         optional: true
@@ -8186,7 +8189,7 @@ snapshots:
       flat: 5.0.2
       ibm-cloud-sdk-core: 5.1.0
       js-yaml: 4.1.0
-      langchain: 0.3.8(@langchain/core@0.3.27(openai@4.77.0(encoding@0.1.13)(zod@3.24.1)))(axios@1.7.9)(cheerio@1.0.0)(encoding@0.1.13)(openai@4.77.0(encoding@0.1.13)(zod@3.24.1))
+      langchain: 0.3.9(@langchain/core@0.3.27(openai@4.77.0(encoding@0.1.13)(zod@3.24.1)))(axios@1.7.9)(cheerio@1.0.0)(encoding@0.1.13)(openai@4.77.0(encoding@0.1.13)(zod@3.24.1))
       langsmith: 0.2.11(openai@4.77.0(encoding@0.1.13)(zod@3.24.1))
       openai: 4.77.0(encoding@0.1.13)(zod@3.24.1)
       uuid: 10.0.0
@@ -8215,6 +8218,7 @@ snapshots:
     transitivePeerDependencies:
       - '@langchain/anthropic'
       - '@langchain/aws'
+      - '@langchain/cerebras'
       - '@langchain/cohere'
       - '@langchain/google-genai'
       - '@langchain/google-vertexai'
@@ -11554,7 +11558,7 @@ snapshots:
     dependencies:
       json-buffer: 3.0.1
 
-  langchain@0.3.8(@langchain/core@0.3.27(openai@4.77.0(encoding@0.1.13)(zod@3.24.1)))(axios@1.7.9)(cheerio@1.0.0)(encoding@0.1.13)(openai@4.77.0(encoding@0.1.13)(zod@3.24.1)):
+  langchain@0.3.9(@langchain/core@0.3.27(openai@4.77.0(encoding@0.1.13)(zod@3.24.1)))(axios@1.7.9)(cheerio@1.0.0)(encoding@0.1.13)(openai@4.77.0(encoding@0.1.13)(zod@3.24.1)):
     dependencies:
       '@langchain/core': 0.3.27(openai@4.77.0(encoding@0.1.13)(zod@3.24.1))
       '@langchain/openai': 0.3.16(@langchain/core@0.3.27(openai@4.77.0(encoding@0.1.13)(zod@3.24.1)))(encoding@0.1.13)
