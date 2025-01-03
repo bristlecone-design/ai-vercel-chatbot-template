@@ -1,15 +1,15 @@
 import type { Experimental_LanguageModelV1Middleware as LanguageModelV1Middleware } from 'ai';
+import { getMostRecentUserMessagePromptText } from './chat-utils';
 
-export const yourRagMiddleware: LanguageModelV1Middleware = {
+export const ragMiddleware: LanguageModelV1Middleware = {
   /**
    * Transforms the parameters before they are passed to the language model, for both doGenerate and doStream.
    *
    * @see https://sdk.vercel.ai/docs/ai-sdk-core/middleware#retrieval-augmented-generation-rag
    */
   transformParams: async ({ params }) => {
-    const lastUserMessageText = getLastUserMessageText({
-      prompt: params.prompt,
-    });
+    const prompt = params.prompt;
+    const lastUserMessageText = getMostRecentUserMessagePromptText(prompt);
 
     if (lastUserMessageText == null) {
       return params; // do not use RAG (send unmodified parameters)

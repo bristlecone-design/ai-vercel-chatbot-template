@@ -18,18 +18,6 @@ CREATE TABLE "account" (
 	"session_state" text
 );
 --> statement-breakpoint
-CREATE TABLE "audioMedia" (
-	"id" text PRIMARY KEY NOT NULL,
-	"createdAt" timestamp DEFAULT now() NOT NULL,
-	"updatedAt" timestamp DEFAULT now() NOT NULL,
-	"model" text NOT NULL,
-	"language" text DEFAULT 'en',
-	"voice" text,
-	"userId" text,
-	"mediaId" text,
-	"experienceId" text
-);
---> statement-breakpoint
 CREATE TABLE "authenticator" (
 	"id" text PRIMARY KEY NOT NULL,
 	"credentialId" text NOT NULL,
@@ -42,16 +30,22 @@ CREATE TABLE "authenticator" (
 	"transports" text
 );
 --> statement-breakpoint
-CREATE TABLE "bookmark" (
-	"id" text PRIMARY KEY NOT NULL,
-	"createdAt" timestamp DEFAULT now() NOT NULL,
-	"updatedAt" timestamp DEFAULT now() NOT NULL,
-	"userId" text,
-	"collaboratorId" text,
-	"mediaId" text,
-	"postId" text,
-	"experienceId" text,
-	"promptId" text
+CREATE TABLE "session" (
+	"sessionToken" text PRIMARY KEY NOT NULL,
+	"userId" text NOT NULL,
+	"expires" timestamp NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "verificationNumberSessions" (
+	"verificationNumber" text NOT NULL,
+	"userId" text NOT NULL,
+	"createdAt" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "verificationToken" (
+	"identifier" text NOT NULL,
+	"token" text NOT NULL,
+	"expires" timestamp NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "chat" (
@@ -61,39 +55,6 @@ CREATE TABLE "chat" (
 	"public" boolean DEFAULT false,
 	"sharePath" text,
 	"userId" text NOT NULL
-);
---> statement-breakpoint
-CREATE TABLE "collaboratorMedia" (
-	"id" text PRIMARY KEY NOT NULL,
-	"createdAt" timestamp DEFAULT now() NOT NULL,
-	"updatedAt" timestamp DEFAULT now() NOT NULL,
-	"collaboratorId" text,
-	"mediaId" text
-);
---> statement-breakpoint
-CREATE TABLE "collaborator" (
-	"id" text PRIMARY KEY NOT NULL,
-	"createdAt" timestamp DEFAULT now() NOT NULL,
-	"updatedAt" timestamp DEFAULT now() NOT NULL,
-	"active" boolean DEFAULT false,
-	"blocked" boolean DEFAULT false,
-	"meta" json DEFAULT '{}'::json,
-	"userId" text
-);
---> statement-breakpoint
-CREATE TABLE "discoverySuggestion" (
-	"id" text PRIMARY KEY NOT NULL,
-	"genId" text,
-	"title" text NOT NULL,
-	"label" text NOT NULL,
-	"suggestion" text NOT NULL,
-	"type" "discoverySuggestionType" DEFAULT 'discover',
-	"municipalities" text[] DEFAULT ARRAY[]::text[] NOT NULL,
-	"activities" text[] DEFAULT ARRAY[]::text[] NOT NULL,
-	"interests" text[] DEFAULT ARRAY[]::text[] NOT NULL,
-	"public" boolean DEFAULT false,
-	"meta" json DEFAULT '{}'::json,
-	"userId" text
 );
 --> statement-breakpoint
 CREATE TABLE "docSuggestion" (
@@ -118,24 +79,68 @@ CREATE TABLE "document" (
 	CONSTRAINT "document_id_createdAt_pk" PRIMARY KEY("id","createdAt")
 );
 --> statement-breakpoint
+CREATE TABLE "message" (
+	"id" text PRIMARY KEY NOT NULL,
+	"chatId" text NOT NULL,
+	"role" varchar NOT NULL,
+	"content" json NOT NULL,
+	"attachment" json DEFAULT '[]'::json,
+	"createdAt" timestamp NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "vote" (
+	"chatId" text NOT NULL,
+	"messageId" text NOT NULL,
+	"isUpvoted" boolean NOT NULL,
+	CONSTRAINT "vote_chatId_messageId_pk" PRIMARY KEY("chatId","messageId")
+);
+--> statement-breakpoint
+CREATE TABLE "resource" (
+	"id" varchar(191) PRIMARY KEY NOT NULL,
+	"createdAt" timestamp DEFAULT now() NOT NULL,
+	"updatedAt" timestamp DEFAULT now() NOT NULL,
+	"title" text,
+	"content" text NOT NULL,
+	"url" text DEFAULT '',
+	"public" boolean DEFAULT false,
+	"keywords" text[] DEFAULT ARRAY[]::text[] NOT NULL,
+	"categories" text[] DEFAULT ARRAY[]::text[] NOT NULL,
+	"note" text,
+	"userId" text NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "discoverySuggestion" (
+	"id" text PRIMARY KEY NOT NULL,
+	"genId" text,
+	"title" text NOT NULL,
+	"label" text NOT NULL,
+	"suggestion" text NOT NULL,
+	"type" "discoverySuggestionType" DEFAULT 'discover',
+	"municipalities" text[] DEFAULT ARRAY[]::text[] NOT NULL,
+	"activities" text[] DEFAULT ARRAY[]::text[] NOT NULL,
+	"interests" text[] DEFAULT ARRAY[]::text[] NOT NULL,
+	"public" boolean DEFAULT false,
+	"meta" json DEFAULT '{}'::json,
+	"userId" text
+);
+--> statement-breakpoint
 CREATE TABLE "embeddings" (
 	"id" text PRIMARY KEY NOT NULL,
 	"createdAt" timestamp DEFAULT now() NOT NULL,
 	"updatedAt" timestamp DEFAULT now() NOT NULL,
 	"type" "entityType" DEFAULT 'content',
-	"title" text NOT NULL,
-	"url" text DEFAULT '',
-	"text" text NOT NULL,
-	"description" text NOT NULL,
-	"note" text NOT NULL,
+	"content" text NOT NULL,
+	"contentHash" text,
+	"description" text,
 	"embedding" vector(1536),
-	"keywords" text[] DEFAULT ARRAY[]::text[] NOT NULL,
 	"model" text NOT NULL,
 	"usage" text NOT NULL,
 	"meta" json DEFAULT '{}'::json,
-	"chatId" text NOT NULL,
+	"resourceId" varchar(191) NOT NULL,
 	"userId" text NOT NULL,
-	"placeId" text NOT NULL
+	"chatId" text,
+	"messageId" text,
+	"placeId" text
 );
 --> statement-breakpoint
 CREATE TABLE "experienceLikes" (
@@ -183,6 +188,18 @@ CREATE TABLE "experience" (
 	"storyId" text
 );
 --> statement-breakpoint
+CREATE TABLE "bookmark" (
+	"id" text PRIMARY KEY NOT NULL,
+	"createdAt" timestamp DEFAULT now() NOT NULL,
+	"updatedAt" timestamp DEFAULT now() NOT NULL,
+	"userId" text,
+	"collaboratorId" text,
+	"mediaId" text,
+	"postId" text,
+	"experienceId" text,
+	"promptId" text
+);
+--> statement-breakpoint
 CREATE TABLE "favorites" (
 	"userId" text NOT NULL
 );
@@ -192,6 +209,26 @@ CREATE TABLE "follows" (
 	"updatedAt" timestamp DEFAULT now() NOT NULL,
 	"followedById" text NOT NULL,
 	"followingId" text NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "audioMedia" (
+	"id" text PRIMARY KEY NOT NULL,
+	"createdAt" timestamp DEFAULT now() NOT NULL,
+	"updatedAt" timestamp DEFAULT now() NOT NULL,
+	"model" text NOT NULL,
+	"language" text DEFAULT 'en',
+	"voice" text,
+	"userId" text,
+	"mediaId" text,
+	"experienceId" text
+);
+--> statement-breakpoint
+CREATE TABLE "collaboratorMedia" (
+	"id" text PRIMARY KEY NOT NULL,
+	"createdAt" timestamp DEFAULT now() NOT NULL,
+	"updatedAt" timestamp DEFAULT now() NOT NULL,
+	"collaboratorId" text,
+	"mediaId" text
 );
 --> statement-breakpoint
 CREATE TABLE "media" (
@@ -270,15 +307,6 @@ CREATE TABLE "mediaLike" (
 	"updatedAt" timestamp DEFAULT now() NOT NULL,
 	"userId" text,
 	"mediaId" text
-);
---> statement-breakpoint
-CREATE TABLE "message" (
-	"id" text PRIMARY KEY NOT NULL,
-	"chatId" text NOT NULL,
-	"role" varchar NOT NULL,
-	"content" json NOT NULL,
-	"attachment" json DEFAULT '[]'::json,
-	"createdAt" timestamp NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "places" (
@@ -401,10 +429,14 @@ CREATE TABLE "promptCollection" (
 	"meta" json DEFAULT '{}'::json
 );
 --> statement-breakpoint
-CREATE TABLE "session" (
-	"sessionToken" text PRIMARY KEY NOT NULL,
-	"userId" text NOT NULL,
-	"expires" timestamp NOT NULL
+CREATE TABLE "collaborator" (
+	"id" text PRIMARY KEY NOT NULL,
+	"createdAt" timestamp DEFAULT now() NOT NULL,
+	"updatedAt" timestamp DEFAULT now() NOT NULL,
+	"active" boolean DEFAULT false,
+	"blocked" boolean DEFAULT false,
+	"meta" json DEFAULT '{}'::json,
+	"userId" text
 );
 --> statement-breakpoint
 CREATE TABLE "user" (
@@ -453,46 +485,23 @@ CREATE TABLE "user" (
 	"meta" json DEFAULT '{}'::json
 );
 --> statement-breakpoint
-CREATE TABLE "verificationNumberSessions" (
-	"verificationNumber" text NOT NULL,
-	"userId" text NOT NULL,
-	"createdAt" timestamp DEFAULT now() NOT NULL
-);
---> statement-breakpoint
-CREATE TABLE "verificationToken" (
-	"identifier" text NOT NULL,
-	"token" text NOT NULL,
-	"expires" timestamp NOT NULL
-);
---> statement-breakpoint
-CREATE TABLE "vote" (
-	"chatId" text NOT NULL,
-	"messageId" text NOT NULL,
-	"isUpvoted" boolean NOT NULL,
-	CONSTRAINT "vote_chatId_messageId_pk" PRIMARY KEY("chatId","messageId")
-);
---> statement-breakpoint
 ALTER TABLE "account" ADD CONSTRAINT "account_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "audioMedia" ADD CONSTRAINT "audioMedia_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "audioMedia" ADD CONSTRAINT "audioMedia_mediaId_media_id_fk" FOREIGN KEY ("mediaId") REFERENCES "public"."media"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "audioMedia" ADD CONSTRAINT "audioMedia_experienceId_experience_id_fk" FOREIGN KEY ("experienceId") REFERENCES "public"."experience"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "authenticator" ADD CONSTRAINT "authenticator_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
-ALTER TABLE "bookmark" ADD CONSTRAINT "bookmark_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "bookmark" ADD CONSTRAINT "bookmark_collaboratorId_collaborator_id_fk" FOREIGN KEY ("collaboratorId") REFERENCES "public"."collaborator"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "bookmark" ADD CONSTRAINT "bookmark_mediaId_media_id_fk" FOREIGN KEY ("mediaId") REFERENCES "public"."media"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "bookmark" ADD CONSTRAINT "bookmark_postId_post_id_fk" FOREIGN KEY ("postId") REFERENCES "public"."post"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "bookmark" ADD CONSTRAINT "bookmark_experienceId_experience_id_fk" FOREIGN KEY ("experienceId") REFERENCES "public"."experience"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "bookmark" ADD CONSTRAINT "bookmark_promptId_prompt_id_fk" FOREIGN KEY ("promptId") REFERENCES "public"."prompt"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "session" ADD CONSTRAINT "session_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "verificationNumberSessions" ADD CONSTRAINT "verificationNumberSessions_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "chat" ADD CONSTRAINT "chat_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "collaboratorMedia" ADD CONSTRAINT "collaboratorMedia_collaboratorId_collaborator_id_fk" FOREIGN KEY ("collaboratorId") REFERENCES "public"."collaborator"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "collaboratorMedia" ADD CONSTRAINT "collaboratorMedia_mediaId_media_id_fk" FOREIGN KEY ("mediaId") REFERENCES "public"."media"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "collaborator" ADD CONSTRAINT "collaborator_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "discoverySuggestion" ADD CONSTRAINT "discoverySuggestion_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "docSuggestion" ADD CONSTRAINT "docSuggestion_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "docSuggestion" ADD CONSTRAINT "docSuggestion_documentId_documentCreatedAt_document_id_createdAt_fk" FOREIGN KEY ("documentId","documentCreatedAt") REFERENCES "public"."document"("id","createdAt") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "document" ADD CONSTRAINT "document_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "embeddings" ADD CONSTRAINT "embeddings_chatId_chat_id_fk" FOREIGN KEY ("chatId") REFERENCES "public"."chat"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "message" ADD CONSTRAINT "message_chatId_chat_id_fk" FOREIGN KEY ("chatId") REFERENCES "public"."chat"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "vote" ADD CONSTRAINT "vote_chatId_chat_id_fk" FOREIGN KEY ("chatId") REFERENCES "public"."chat"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "vote" ADD CONSTRAINT "vote_messageId_message_id_fk" FOREIGN KEY ("messageId") REFERENCES "public"."message"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "resource" ADD CONSTRAINT "resource_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "discoverySuggestion" ADD CONSTRAINT "discoverySuggestion_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "embeddings" ADD CONSTRAINT "embeddings_resourceId_resource_id_fk" FOREIGN KEY ("resourceId") REFERENCES "public"."resource"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "embeddings" ADD CONSTRAINT "embeddings_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "embeddings" ADD CONSTRAINT "embeddings_chatId_chat_id_fk" FOREIGN KEY ("chatId") REFERENCES "public"."chat"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "embeddings" ADD CONSTRAINT "embeddings_messageId_message_id_fk" FOREIGN KEY ("messageId") REFERENCES "public"."message"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "embeddings" ADD CONSTRAINT "embeddings_placeId_places_id_fk" FOREIGN KEY ("placeId") REFERENCES "public"."places"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "experienceLikes" ADD CONSTRAINT "experienceLikes_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "experienceLikes" ADD CONSTRAINT "experienceLikes_experienceId_experience_id_fk" FOREIGN KEY ("experienceId") REFERENCES "public"."experience"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
@@ -501,14 +510,24 @@ ALTER TABLE "experience" ADD CONSTRAINT "experience_authorId_user_id_fk" FOREIGN
 ALTER TABLE "experience" ADD CONSTRAINT "experience_embeddingsId_embeddings_id_fk" FOREIGN KEY ("embeddingsId") REFERENCES "public"."embeddings"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "experience" ADD CONSTRAINT "experience_promptId_prompt_id_fk" FOREIGN KEY ("promptId") REFERENCES "public"."prompt"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "experience" ADD CONSTRAINT "experience_storyId_promptCollection_id_fk" FOREIGN KEY ("storyId") REFERENCES "public"."promptCollection"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "bookmark" ADD CONSTRAINT "bookmark_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "bookmark" ADD CONSTRAINT "bookmark_collaboratorId_collaborator_id_fk" FOREIGN KEY ("collaboratorId") REFERENCES "public"."collaborator"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "bookmark" ADD CONSTRAINT "bookmark_mediaId_media_id_fk" FOREIGN KEY ("mediaId") REFERENCES "public"."media"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "bookmark" ADD CONSTRAINT "bookmark_postId_post_id_fk" FOREIGN KEY ("postId") REFERENCES "public"."post"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "bookmark" ADD CONSTRAINT "bookmark_experienceId_experience_id_fk" FOREIGN KEY ("experienceId") REFERENCES "public"."experience"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "bookmark" ADD CONSTRAINT "bookmark_promptId_prompt_id_fk" FOREIGN KEY ("promptId") REFERENCES "public"."prompt"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "favorites" ADD CONSTRAINT "favorites_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "audioMedia" ADD CONSTRAINT "audioMedia_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "audioMedia" ADD CONSTRAINT "audioMedia_mediaId_media_id_fk" FOREIGN KEY ("mediaId") REFERENCES "public"."media"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "audioMedia" ADD CONSTRAINT "audioMedia_experienceId_experience_id_fk" FOREIGN KEY ("experienceId") REFERENCES "public"."experience"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "collaboratorMedia" ADD CONSTRAINT "collaboratorMedia_collaboratorId_collaborator_id_fk" FOREIGN KEY ("collaboratorId") REFERENCES "public"."collaborator"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "collaboratorMedia" ADD CONSTRAINT "collaboratorMedia_mediaId_media_id_fk" FOREIGN KEY ("mediaId") REFERENCES "public"."media"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "media" ADD CONSTRAINT "media_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "media" ADD CONSTRAINT "media_postId_post_id_fk" FOREIGN KEY ("postId") REFERENCES "public"."post"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "media" ADD CONSTRAINT "media_chatMessageId_message_id_fk" FOREIGN KEY ("chatMessageId") REFERENCES "public"."message"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "media" ADD CONSTRAINT "media_experienceId_experience_id_fk" FOREIGN KEY ("experienceId") REFERENCES "public"."experience"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "mediaLike" ADD CONSTRAINT "mediaLike_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "mediaLike" ADD CONSTRAINT "mediaLike_mediaId_media_id_fk" FOREIGN KEY ("mediaId") REFERENCES "public"."media"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "message" ADD CONSTRAINT "message_chatId_chat_id_fk" FOREIGN KEY ("chatId") REFERENCES "public"."chat"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "post" ADD CONSTRAINT "post_authorId_user_id_fk" FOREIGN KEY ("authorId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "post" ADD CONSTRAINT "post_embeddingsId_embeddings_id_fk" FOREIGN KEY ("embeddingsId") REFERENCES "public"."embeddings"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "prompt" ADD CONSTRAINT "prompt_authorId_user_id_fk" FOREIGN KEY ("authorId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
@@ -518,7 +537,4 @@ ALTER TABLE "promptCollaborator" ADD CONSTRAINT "promptCollaborator_userId_user_
 ALTER TABLE "promptCollaborator" ADD CONSTRAINT "promptCollaborator_experienceId_experience_id_fk" FOREIGN KEY ("experienceId") REFERENCES "public"."experience"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "promptCollaborator" ADD CONSTRAINT "promptCollaborator_promptId_prompt_id_fk" FOREIGN KEY ("promptId") REFERENCES "public"."prompt"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "promptCollaborator" ADD CONSTRAINT "promptCollaborator_storyId_promptCollection_id_fk" FOREIGN KEY ("storyId") REFERENCES "public"."promptCollection"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "session" ADD CONSTRAINT "session_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "verificationNumberSessions" ADD CONSTRAINT "verificationNumberSessions_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "vote" ADD CONSTRAINT "vote_chatId_chat_id_fk" FOREIGN KEY ("chatId") REFERENCES "public"."chat"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "vote" ADD CONSTRAINT "vote_messageId_message_id_fk" FOREIGN KEY ("messageId") REFERENCES "public"."message"("id") ON DELETE no action ON UPDATE no action;
+ALTER TABLE "collaborator" ADD CONSTRAINT "collaborator_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;

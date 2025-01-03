@@ -5,6 +5,6 @@
  */
 
 import { createSelectSchema } from 'drizzle-zod';
-import { embeddings } from './schema';
+import { embeddings } from './schema-embeddings';
 
 export const embeddingsSelectSchema = createSelectSchema(embeddings);
