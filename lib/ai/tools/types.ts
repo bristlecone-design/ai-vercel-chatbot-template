@@ -36,12 +36,14 @@ export const coreBetaPlatformTools = [...discoveryTools, ...weatherTools];
 
 export type CoreBetaPlatformTools = (typeof coreBetaPlatformTools)[number];
 
-export const toolsWithCustomUI = [
-  'discover',
-  'getWeather',
-  'createDocument',
-  'updateDocument',
-  'requestDocumentSuggestions',
-] satisfies AllowedTools[];
+// Turn the above toolsWithCustomUI into a dictionary that is a subset of AllowedToolsDictionary
+export const toolsWithCustomUI = {
+  getWeather: 'getWeather',
+  createDocument: 'createDocument',
+  updateDocument: 'updateDocument',
+  requestDocumentSuggestions: 'requestDocumentSuggestions',
+} satisfies Partial<typeof AllowedToolsDictionary>;
 
-export type ToolsWithCustomUI = (typeof toolsWithCustomUI)[number];
+export const toolsWithCustomUISchema = z.nativeEnum(toolsWithCustomUI);
+
+export type ToolsWithCustomUI = z.infer<typeof toolsWithCustomUISchema>;

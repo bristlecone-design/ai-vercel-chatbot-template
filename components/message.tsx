@@ -5,7 +5,7 @@ import { ExperienceAttachmentGalleryDialog } from '@/features/experiences/posts/
 import { motion } from 'framer-motion';
 
 import {
-  allowedToolsSchema,
+  toolsWithCustomUISchema,
   type ToolsWithCustomUI,
 } from '@/lib/ai/tools/types';
 import type { Vote } from '@/lib/db/schema';
@@ -75,7 +75,8 @@ export const PreviewMessage = ({
   const toolHasCustomUI = hasToolInvocations
     ? toolInvocations.some((toolInvocation) => {
         if (toolInvocation.state === 'result') {
-          return allowedToolsSchema.safeParse(toolInvocation.toolName).success;
+          return toolsWithCustomUISchema.safeParse(toolInvocation.toolName)
+            .success;
         }
         return false;
       })
