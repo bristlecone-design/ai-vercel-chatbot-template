@@ -44,8 +44,15 @@ export function RegisterEmailForm({
       toast.error('Failed to create account');
     } else if (state.status === 'invalid_data') {
       toast.error('Failed validating your submission!');
-    } else if (state.status === 'success') {
-      toast.success('Account created successfully');
+    } else if (
+      state.status === 'success' ||
+      state.status === 'user_exists_logged_in_success'
+    ) {
+      toast.success(
+        state.status === 'success'
+          ? 'Account created successfully'
+          : 'Logged in successfully'
+      );
       setIsSuccessful(true);
       if (redirectPath) {
         router.push(redirectPath);

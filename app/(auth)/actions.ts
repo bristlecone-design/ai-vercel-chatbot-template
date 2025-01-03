@@ -55,6 +55,7 @@ export interface RegisterActionState {
     | 'success'
     | 'failed'
     | 'user_exists'
+    | 'user_exists_logged_in_success'
     | 'invalid_data';
 }
 
@@ -71,6 +72,15 @@ export const register = async (
     const [user] = await getUser(validatedData.email);
 
     if (user) {
+      const fbResponse = await loginCredentials(
+        { status: 'in_progress' },
+        formData,
+      );
+
+      if (fbResponse.status === 'success') {
+        return { status: 'user_exists_logged_in_success' };
+      }
+
       return { status: 'user_exists' } as RegisterActionState;
     }
     await registerCreateNewUser(validatedData.email, validatedData.password);
