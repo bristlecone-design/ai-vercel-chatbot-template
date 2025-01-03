@@ -3,6 +3,7 @@ import type {
   CoreAssistantMessage,
   CoreMessage,
   CoreToolMessage,
+  LanguageModelV1Prompt,
   Message,
   ToolInvocation,
 } from 'ai';
@@ -174,6 +175,14 @@ export function sanitizeUIMessages(messages: Array<Message>): Array<Message> {
 export function getMostRecentUserMessage(messages: Array<CoreMessage>) {
   const userMessages = messages.filter((message) => message.role === 'user');
   return userMessages.at(-1);
+}
+
+export function getMostRecentUserMessagePromptText(
+  messages: LanguageModelV1Prompt,
+) {
+  const userMessages = messages.filter((message) => message.role === 'user');
+  const mostRecentUserMessage = userMessages.at(-1);
+  return mostRecentUserMessage?.content || '';
 }
 
 export function getMostRecentUserMessageAttachments(
