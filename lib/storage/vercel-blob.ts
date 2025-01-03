@@ -78,7 +78,6 @@ export async function uploadUserAvatarClient(
       clientPayload,
       handleUploadUrl: uploadUrl,
     });
-    console.log('blobResult for client avatar upload:', blobResult);
 
     return {
       ...blobResult,
@@ -121,7 +120,6 @@ export async function uploadUserBannerClient(
       clientPayload,
       handleUploadUrl: uploadUrl,
     });
-    console.log('blobResult for client banner upload:', blobResult);
 
     return {
       ...blobResult,

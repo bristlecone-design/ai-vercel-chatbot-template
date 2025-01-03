@@ -3,6 +3,7 @@ import { type HandleUploadBody, handleUpload } from '@vercel/blob/client';
 import { revalidatePath } from 'next/cache';
 import { NextResponse } from 'next/server';
 
+import { updateUserAvatar } from '@/lib/db/queries/user';
 import { getUserSession } from '@/lib/session';
 
 /**
@@ -69,8 +70,8 @@ export async function POST(request: Request): Promise<NextResponse> {
 
           const { url } = blob;
           if (userId) {
-            // const avatarSavedToDb = await updateUserAvatarInDb(userId, url);
-            // console.log('**** avatarSavedToDb', userId, avatarSavedToDb, url);
+            const avatarSavedToDb = await updateUserAvatar(userId, url);
+            console.log('**** avatarSavedToDb', userId, avatarSavedToDb, url);
           }
 
           if (pathToRevalidate) {
