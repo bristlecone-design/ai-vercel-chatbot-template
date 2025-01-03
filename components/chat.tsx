@@ -126,7 +126,7 @@ export function Chat({
     fetcher
   );
 
-  const [messagesContainerRef, messagesEndRef] =
+  const { containerRef: messagesContainerRef, endRef: messagesEndRef } =
     useScrollToBottom<HTMLDivElement>();
 
   const [isAudioRecording, setIsAudioRecording] = useState(false);
