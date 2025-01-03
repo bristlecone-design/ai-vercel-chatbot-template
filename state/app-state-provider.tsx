@@ -299,6 +299,8 @@ export default function AppStateProvider({
       if (userCookieLocation?.value) {
         setUserGeoLocation(userCookieLocation.value);
       }
+
+      return userCookieLocation?.value;
     };
 
     const handleSettingGeoUserLocationToCookies = async (
@@ -392,10 +394,8 @@ export default function AppStateProvider({
 
     // Ensure the user session and profile are loaded
     useEffect(() => {
-      if (isMounted) return;
-      if (!isCurrentPathRouteReady) return;
-
-      setIsMounted(true);
+      // if (!isCurrentPathRouteReady) return;
+      if (!isMounted) setIsMounted(true);
       // handleRefreshingUserSession();
       // handleRefreshingUserProfile();
       if (isReady) return;
@@ -408,98 +408,96 @@ export default function AppStateProvider({
     }, [isMounted, isReady, isCurrentPathRouteReady]);
 
     // Prepare the context value
-    const providerProps = useMemo<AppStateContext>(
-      () =>
-        ({
-          isReady,
-
-          // User Session
-          userSession,
-          userId: activeUserId,
-
-          // User Geo Location
-          userLatitude,
-          userLongitude,
-          userGeoLocation,
-          userLocation,
-          isPreciseLocation,
-
-          // Auth User
-          userProfile: isReady ? userProfile : undefined,
-          userProfileUsername: activeUsername,
-          userDisplayName: profileUserDisplayName,
-          userFirstName: profileUserFirstName,
-          userLastName: profileUserLastName,
-          userAvatar: profileUserAvatar,
-          userProfileBio: profileBio,
-          userProfileEmail: profileEmail,
-          userProfileProfession: profileProfession,
-          userProfileInterests: profileInterests,
-          userProfileLocation: profileLocation,
-          userProfilePermalink: profilePermalink,
-          userProfileLoading: isLoading && !userProfile,
-
-          isUserAllowed,
-          isAuthenticated,
-          isProfilePublic,
-          isInPrivateBeta,
-          isProfileReady: isReady && !isLoading,
-
-          // Core Handlers
-          // User Geo
-          handleGettingUserGeo,
-
-          // User Data
-          handleGettingUserProfile,
-          handleRefreshingUserProfile,
-          handleUpdatingAuthUser: handleUpdatingAuthUserProfile,
-          handleClearingCacheById: handleClearingUserProfileCacheById,
-          handleClearingCacheByUsername:
-            handleClearingUserProfileCacheByUsername,
-          handleClearingCache,
-
-          // Navigation and Auth
-          handleNavigateToUserProfile,
-          handleSigningOut,
-          handleSigningIn,
-
-          // ADMIN
-
-          // MISC
-          // currentPathname,
-          // previousPathname,
-          // swrTimestamp,
-          shouldRespondToKeyboardCommands,
-          setShouldRespondToKeyboardCommands,
-          isCommandKOpen,
-          setIsCommandKOpen,
-
-          // DEBUG
-          shouldDebugImageFallbacks,
-          setShouldDebugImageFallbacks,
-          shouldShowBaselineGrid,
-          setShouldShowBaselineGrid,
-        }) satisfies AppStateContext,
-      [
+    const providerProps = useMemo<AppStateContext>(() => {
+      // console.log('**** AppStateProvider', { isReady, userProfile });
+      return {
         isReady,
+
+        // User Session
+        userSession,
+        userId: activeUserId,
+
+        // User Geo Location
+        userLatitude,
+        userLongitude,
+        userGeoLocation,
+        userLocation,
+        isPreciseLocation,
+
+        // Auth User
+        userProfile: isReady ? userProfile : undefined,
+        userProfileUsername: activeUsername,
+        userDisplayName: profileUserDisplayName,
+        userFirstName: profileUserFirstName,
+        userLastName: profileUserLastName,
+        userAvatar: profileUserAvatar,
+        userProfileBio: profileBio,
+        userProfileEmail: profileEmail,
+        userProfileProfession: profileProfession,
+        userProfileInterests: profileInterests,
+        userProfileLocation: profileLocation,
+        userProfilePermalink: profilePermalink,
+        userProfileLoading: isLoading && !userProfile,
+
         isUserAllowed,
         isAuthenticated,
         isProfilePublic,
         isInPrivateBeta,
-        activeUserId,
-        userSession,
-        userProfile,
-        userGeoLocation,
-        userLocation,
-        userLatitude,
-        userLongitude,
-        profileBio,
-        profileEmail,
-        profileProfession,
-        profileInterests,
-        profileLocation,
-      ]
-    );
+        isProfileReady: isReady && !isLoading,
+
+        // Core Handlers
+        // User Geo
+        handleGettingUserGeo,
+
+        // User Data
+        handleGettingUserProfile,
+        handleRefreshingUserProfile,
+        handleUpdatingAuthUser: handleUpdatingAuthUserProfile,
+        handleClearingCacheById: handleClearingUserProfileCacheById,
+        handleClearingCacheByUsername: handleClearingUserProfileCacheByUsername,
+        handleClearingCache,
+
+        // Navigation and Auth
+        handleNavigateToUserProfile,
+        handleSigningOut,
+        handleSigningIn,
+
+        // ADMIN
+
+        // MISC
+        // currentPathname,
+        // previousPathname,
+        // swrTimestamp,
+        shouldRespondToKeyboardCommands,
+        setShouldRespondToKeyboardCommands,
+        isCommandKOpen,
+        setIsCommandKOpen,
+
+        // DEBUG
+        shouldDebugImageFallbacks,
+        setShouldDebugImageFallbacks,
+        shouldShowBaselineGrid,
+        setShouldShowBaselineGrid,
+      } satisfies AppStateContext;
+    }, [
+      isReady,
+      isUserAllowed,
+      isAuthenticated,
+      isProfilePublic,
+      isInPrivateBeta,
+      activeUserId,
+      userSession,
+      userProfile,
+      userGeoLocation,
+      userLocation,
+      userLatitude,
+      userLongitude,
+      profileBio,
+      profileEmail,
+      profileProfession,
+      profileInterests,
+      profileLocation,
+    ]);
 
     // if (!isReady) {
     //   return null;
