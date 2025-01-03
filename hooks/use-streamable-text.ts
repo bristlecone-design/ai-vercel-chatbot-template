@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
 import { readStreamableValue } from 'ai/rsc';
+import { useEffect, useState } from 'react';
 
 import type { StreamableText } from '@/types/streamable';
 
 // https://sdk.vercel.ai/examples/next-app/basics/streaming-text-generation
 export const useStreamableText = (content: StreamableText) => {
   const [rawContent, setRawContent] = useState(
-    typeof content === 'string' ? content : ''
+    typeof content === 'string' ? content : '',
   );
 
   useEffect(() => {

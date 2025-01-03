@@ -6,13 +6,17 @@ import {
   useState,
 } from 'react';
 
-export function useScrollToBottom<T extends HTMLElement>(): {
+export function useScrollToBottom<T extends HTMLElement>(props?: {
+  isGeneratingContent?: boolean;
+}): {
   containerRef: RefObject<T | null>;
   endRef: RefObject<T | null>;
   isAtBottom: boolean;
   isVisible: boolean;
   scrollToBottom: () => void;
 } {
+  const { isGeneratingContent = false } = props || {};
+
   const containerRef = useRef<T>(null);
   const endRef = useRef<T>(null);
 
@@ -36,24 +40,23 @@ export function useScrollToBottom<T extends HTMLElement>(): {
 
   // Auto-scroll to the bottom of the container when new content is added
   useEffect(() => {
-    const container = containerRef.current;
-    const end = endRef.current;
-
-    if (container && end) {
-      const observer = new MutationObserver(() => {
-        end.scrollIntoView({ behavior: 'smooth', block: 'end' });
-      });
-
-      observer.observe(container, {
-        childList: true,
-        subtree: true,
-        attributes: true,
-        characterData: true,
-      });
-
-      return () => observer.disconnect();
+    if (isGeneratingContent) {
+      const container = containerRef.current;
+      const end = endRef.current;
+      if (container && end) {
+        const observer = new MutationObserver(() => {
+          end.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        });
+        observer.observe(container, {
+          childList: true,
+          subtree: true,
+          attributes: true,
+          characterData: true,
+        });
+        return () => observer.disconnect();
+      }
     }
-  }, []);
+  }, [isGeneratingContent]);
 
   // Track if the user has scrolled to the bottom of the container
   useEffect(() => {

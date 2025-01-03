@@ -59,12 +59,6 @@ export function Chat({
 
   const derivedAllowedToDiscover = isInPrivateBeta || !notInBetaQueryParam;
 
-  // console.log('notAllowedToChatProp params', {
-  //   notAllowedToDiscoverProp,
-  //   notInBetaQueryParam,
-  //   derivedAllowedToDiscover,
-  // });
-
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const adjustTextAreaHeight = () => {
@@ -126,8 +120,12 @@ export function Chat({
     fetcher
   );
 
-  const { containerRef: messagesContainerRef, endRef: messagesEndRef } =
-    useScrollToBottom<HTMLDivElement>();
+  const {
+    containerRef: messagesContainerRef,
+    endRef: messagesEndRef,
+    isAtBottom,
+    isVisible,
+  } = useScrollToBottom<HTMLDivElement>();
 
   const [isAudioRecording, setIsAudioRecording] = useState(false);
 
