@@ -1,10 +1,13 @@
 'use server';
 
+import {
+  CACHE_KEY_PROMPT_STORY,
+  CACHE_KEY_PROMPT_STORIES,
+} from '@/actions/cache-keys';
 import { db } from '@/lib/db/connect';
 import { type Story, experiences, promptCollection } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 import { unstable_cache } from 'next/cache';
-import { CACHE_KEY_PROMPT_STORIES, CACHE_KEY_PROMPT_STORY } from './cache-keys';
 
 /**
  * Get single story (collection) by ID

@@ -1,9 +1,9 @@
 import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
 
+import { convertToUIMessages } from '@/lib/ai/chat-utils';
 import { DEFAULT_MODEL_NAME, models } from '@/lib/ai/models';
-import { getChatById, getMessagesByChatId } from '@/lib/db/queries';
-import { convertToUIMessages } from '@/lib/utils';
+import { getChatById, getMessagesByChatId } from '@/lib/db/queries/chat';
 import { Chat as PreviewChat } from '@/components/chat';
 
 import { auth } from '@/app/(auth)/auth';

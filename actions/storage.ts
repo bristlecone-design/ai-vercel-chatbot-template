@@ -1,8 +1,9 @@
 import { getErrorMessage } from '@/lib/errors';
 import { base64ToFile } from '@/lib/images';
 import { del } from '@vercel/blob';
+import { unstable_expirePath } from 'next/cache';
+import { updateUserAvatar, updateUserBanner } from '../lib/db/queries/user';
 import { uploadUserAvatar, uploadUserBanner } from './blob';
-import { updateUserAvatar, updateUserBanner } from './user';
 
 /**
  * Delete an asset (blob) from remote storage by its URL.
@@ -66,7 +67,7 @@ export async function uploadAndStoreUserBanner(
     // Revalidate the user's profile page globally
     if (dbUpdated && blobUpdated) {
       // console.log(`**** revalidating user profile page`);
-      expirePath('/');
+      unstable_expirePath('/');
     }
 
     return {
@@ -131,7 +132,7 @@ export async function uploadAndStoreUserAvatar(
     // Revalidate the user's profile page globally
     if (dbUpdated && blobUpdated) {
       // console.log(`**** revalidating user profile page`);
-      expirePath('/');
+      unstable_expirePath('/');
     }
 
     return {

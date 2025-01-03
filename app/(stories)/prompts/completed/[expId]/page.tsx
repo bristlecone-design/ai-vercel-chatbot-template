@@ -1,7 +1,5 @@
 import React from 'react';
 import type { Metadata, ResolvingMetadata } from 'next';
-import { getCachedMediaByExperienceId } from '@/actions/media/get-core-media';
-import { getCachedPromptCollaboratorByExpId } from '@/actions/prompts';
 import { ExperienceCreateMenuPublic } from '@/features/experiences/posts/experience-post-create-menu-public';
 import {
   mapPromptCollaboratorToPrompt,
@@ -18,6 +16,8 @@ import PromptProvider, {
   DefaultSinglePromptChallengeAcceptedStateKey,
 } from '@/state/prompt-provider';
 
+import { getCachedMediaByExperienceId } from '@/lib/db/queries/media/get-core-media';
+import { getCachedPromptCollaboratorByExpId } from '@/lib/db/queries/prompts';
 import { getUserFromSession } from '@/lib/session';
 import { cn } from '@/lib/utils';
 import { BlockSkeleton } from '@/components/ui/skeleton';

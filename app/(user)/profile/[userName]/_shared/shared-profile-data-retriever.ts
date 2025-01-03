@@ -1,6 +1,6 @@
 'use server';
 
-import { getCachedUserProfileByUsername } from '@/actions/user';
+import { getCachedUserProfileByUsername } from '@/lib/db/queries/user';
 import type { Session } from 'next-auth';
 import { redirect } from 'next/navigation';
 

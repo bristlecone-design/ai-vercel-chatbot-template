@@ -1,6 +1,11 @@
 'use server';
 
+import {
+  CACHE_KEY_USER_EXPERIENCE,
+  CACHE_KEY_USER_EXPERIENCE_MEDIA,
+} from '@/actions/cache-keys';
 import { db } from '@/lib/db/connect';
+import type { ExperienceIncludeOpts } from '@/types/experience-action-types';
 
 import { type ExperienceSave, experiences } from '@/lib/db/schema';
 import { getErrorMessage } from '@/lib/errors';
@@ -8,11 +13,6 @@ import type { AIExperienceCallToActionSuggestionModel } from '@/types/experience
 import type { ExperienceModel } from '@/types/experiences';
 import { eq, sql } from 'drizzle-orm';
 import { unstable_expirePath as expirePath } from 'next/cache';
-import {
-  CACHE_KEY_USER_EXPERIENCE,
-  CACHE_KEY_USER_EXPERIENCE_MEDIA,
-} from './cache-keys';
-import type { ExperienceIncludeOpts } from './experience-action-types';
 import { getMappedExperienceModels } from './experiences';
 
 export async function updateExperience(

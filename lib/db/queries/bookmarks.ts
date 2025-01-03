@@ -1,9 +1,9 @@
 'use server';
+import { CACHE_KEY_BOOKMARK, CACHE_KEY_BOOKMARKS } from '@/actions/cache-keys';
 import { db } from '@/lib/db/connect';
 import { type Bookmark, bookmarks, experiences } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 import { unstable_cache } from 'next/cache';
-import { CACHE_KEY_BOOKMARK, CACHE_KEY_BOOKMARKS } from './cache-keys';
 
 /**
  * Get a single bookmark by Experience ID

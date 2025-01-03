@@ -1,10 +1,10 @@
 'use server';
 
+import { deleteStorageAssetByUrl } from '@/actions/storage';
 import { db } from '@/lib/db/connect';
 import { media } from '@/lib/db/schema';
 import { getErrorMessage } from '@/lib/errors';
 import { and, eq } from 'drizzle-orm';
-import { deleteStorageAssetByUrl } from '../storage';
 
 /**
  * Delete a single user's featured image

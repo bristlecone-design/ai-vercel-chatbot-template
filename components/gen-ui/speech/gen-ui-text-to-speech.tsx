@@ -3,13 +3,13 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { uploadExperienceAudioBlob } from '@/actions/blob';
-import { saveExperienceAudioMediaRecord } from '@/actions/media/add-core-media';
-import { getExperienceAudioMediaRecord } from '@/actions/media/get-core-media';
 import { useAppState } from '@/state/app-state';
 import type { SpeechCreateParams } from 'openai/resources/audio/speech';
 import { toast } from 'sonner';
 import { useIntersectionObserver } from 'usehooks-ts';
 
+import { saveExperienceAudioMediaRecord } from '@/lib/db/queries/media/add-core-media';
+import { getExperienceAudioMediaRecord } from '@/lib/db/queries/media/get-core-media';
 import { getErrorMessage } from '@/lib/errors';
 import { mapGeneralMediaToAudioMedia } from '@/lib/media/media-utils';
 import { cn } from '@/lib/utils';

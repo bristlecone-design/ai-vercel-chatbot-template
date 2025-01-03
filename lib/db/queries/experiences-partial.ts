@@ -1,23 +1,23 @@
 'use server';
 
 import type {
+  PartialExperienceIncludeOpts,
+  PartialExperienceModelOpts,
+  ExperienceIncludeOpts,
+} from '@/types/experience-action-types';
+import type {
   ExperienceModel,
   PartialExperienceModel,
 } from '@/types/experiences';
-import type {
-  ExperienceIncludeOpts,
-  PartialExperienceIncludeOpts,
-  PartialExperienceModelOpts,
-} from './experience-action-types';
-
-import { db } from '@/lib/db/connect';
-import { experiences } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 import { unstable_cache } from 'next/cache';
+import { db } from '../connect';
+import { experiences } from '../schema';
 import {
-  getCachedUserExperienceIds,
   getMappedExperienceModelsById,
+  getCachedUserExperienceIds,
 } from './experiences';
+
 /**
  * Get partial experience by ID
  */

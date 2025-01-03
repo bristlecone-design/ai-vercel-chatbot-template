@@ -2,14 +2,14 @@
 
 import React from 'react';
 import type { Metadata, ResolvingMetadata } from 'next';
-import { getUserExperienceCountForFrontend } from '@/actions/experiences';
-import { getPartialUserExperiencesForFrontend } from '@/actions/experiences-partial';
-import { getCachedUserWaitlistCount } from '@/actions/user';
 import { ExperienceCreateMenu } from '@/features/experiences/posts/experience-post-create-menu';
 import { ViewUserProfileLazyPartialExperiences } from '@/features/experiences/posts/experience-posts';
 import { UserExperiencePostsProvider } from '@/features/experiences/posts/experience-posts-provider';
 import { sortExperiencesForUserProfilePage } from '@/features/experiences/utils/experience-utils';
 
+import { getUserExperienceCountForFrontend } from '@/lib/db/queries/experiences';
+import { getPartialUserExperiencesForFrontend } from '@/lib/db/queries/experiences-partial';
+import { getCachedUserWaitlistCount } from '@/lib/db/queries/user';
 import { isVideo } from '@/lib/media/media-utils';
 
 import type {

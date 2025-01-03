@@ -1,8 +1,8 @@
 import React from 'react';
 import type { Metadata, ResolvingMetadata } from 'next';
 import { redirect } from 'next/navigation';
-import { getCachedUserProfileByUsername } from '@/actions/user';
 
+import { getCachedUserProfileByUsername } from '@/lib/db/queries/user';
 import { getUserSession } from '@/lib/session';
 
 import { signOutAndRedirectAction } from '@/app/(auth)/auth-edge';

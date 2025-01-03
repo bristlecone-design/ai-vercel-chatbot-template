@@ -1,7 +1,7 @@
 import {
   getCachedUserWaitlistCount,
   getUserWaitlistCount,
-} from '@/actions/user';
+} from '@/lib/db/queries/user';
 import { type NextRequest, NextResponse } from 'next/server';
 
 // https://beta.nextjs.org/docs/routing/route-handlers

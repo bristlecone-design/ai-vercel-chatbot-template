@@ -12,12 +12,13 @@ import { getImageThumbnailBase64 } from '@/features/photo/server';
 import { media } from '@/lib/db/schema';
 import type { MediaModel } from '@/types/media';
 import type { PhotoBasicExifData } from '@/types/photo';
+
+import type { MediaActionIncludeOpts } from './media-action-types';
 import {
   CACHE_KEY_FEATURED_PHOTOS,
   CACHE_KEY_FEATURED_PHOTOS_COUNT,
-} from '../cache-keys';
+} from '@/actions/cache-keys';
 import { getCachedUserProfileById, getUserProfileById } from '../user';
-import type { MediaActionIncludeOpts } from './media-action-types';
 
 /**
  * Add multiple featured images to a user's featured images list

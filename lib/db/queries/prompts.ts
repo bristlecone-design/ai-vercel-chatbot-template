@@ -23,7 +23,8 @@ import type { ExperienceModel } from '@/types/experiences';
 import type { USER_PROFILE_MODEL } from '@/types/user';
 import { and, desc, eq, inArray, isNull, not, or, sql } from 'drizzle-orm';
 import { unstable_cache } from 'next/cache';
-import { clearTagCache } from './cache';
+
+import { clearTagCache } from '@/actions/cache';
 import {
   CACHE_KEY_COMPLETED_PROMPT_STORIES,
   CACHE_KEY_COMPLETED_PROMPT_STORY,
@@ -35,8 +36,11 @@ import {
   CACHE_KEY_PROMPT_STORIES,
   CACHE_KEY_PROMPT_STORY,
   CACHE_KEY_PUBLIC_PROMPTS,
-} from './cache-keys';
-import type { PromptCollaboratorIncludeOpts } from './collaborator-action-types';
+} from '@/actions/cache-keys';
+import type {
+  PromptIncludeOpts,
+  PromptStoryIncludeOpts,
+} from '@/actions/prompt-action-types';
 import {
   getCachedExperiencesByStoryId,
   getCachedSingleExperienceByPromptId,
@@ -44,13 +48,10 @@ import {
   getExperiencesByStoryId,
   getSingleExperience,
   getSingleExperienceByPromptId,
-} from './experiences';
-import type {
-  PromptIncludeOpts,
-  PromptStoryIncludeOpts,
-} from './prompt-action-types';
+} from '@/lib/db/queries/experiences';
+import type { PromptCollaboratorIncludeOpts } from '@/types/collaborator-action-types';
+import type { PromptCollectionIncludeOpts } from '@/types/story-collection-types';
 import { getCachedStoryById } from './stories';
-import type { PromptCollectionIncludeOpts } from './story-collection-types';
 import { getCachedUserProfileById, getUserProfileById } from './user';
 
 /**

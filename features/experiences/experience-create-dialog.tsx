@@ -601,7 +601,7 @@ export function CreateExperienceDialog({
               variant="outline"
               size="lg"
               className={cn(
-                'hover:text-success-foreground focus:bg-tertiary focus:text-tertiary-foreground group gap-2 rounded-xl border-4 border-border/40 py-5 transition-colors duration-75'
+                'group gap-2 rounded-xl border-4 border-border/40 py-5 transition-colors duration-75 hover:text-success-foreground focus:bg-tertiary focus:text-tertiary-foreground'
               )}
               onClick={handleOnCreateExperience}
               disabled={disableForm}
@@ -675,7 +675,7 @@ export function CreateExperienceDialog({
                     handleClosingNestedPromptSelectionDrawer();
                   }}
                   className={cn(
-                    'hover:text-success-foreground group gap-0 rounded-xl border-4 border-border/40 py-4 transition-colors duration-75'
+                    'group gap-0 rounded-xl border-4 border-border/40 py-4 transition-colors duration-75 hover:text-success-foreground'
                   )}
                 >
                   <IconArrowLeft className="size-4 transition-transform duration-300 group-hover:-translate-x-0.5 group-hover:brightness-125" />
@@ -757,7 +757,7 @@ export function CreateExperienceDialog({
                 </h3>
                 {/* Money: Experience Created! */}
                 {experienceCreated && (
-                  <AnimatedSuccessCheck className="text-success-foreground mx-auto size-32 lg:size-40" />
+                  <AnimatedSuccessCheck className="mx-auto size-32 text-success-foreground lg:size-40" />
                 )}
 
                 {/* Show Animation Rotation */}

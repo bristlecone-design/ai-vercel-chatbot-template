@@ -1,11 +1,11 @@
 import type { Metadata, ResolvingMetadata } from 'next';
 import Link from 'next/link';
-import { getPartialSingleUserExperienceForFrontend } from '@/actions/experiences-partial';
 import { ExperienceCreateMenu } from '@/features/experiences/posts/experience-post-create-menu';
 import { ViewUserProfileLazyPartialExperiences } from '@/features/experiences/posts/experience-posts';
 import { UserExperiencePostsProvider } from '@/features/experiences/posts/experience-posts-provider';
 import { createPromptCollectionStoryPermalink } from '@/features/experiences/utils/experience-prompt-utils';
 
+import { getPartialSingleUserExperienceForFrontend } from '@/lib/db/queries/experiences-partial';
 import { Badge } from '@/components/ui/badge';
 
 import { getUserCompletedSingleExperienceMetadataById } from '../../../_shared/profile-metadata-utils';

@@ -2,7 +2,6 @@ import { kv } from '@vercel/kv';
 import { revalidatePath } from 'next/cache';
 
 import { getErrorMessage } from '@/lib/errors';
-
 import type { USER_MODEL } from '@/types/user';
 
 export async function addUser(
@@ -52,6 +51,15 @@ export async function getUser(
 
   return user as unknown as USER_MODEL;
 }
+
+// export async function getUserByEmail(email: string): Promise<Array<User>> {
+//   try {
+//     return await db.select().from(users).where(eq(users.email, email));
+//   } catch (error) {
+//     console.error('Failed to get user by email from db', error);
+//     throw error;
+//   }
+// }
 
 export const DEFAULT_KEYS_TO_OMIT = ['password', 'salt'];
 

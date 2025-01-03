@@ -6,10 +6,6 @@ import { clearPathCache, clearTagCache } from '@/actions/cache';
 import { CACHE_KEY_PROMPT, CACHE_KEY_PROMPTS } from '@/actions/cache-keys';
 import { streamPersonalizedUserExperiencePromptsFrontend } from '@/actions/experience-prompts';
 import {
-  getCachedAnonymousUserPrompts,
-  getCachedUserIncompletePrompts,
-} from '@/actions/prompts';
-import {
   createGeneratedCompletePromptCacheKey,
   createPromptCollectionStoryPermalink,
   getUniquePrompts,
@@ -22,6 +18,10 @@ import { wrap } from 'popmotion';
 import { useInterval } from 'react-use';
 import { toast } from 'sonner';
 
+import {
+  getCachedAnonymousUserPrompts,
+  getCachedUserIncompletePrompts,
+} from '@/lib/db/queries/prompts';
 import { getBaseUrl } from '@/lib/getBaseUrl';
 import { sleep } from '@/lib/utils';
 import { useLocalStorage } from '@/hooks/use-local-storage';

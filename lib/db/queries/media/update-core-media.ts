@@ -6,9 +6,10 @@ import { type MediaInsert, media } from '@/lib/db/schema';
 
 import { eq } from 'drizzle-orm';
 import { unstable_expirePath as expirePath } from 'next/cache';
-import { CACHE_KEY_USER_EXPERIENCE_MEDIA } from '../cache-keys';
+
 import { getMappedSingleMediaModels } from './get-core-media';
 import type { MediaActionIncludeOpts } from './media-action-types';
+import { CACHE_KEY_USER_EXPERIENCE_MEDIA } from '@/actions/cache-keys';
 
 /**
  * Update media image attrs, e.g. Title, Caption, etc.

@@ -1,5 +1,6 @@
 import { auth } from '@/app/(auth)/auth';
-import { getVotesByChatId, voteMessage } from '@/lib/db/queries';
+import { getVotesByChatId, voteMessage } from '@/lib/db/queries/chat';
+
 import { StatusCodes } from 'http-status-codes';
 
 export async function GET(request: Request) {

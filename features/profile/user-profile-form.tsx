@@ -2,11 +2,11 @@
 
 import React, { useActionState, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { updateUser } from '@/actions/user';
 import { useAppState } from '@/state/app-state';
 import { useFormStatus } from 'react-dom';
 import { toast } from 'sonner';
 
+import { updateUser } from '@/lib/db/queries/user';
 import { shortenUrl } from '@/lib/urls';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';

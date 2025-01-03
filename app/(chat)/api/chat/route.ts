@@ -9,12 +9,6 @@ import { auth } from '@/app/(auth)/auth';
 import { customModel } from '@/lib/ai';
 import { models } from '@/lib/ai/models';
 import { SYSTEM_PROMPTS } from '@/lib/ai/prompts';
-import {
-  deleteChatById,
-  getChatById,
-  saveChat,
-  saveMessages,
-} from '@/lib/db/queries';
 
 import {
   generateUUID,
@@ -25,6 +19,12 @@ import {
 import { discoverToolDefinition } from '@/lib/ai/tools/tool-discover';
 import { getWeathereatherToolDefinition } from '@/lib/ai/tools/tool-weather';
 import { coreBetaPlatformTools } from '@/lib/ai/tools/types';
+import {
+  deleteChatById,
+  getChatById,
+  saveChat,
+  saveMessages,
+} from '@/lib/db/queries/chat';
 import { genId } from '@/lib/id';
 import { generateTitleFromUserMessage } from '../../actions';
 

@@ -1,8 +1,4 @@
 import Link from 'next/link';
-import {
-  getCachedSingleUserExperienceForFrontend,
-  getSingleUserExperienceForFrontend,
-} from '@/actions/experiences';
 import { ViewUserProfileLazyPartialExperiences } from '@/features/experiences/posts/experience-posts';
 import { UserExperiencePostsProvider } from '@/features/experiences/posts/experience-posts-provider';
 import { createPromptCollectionStoryPermalink } from '@/features/experiences/utils/experience-prompt-utils';
@@ -11,6 +7,10 @@ import {
   sortExperiencesForUserProfilePage,
 } from '@/features/experiences/utils/experience-utils';
 
+import {
+  getCachedSingleUserExperienceForFrontend,
+  getSingleUserExperienceForFrontend,
+} from '@/lib/db/queries/experiences';
 import { Badge } from '@/components/ui/badge';
 
 import type { ProfileSingleExperienceProps } from '../../../../_shared/profile-page-types';

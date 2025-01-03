@@ -1,7 +1,23 @@
 'use server';
 
+import {
+  CACHE_KEY_USER_EXPERIENCE,
+  CACHE_KEY_USER_EXPERIENCES,
+  CACHE_KEY_USER_EXPERIENCE_MEDIA,
+  CACHE_KEY_USER_EXPERIENCE_SINGLE_MEDIA,
+} from '@/actions/cache-keys';
+
+import { getAndMapUserGeo } from '@/actions/geo';
 import { getImageThumbnailBase64 } from '@/features/photo/server';
 import { db } from '@/lib/db/connect';
+import {
+  getAllBookmarksByExpId,
+  getCachedAllBookmarksByExpId,
+} from '@/lib/db/queries/bookmarks';
+import type {
+  ExperienceIncludeOpts,
+  PartialExperienceModelOpts,
+} from '@/types/experience-action-types';
 
 import {
   type Bookmark,
@@ -27,22 +43,7 @@ import type {
 import type { USER_PROFILE_MODEL, User } from '@/types/user';
 import { and, count, eq } from 'drizzle-orm';
 import { unstable_cache } from 'next/cache';
-import {
-  getAllBookmarksByExpId,
-  getCachedAllBookmarksByExpId,
-} from './bookmarks';
-import {
-  CACHE_KEY_USER_EXPERIENCE,
-  CACHE_KEY_USER_EXPERIENCES,
-  CACHE_KEY_USER_EXPERIENCE_MEDIA,
-  CACHE_KEY_USER_EXPERIENCE_SINGLE_MEDIA,
-} from './cache-keys';
-import type {
-  ExperienceIncludeOpts,
-  PartialExperienceModelOpts,
-} from './experience-action-types';
 import { updateExperience } from './experiences-updates';
-import { getAndMapUserGeo } from './geo';
 import { getAllLikesByExpId, getCachedAllLikesByExpId } from './likes';
 import {
   getCachedSinglePromptByExpId,

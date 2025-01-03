@@ -4,11 +4,11 @@ import * as React from 'react';
 import { clearTagCache } from '@/actions/cache';
 import { CACHE_KEY_PROMPTS } from '@/actions/cache-keys';
 import { streamPersonalizedUserExperiencePromptsFrontend } from '@/actions/experience-prompts';
-import { getCachedUserIncompletePrompts } from '@/actions/prompts';
 import { readStreamableValue } from 'ai/rsc';
 import { wrap } from 'popmotion';
 import { useInterval } from 'react-use';
 
+import { getCachedUserIncompletePrompts } from '@/lib/db/queries/prompts';
 import { sleep } from '@/lib/utils';
 
 import { useLocalStorage } from './use-local-storage';

@@ -10,13 +10,14 @@ import type { PhotoBasicExifData } from '@/types/photo';
 
 import { and, desc, eq, inArray, or } from 'drizzle-orm';
 import { unstable_cache } from 'next/cache';
-import { CACHE_KEY_PHOTO, CACHE_KEY_PHOTOS } from '../cache-keys';
+
 import { getCachedUserProfileById, getUserProfileById } from '../user';
 import { addUserSingleMedia } from './add-core-media';
 import type {
   AudioMediaIncludeOpts,
   MediaActionIncludeOpts,
 } from './media-action-types';
+import { CACHE_KEY_PHOTOS, CACHE_KEY_PHOTO } from '@/actions/cache-keys';
 
 /**
  * Get mapped models for a media record

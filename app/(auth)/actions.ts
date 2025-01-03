@@ -2,8 +2,7 @@
 
 import { z } from 'zod';
 
-import { createUser, getUser } from '@/lib/db/queries';
-
+import { getUser, registerCreateNewUser } from '@/lib/db/queries/user';
 import { signIn } from './auth';
 
 const authFormSchema = z.object({
@@ -74,7 +73,7 @@ export const register = async (
     if (user) {
       return { status: 'user_exists' } as RegisterActionState;
     }
-    await createUser(validatedData.email, validatedData.password);
+    await registerCreateNewUser(validatedData.email, validatedData.password);
     await signIn('credentials', {
       email: validatedData.email,
       password: validatedData.password,

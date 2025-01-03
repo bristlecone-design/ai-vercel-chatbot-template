@@ -277,7 +277,7 @@ export function ExperiencePostMapDrawer({
               variant="outline"
               size="lg"
               className={cn(
-                'hover:text-success-foreground group gap-0 rounded-xl border-4 border-border/40 py-5 transition-colors duration-75'
+                'group gap-0 rounded-xl border-4 border-border/40 py-5 transition-colors duration-75 hover:text-success-foreground'
               )}
               onClick={() => handleOnOpenChange(false)}
               disabled={isFormProcessing}

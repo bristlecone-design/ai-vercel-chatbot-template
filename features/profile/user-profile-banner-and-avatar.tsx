@@ -4,10 +4,10 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { clearPathCache, clearTagCache } from '@/actions/cache';
-import { clearUserAvatar, clearUserBanner } from '@/actions/user';
 import { useAppState } from '@/state/app-state';
 import { toast } from 'sonner';
 
+import { clearUserAvatar, clearUserBanner } from '@/lib/db/queries/user';
 import { isVideoBlobDataUrl, isVideoFile } from '@/lib/media/media-utils';
 import {
   uploadUserAvatarClient,
@@ -382,7 +382,7 @@ export function UserProfileBannerAndAvatar({
             ? getUserInitialsFromName(profileUserDisplayName)
             : ''
         }
-        className={cn('border-tertiary border-4', {
+        className={cn('border-4 border-tertiary', {
           'opacity-60': isUpdating,
         })}
         containerClassName="absolute -bottom-2.5 md:-bottom-8 left-4 md:left-8 z-10"

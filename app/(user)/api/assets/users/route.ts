@@ -4,7 +4,7 @@ import { type NextRequest, NextResponse } from 'next/server';
 import {
   getAllUsersFeaturedImgs,
   getCachedAllUsersFeaturedImgs,
-} from '@/actions/media/get-featured-imgs';
+} from '@/lib/db/queries/media/get-featured-imgs';
 import { getErrorMessage } from '@/lib/errors';
 
 // export const runtime = 'edge';

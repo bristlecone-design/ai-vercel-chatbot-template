@@ -4,13 +4,6 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { clearPathCache, clearTagCache } from '@/actions/cache';
-import {
-  toggleExperienceRemovedStatus,
-  togglesUsersExperienceBookmarkStatus,
-  togglesUsersExperienceLikeStatus,
-} from '@/actions/experience-toggles';
-import { getCachedSingleUserExperienceForFrontend } from '@/actions/experiences';
-import { updateExperiencePinStatus } from '@/actions/experiences-updates';
 import { useAppState } from '@/state/app-state';
 import { AlertDialogAction } from '@radix-ui/react-alert-dialog';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -20,6 +13,15 @@ import { toast } from 'sonner';
 import { useIntersectionObserver } from 'usehooks-ts';
 
 import { timeAgo } from '@/lib/datesAndTimes';
+import {
+  toggleExperienceRemovedStatus,
+  togglesUsersExperienceBookmarkStatus,
+  togglesUsersExperienceLikeStatus,
+} from '@/lib/db/queries/experience-toggles';
+import {
+  getCachedSingleUserExperienceForFrontend,
+  updateExperiencePinStatus,
+} from '@/lib/db/queries/experiences';
 import { scrollToElement } from '@/lib/dom';
 import { sortRawMediaForGallery } from '@/lib/media/media-utils';
 import { cn, sleep } from '@/lib/utils';

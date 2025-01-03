@@ -1,8 +1,8 @@
 import React from 'react';
-import { togglesUsersExperienceLikeStatus } from '@/actions/experience-toggles';
 import { useAppState } from '@/state/app-state';
 import { toast } from 'sonner';
 
+import { togglesUsersExperienceLikeStatus } from '@/lib/db/queries/experience-toggles';
 import { sortRawMediaForGallery } from '@/lib/media/media-utils';
 import { getUsersFirstNameFromName } from '@/lib/user/user-utils';
 import { cn } from '@/lib/utils';

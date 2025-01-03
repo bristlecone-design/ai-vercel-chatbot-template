@@ -1,11 +1,5 @@
 import React from 'react';
 import type { Metadata, ResolvingMetadata } from 'next';
-import { getCachedUserProfileExperiencesForFrontend } from '@/actions/experiences';
-import {
-  getCachedSinglePromptById,
-  getCachedUserAllCompletedPrompts,
-} from '@/actions/prompts';
-import { getUserWaitlistCount } from '@/actions/user';
 import { UserExperiencePostsProvider } from '@/features/experiences/posts/experience-posts-provider';
 import {
   findPromptsExperience,
@@ -29,6 +23,12 @@ import PromptProvider, {
   DefaultSinglePromptChallengeAcceptedStateKey,
 } from '@/state/prompt-provider';
 
+import { getCachedUserProfileExperiencesForFrontend } from '@/lib/db/queries/experiences';
+import {
+  getCachedSinglePromptById,
+  getCachedUserAllCompletedPrompts,
+} from '@/lib/db/queries/prompts';
+import { getUserWaitlistCount } from '@/lib/db/queries/user';
 import { getUserFromSession } from '@/lib/session';
 import { BlockSkeleton } from '@/components/ui/skeleton';
 

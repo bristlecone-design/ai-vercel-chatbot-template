@@ -1,9 +1,9 @@
 import { auth } from '@/app/(auth)/auth';
 import {
-  deleteDocumentsByIdAfterTimestamp,
   getDocumentsById,
   saveDocument,
-} from '@/lib/db/queries';
+  deleteDocumentsByIdAfterTimestamp,
+} from '@/lib/db/queries/documents';
 
 export const maxDuration = 300;
 

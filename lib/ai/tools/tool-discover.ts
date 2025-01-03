@@ -1,4 +1,3 @@
-import { generateUUID } from '@/lib/utils';
 import {
   type CoreToolCallUnion,
   type CoreToolResultUnion,
@@ -9,6 +8,7 @@ import {
 import type { Session } from 'next-auth';
 import { z } from 'zod';
 import type { customModel } from '..';
+import { generateUUID } from '../chat-utils';
 import { SYSTEM_PROMPTS } from '../prompts';
 
 export type DiscoverToolCall = CoreToolCallUnion<

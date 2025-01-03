@@ -5,11 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { clearPathCache } from '@/actions/cache';
-import {
-  updateMediaDownloadable,
-  updateMediaPublicVisibility,
-  updateMediaRemixable,
-} from '@/actions/media/update-core-media';
 import { motion, useReducedMotion } from 'framer-motion';
 import { toast } from 'sonner';
 
@@ -17,6 +12,11 @@ import {
   formatDateFromPostgresString,
   formatDateLegacy,
 } from '@/lib/datesAndTimes';
+import {
+  updateMediaDownloadable,
+  updateMediaPublicVisibility,
+  updateMediaRemixable,
+} from '@/lib/db/queries/media/update-core-media';
 import {
   isImage,
   isImageExtension,

@@ -1,4 +1,4 @@
-import { getAllCompletedPromptStories } from '@/actions/prompts';
+import { getAllCompletedPromptStories } from '@/lib/db/queries/prompts';
 import type { MetadataRoute } from 'next';
 
 import { createSingleCompletedStoryPromptChallengePermalink } from '@/features/experiences/utils/experience-prompt-utils';

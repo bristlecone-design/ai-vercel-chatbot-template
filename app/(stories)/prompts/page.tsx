@@ -1,10 +1,5 @@
 import React from 'react';
 import type { Metadata, ResolvingMetadata } from 'next';
-import {
-  getUserAllCompletedPrompts,
-  getUserIncompletePrompts,
-} from '@/actions/prompts';
-import { getCachedUserWaitlistCount } from '@/actions/user';
 import { ExperienceCreateMenuPublic } from '@/features/experiences/posts/experience-post-create-menu-public';
 import { UserExperiencePostsProvider } from '@/features/experiences/posts/experience-posts-provider';
 import {
@@ -18,6 +13,11 @@ import {
 import PromptProvider from '@/state/prompt-provider';
 import type { Session } from 'next-auth';
 
+import {
+  getUserAllCompletedPrompts,
+  getUserIncompletePrompts,
+} from '@/lib/db/queries/prompts';
+import { getCachedUserWaitlistCount } from '@/lib/db/queries/user';
 import { getBaseUrl } from '@/lib/getBaseUrl';
 import { getUserFromSession } from '@/lib/session';
 import { BlockSkeleton } from '@/components/ui/skeleton';

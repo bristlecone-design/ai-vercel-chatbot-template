@@ -637,7 +637,7 @@ export function ExperiencePostMediaGallery({
                   handleOnOpenChange(false);
                 }}
                 className={cn(
-                  'hover:text-success-foreground group gap-0 rounded-xl border-4 border-border/40 py-4 transition-colors duration-75'
+                  'group gap-0 rounded-xl border-4 border-border/40 py-4 transition-colors duration-75 hover:text-success-foreground'
                 )}
               >
                 <IconArrowLeft className="size-4 transition-transform duration-300 group-hover:-translate-x-0.5 group-hover:brightness-125" />
@@ -723,7 +723,7 @@ export function ExperiencePostMediaGallery({
                       handleClosingNestedDrawer();
                     }}
                     className={cn(
-                      'hover:text-success-foreground group gap-0 rounded-xl border-4 border-border/40 py-4 transition-colors duration-75'
+                      'group gap-0 rounded-xl border-4 border-border/40 py-4 transition-colors duration-75 hover:text-success-foreground'
                     )}
                   >
                     <IconArrowLeft className="size-4 transition-transform duration-300 group-hover:-translate-x-0.5 group-hover:brightness-125" />

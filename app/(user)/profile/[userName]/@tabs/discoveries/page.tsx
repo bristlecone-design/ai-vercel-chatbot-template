@@ -1,6 +1,7 @@
 import React from 'react';
-import { getUserPublicFeaturedImgsWithExifAndBlurData } from '@/actions/media/get-featured-imgs';
-import { getUserWaitlistCount } from '@/actions/user';
+
+import { getUserPublicFeaturedImgsWithExifAndBlurData } from '@/lib/db/queries/media/get-featured-imgs';
+import { getUserWaitlistCount } from '@/lib/db/queries/user';
 
 import type {
   ProfilePageProps,

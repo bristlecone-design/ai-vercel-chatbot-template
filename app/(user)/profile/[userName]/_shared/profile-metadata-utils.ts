@@ -1,6 +1,6 @@
 'use server';
 
-import { getUserProfileById } from '@/actions/user';
+import { getUserProfileById } from '@/lib/db/queries/user';
 
 import { getBaseUrl } from '@/lib/getBaseUrl';
 import {
@@ -16,16 +16,6 @@ import {
   mapDbUserToClientFriendlyUser,
 } from '@/lib/user/user-utils';
 
-import { getCachedSingleUserExperienceForFrontend } from '@/actions/experiences';
-import { getCachedMediaByExperienceId } from '@/actions/media/get-core-media';
-import { getCachedUserPublicFeaturedImgs } from '@/actions/media/get-featured-imgs';
-import {
-  getCachedCompletedPromptCollaborationsByPromptIdAndExpId,
-  getCachedFeaturedPromptCollections,
-  getCachedPromptCollaboratorByExpId,
-  getCachedSingleExperiencePromptById,
-  getCachedSinglePromptCollectionByPath,
-} from '@/actions/prompts';
 import { getAboutTitleTemplate } from '@/config/site-meta';
 import {
   createFeaturedStorySeriesRootPermalink,
@@ -37,6 +27,16 @@ import {
   mapPromptRecordToClientFriendlyVersion,
 } from '@/features/experiences/utils/experience-prompt-utils';
 import { createUserProfileExperiencePermalink } from '@/features/experiences/utils/experience-utils';
+import { getCachedSingleUserExperienceForFrontend } from '@/lib/db/queries/experiences';
+import { getCachedMediaByExperienceId } from '@/lib/db/queries/media/get-core-media';
+import { getCachedUserPublicFeaturedImgs } from '@/lib/db/queries/media/get-featured-imgs';
+import {
+  getCachedCompletedPromptCollaborationsByPromptIdAndExpId,
+  getCachedFeaturedPromptCollections,
+  getCachedPromptCollaboratorByExpId,
+  getCachedSingleExperiencePromptById,
+  getCachedSinglePromptCollectionByPath,
+} from '@/lib/db/queries/prompts';
 import type {
   ExperienceUserPromptModel,
   PromptStoryModel,

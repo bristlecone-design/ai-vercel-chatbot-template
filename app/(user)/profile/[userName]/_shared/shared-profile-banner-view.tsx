@@ -1,8 +1,8 @@
 import Link from 'next/link';
-import { getCachedUserPublicFeaturedImgsCount } from '@/actions/media/get-featured-imgs';
 import { UserProfileBannerAndAvatar } from '@/features/profile/user-profile-banner-and-avatar';
 import { UserProfileDropdownMenu } from '@/features/profile/user-profile-dropdown-menu';
 
+import { getCachedUserPublicFeaturedImgsCount } from '@/lib/db/queries/media/get-featured-imgs';
 import { makeUrlAbsolute, shortenUrl } from '@/lib/urls';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';

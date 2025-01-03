@@ -1,5 +1,6 @@
 import React from 'react';
-import { getUserPublicFeaturedImgsWithExifAndBlurData } from '@/actions/media/get-featured-imgs';
+
+import { getUserPublicFeaturedImgsWithExifAndBlurData } from '@/lib/db/queries/media/get-featured-imgs';
 
 import type {
   ProfilePageProps,

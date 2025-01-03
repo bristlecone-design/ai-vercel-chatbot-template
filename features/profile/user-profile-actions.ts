@@ -1,6 +1,6 @@
 'use server';
 
-import { updateUser } from '@/actions/user';
+import { updateUser } from '@/lib/db/queries/user';
 import { AuthError } from 'next-auth';
 import { z } from 'zod';
 import {

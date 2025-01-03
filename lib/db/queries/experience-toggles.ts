@@ -9,13 +9,13 @@ import {
 import { getErrorMessage } from '@/lib/errors';
 
 import { db } from '@/lib/db/connect';
+import { toggleMediaRemoveStatus } from '@/lib/db/queries/media/get-core-media';
 import { and, eq } from 'drizzle-orm';
 import {
   detachPromptFromExperience,
   detachPromptStoryFromExperience,
   updateExperience,
 } from './experiences-updates';
-import { toggleMediaRemoveStatus } from './media/get-core-media';
 import { deletePromptCollaboratorByExpAndPromptId } from './prompts';
 
 /**

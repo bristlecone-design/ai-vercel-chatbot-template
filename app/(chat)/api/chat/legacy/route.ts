@@ -12,15 +12,7 @@ import { auth } from '@/app/(auth)/auth';
 import { customModel } from '@/lib/ai';
 import { models } from '@/lib/ai/models';
 import { SYSTEM_PROMPTS } from '@/lib/ai/prompts';
-import {
-  deleteChatById,
-  getChatById,
-  getDocumentById,
-  saveChat,
-  saveDocument,
-  saveMessages,
-  saveSuggestions,
-} from '@/lib/db/queries';
+
 import type { DocSuggestion } from '@/lib/db/schema';
 
 import {
@@ -32,6 +24,17 @@ import {
 import { allTools } from '@/lib/ai/tools/types';
 import { genId } from '@/lib/id';
 import { generateTitleFromUserMessage } from '../../../actions';
+import {
+  getChatById,
+  deleteChatById,
+  saveChat,
+  saveMessages,
+} from '@/lib/db/queries/chat';
+import {
+  saveDocument,
+  getDocumentById,
+  saveSuggestions,
+} from '@/lib/db/queries/documents';
 
 export const maxDuration = 300;
 

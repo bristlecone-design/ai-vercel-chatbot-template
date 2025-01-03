@@ -2,11 +2,6 @@
 
 import React, { useActionState, useEffect, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import {
-  connectMediaToExperience,
-  getCachedSingleMediaByUrlWithExif,
-} from '@/actions/media/get-core-media';
-import { getCachedFeaturedPromptCollections } from '@/actions/prompts';
 import { useAppState } from '@/state/app-state';
 import { upload } from '@vercel/blob/client';
 import { capitalCase } from 'change-case';
@@ -14,6 +9,11 @@ import { motion } from 'framer-motion';
 import { useFormStatus } from 'react-dom';
 import { toast } from 'sonner';
 
+import {
+  connectMediaToExperience,
+  getCachedSingleMediaByUrlWithExif,
+} from '@/lib/db/queries/media/get-core-media';
+import { getCachedFeaturedPromptCollections } from '@/lib/db/queries/prompts';
 import type { Experience } from '@/lib/db/schema';
 import { getErrorMessage } from '@/lib/errors';
 import {
@@ -329,7 +329,7 @@ export type ExperienceCreateFormProps = {
   noPromptChallengeInfo?: boolean;
   editorContentKey?: string;
   disabled?: boolean;
-  formRef?: React.RefObject<HTMLFormElement>;
+  formRef?: React.RefObject<HTMLFormElement | null>;
   inputContentRef?: React.RefObject<HTMLTextAreaElement>;
   hideSubmitButton?: boolean;
   noFocusOnOpen?: boolean;

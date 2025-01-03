@@ -1,5 +1,5 @@
 import { auth } from '@/app/(auth)/auth';
-import { getChatsByUserId } from '@/lib/db/queries';
+import { getChatsByUserId } from '@/lib/db/queries/chat';
 
 export async function GET() {
   const session = await auth();

@@ -6,10 +6,10 @@
 import React, { useRef } from 'react';
 import { clearTagCache } from '@/actions/cache';
 import { CACHE_KEY_USER_EXPERIENCE } from '@/actions/cache-keys';
-import { updateExperienceContent } from '@/actions/experiences-updates';
 import { useKey, useLocalStorage } from 'react-use';
 import { toast } from 'sonner';
 
+import { updateExperienceContent } from '@/lib/db/queries/experiences-updates';
 import { sleep } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { IconSpinner } from '@/components/ui/icons';

@@ -5,7 +5,7 @@ import { clearTagCache } from '@/actions/cache';
 import { AuthError } from 'next-auth';
 import { z } from 'zod';
 
-import { updateMediaAttrs } from '@/actions/media/update-core-media';
+import { updateMediaAttrs } from '@/lib/db/queries/media/update-core-media';
 import { MediaResultCode, type MediaUpdateResult } from './media-update-types';
 
 export async function saveMediaAttrChanges(

@@ -1,4 +1,4 @@
-import { getCachedFeaturedPromptCollections } from '@/actions/prompts';
+import { getCachedFeaturedPromptCollections } from '@/lib/db/queries/prompts';
 import type { MetadataRoute } from 'next';
 
 import {

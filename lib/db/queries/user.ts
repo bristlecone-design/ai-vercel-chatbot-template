@@ -1,20 +1,24 @@
 'use server';
 
-import { db } from '@/lib/db/connect';
-import { type User, users } from '@/lib/db/schema';
-import { getErrorMessage } from '@/lib/errors';
-
-import { mapDbUserToClientFriendlyUser } from '@/lib/user/user-utils';
-import type { USER_PROFILE_MODEL } from '@/types/user';
-import { and, count, desc, eq } from 'drizzle-orm';
-import { unstable_expirePath as expirePath, unstable_cache } from 'next/cache';
-
-import { clearTagCache } from './cache';
+import { clearTagCache } from '@/actions/cache';
 import {
   CACHE_KEY_USER_PROFILE,
   CACHE_KEY_USER_PROFILES,
   CACHE_KEY_USER_WAITLIST_PROFILES,
-} from './cache-keys';
+} from '@/actions/cache-keys';
+import { db } from '@/lib/db/connect';
+import { type User, users } from '@/lib/db/schemas/schema-users';
+import { getErrorMessage } from '@/lib/errors';
+import {
+  appendUniqueSuffixToUsername,
+  deriveUsernameFromEmail,
+  mapDbUserToClientFriendlyUser,
+} from '@/lib/user/user-utils';
+import type { USER_PROFILE_MODEL } from '@/types/user';
+import { genSaltSync, hashSync } from 'bcrypt-ts';
+import { and, count, desc, eq } from 'drizzle-orm';
+import { unstable_expirePath as expirePath, unstable_cache } from 'next/cache';
+import 'server-only';
 
 /**
  * Update a user
@@ -48,6 +52,53 @@ export async function updateUser(
   }
 }
 
+export async function validateOrCreateUniqueUsername(
+  username: string,
+  generateUnique = true,
+  suffixLength = 2,
+) {
+  let validatedUsername = username;
+  const isUsernameTaken = await doesUserExistByUsername(validatedUsername);
+  console.log('isUsernameTaken', { isUsernameTaken, original: username });
+
+  if (isUsernameTaken && generateUnique) {
+    // Try one more time with a unique suffix
+    validatedUsername = appendUniqueSuffixToUsername(username, suffixLength);
+
+    return await validateOrCreateUniqueUsername(
+      validatedUsername,
+      false,
+      suffixLength,
+    );
+  }
+
+  return { taken: isUsernameTaken, username: validatedUsername };
+}
+
+export async function registerCreateNewUser(email: string, password: string) {
+  const salt = genSaltSync(10);
+  const hash = hashSync(password, salt);
+
+  try {
+    const username = deriveUsernameFromEmail(email);
+    const { taken: isUsernameTaken, username: validatedUsername } =
+      await validateOrCreateUniqueUsername(username);
+
+    if (isUsernameTaken) {
+      throw 'Username already exists';
+    }
+
+    return await db
+      .insert(users)
+      .values({ email, password: hash, salt, username: validatedUsername });
+  } catch (error) {
+    const errMsg = getErrorMessage(error);
+    const fullErrMsg = `Failed to create user in database: ${errMsg}`;
+    console.error(fullErrMsg);
+    throw fullErrMsg;
+  }
+}
+
 /**
  * Add/Insert a new user
  */
@@ -60,6 +111,15 @@ export async function insertUser(data: User): Promise<User> {
     const errMsg = getErrorMessage(error);
     console.error('Failed to insert user', errMsg);
     throw errMsg;
+  }
+}
+
+export async function getUser(email: string): Promise<Array<User>> {
+  try {
+    return await db.select().from(users).where(eq(users.email, email));
+  } catch (error) {
+    console.error('Failed to get user from database', error);
+    throw error;
   }
 }
 

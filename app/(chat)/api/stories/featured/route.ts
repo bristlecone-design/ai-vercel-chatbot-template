@@ -1,7 +1,7 @@
 import {
   getCachedFeaturedPromptCollections,
   getFeaturedPromptCollections,
-} from '@/actions/prompts';
+} from '@/lib/db/queries/prompts';
 import { type NextRequest, NextResponse } from 'next/server';
 
 // https://beta.nextjs.org/docs/routing/route-handlers

@@ -8,27 +8,19 @@ import { createStreamableValue } from 'ai/rsc';
 
 import { getUserFromSession } from '@/lib/session';
 
-import { clearTagCache } from './cache';
+import { appendGeoAndTimeToContext } from '@/actions/action-utils';
+import { clearTagCache } from '@/actions/cache';
 import {
   CACHE_KEY_PROMPTS,
   CACHE_KEY_USER_EXPERIENCE,
   CACHE_KEY_USER_EXPERIENCES,
-} from './cache-keys';
-
+} from '@/actions/cache-keys';
 import {
   getAndMapUserGeo,
   getLatLongFromUserGeo,
   getLocationFromUserGeo,
-} from './geo';
-import {
-  getAdditionalAnonymousPrompts,
-  getAdditionalUserPrompts,
-  getPromptsByValues,
-  saveMultiplePrompts,
-} from './prompts';
-
+} from '@/actions/geo';
 import { mapPromptRecordToClientFriendlyVersion } from '@/features/experiences/utils/experience-prompt-utils';
-import type { PromptInsert } from '@/lib/db/schema';
 import {
   AIAutocompleteSuggestionSchema,
   AIGeneratedExperienceCallToActionsSchema,
@@ -37,8 +29,14 @@ import {
   type GeneratedExperienceUserPrompt,
 } from '@/types/experience-prompts';
 import { AIGeneratedExperienceSingleTranslationSchema } from '@/types/experience-translations';
-import { appendGeoAndTimeToContext } from './action-utils';
-import { updateExperienceCTAs } from './experiences-updates';
+import { updateExperienceCTAs } from '../lib/db/queries/experiences-updates';
+import {
+  getAdditionalAnonymousPrompts,
+  getAdditionalUserPrompts,
+  getPromptsByValues,
+  saveMultiplePrompts,
+} from '../lib/db/queries/prompts';
+import type { PromptInsert } from '../lib/db/schema';
 
 /**
  * For generating AI objects:

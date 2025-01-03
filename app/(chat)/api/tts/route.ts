@@ -1,9 +1,9 @@
-import { generateTranslatedTextFromEnglish } from '@/actions/experience-prompts';
 import { textToSpeech } from '@/actions/speech';
 import { NextResponse } from 'next/server';
 import type { SpeechCreateParams } from 'openai/resources/audio/speech';
 
 import { getErrorMessage } from '@/lib/errors';
+import { generateTranslatedTextFromEnglish } from '@/actions/experience-prompts';
 
 // export const revalidate = 0;
 

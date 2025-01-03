@@ -1,9 +1,9 @@
 import React from 'react';
 import { clearTagCache } from '@/actions/cache';
-import { updateExperienceViewCount } from '@/actions/experiences-updates';
 import { useIntersectionObserver } from 'usehooks-ts';
 
 import { nFormatter } from '@/lib/datesAndTimes';
+import { updateExperienceViewCount } from '@/lib/db/queries/experiences-updates';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button, type ButtonProps } from '@/components/ui/button';

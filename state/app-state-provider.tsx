@@ -9,7 +9,6 @@ import {
   getCachedLocationFromLatLong,
   getUserGeoFromHeaders,
 } from '@/actions/geo';
-import { getCachedUserProfileById } from '@/actions/user';
 import { getUserProfilePermalink } from '@/features/experiences/utils/experience-utils';
 import type { Session } from 'next-auth';
 import { signIn, signOut } from 'next-auth/react';
@@ -17,6 +16,7 @@ import { useGeolocated } from 'react-geolocated';
 import useSWR from 'swr';
 import { useDebouncedCallback } from 'use-debounce';
 
+import { getCachedUserProfileById } from '@/lib/db/queries/user';
 import { getUserFromSession } from '@/lib/session';
 import {
   getUsersFirstNameFromName,
