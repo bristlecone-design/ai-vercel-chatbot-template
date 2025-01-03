@@ -1,4 +1,4 @@
-import type { InferSelectModel } from 'drizzle-orm';
+import type { InferInsertModel, InferSelectModel } from 'drizzle-orm';
 import {
   index,
   json,
@@ -42,7 +42,7 @@ export const embeddings = pgTable(
 
     model: text('model').notNull(), // Model used to generate the embedding
 
-    usage: text('usage').notNull(), // Usage of the embedding
+    usage: text('usage'), // Usage of the embedding
 
     meta: json('meta').default({}),
 
@@ -75,3 +75,5 @@ export const embeddings = pgTable(
 );
 
 export type Embeddings = InferSelectModel<typeof embeddings>;
+
+export type NewEmbeddingParams = InferInsertModel<typeof embeddings>;

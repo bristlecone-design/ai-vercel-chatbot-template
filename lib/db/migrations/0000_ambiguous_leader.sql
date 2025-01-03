@@ -134,7 +134,7 @@ CREATE TABLE "embeddings" (
 	"description" text,
 	"embedding" vector(1536),
 	"model" text NOT NULL,
-	"usage" text NOT NULL,
+	"usage" text,
 	"meta" json DEFAULT '{}'::json,
 	"resourceId" varchar(191) NOT NULL,
 	"userId" text NOT NULL,

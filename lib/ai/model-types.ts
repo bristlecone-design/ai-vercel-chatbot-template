@@ -17,3 +17,5 @@ export type AllAIModels =
   | AnthropicAIModels
   | GoogleAIModels
   | OpenAIModels;
+
+export type OpenAIEmbedModels = Parameters<typeof openai.embedding>[0];

@@ -7,7 +7,7 @@ import 'next/cache';
 import fetcher from './fetcher';
 import { getBaseUrl } from './getBaseUrl';
 
-import { auth } from '@/app/(auth)/auth';
+import { auth } from '@/app/(auth)/auth-edge';
 import { removeTrailingParamFromImageUrl } from '@/app/(auth)/utils-client';
 import type { USER_PROFILE_MODEL } from '@/types/user';
 
