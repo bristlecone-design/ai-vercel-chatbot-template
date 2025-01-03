@@ -174,7 +174,7 @@ export default function AppStateProvider({
       userProfile?.image ||
       userSession?.avatar ||
       userSession?.image ||
-      '';
+      `https://avatar.vercel.sh/${profileUsername || 'expnv'}`;
 
     const isUserAllowed = Boolean(userProfile?.allowed);
     const isProfilePublic = Boolean(userProfile?.public);
