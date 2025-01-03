@@ -23,7 +23,7 @@ import {
 } from 'usehooks-ts';
 
 import type { DocSuggestion, Document, Vote } from '@/lib/db/schema';
-import { fetcher } from '@/lib/utils';
+import fetcher from '@/lib/fetcher';
 
 import { DiffView } from './diffview';
 import { DocumentSkeleton } from './document-skeleton';
@@ -90,8 +90,12 @@ export function Block({
     chatRequestOptions?: ChatRequestOptions
   ) => void;
 }) {
-  const [messagesContainerRef, messagesEndRef] =
-    useScrollToBottom<HTMLDivElement>();
+  const {
+    isVisible,
+    isAtBottom,
+    containerRef: messagesContainerRef,
+    endRef: messagesEndRef,
+  } = useScrollToBottom<HTMLDivElement>();
 
   const {
     data: documents,

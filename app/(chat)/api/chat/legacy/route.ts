@@ -22,13 +22,13 @@ import {
   saveSuggestions,
 } from '@/lib/db/queries';
 import type { DocSuggestion } from '@/lib/db/schema';
+
 import {
   generateUUID,
   getMostRecentUserMessage,
   getMostRecentUserMessageAttachments,
   sanitizeResponseMessages,
-} from '@/lib/utils';
-
+} from '@/lib/ai/chat-utils';
 import { allTools } from '@/lib/ai/tools/types';
 import { genId } from '@/lib/id';
 import { generateTitleFromUserMessage } from '../../../actions';
@@ -148,7 +148,7 @@ export async function POST(request: Request) {
 
       const result = streamText({
         model: llmModel,
-        system: SYSTEM_PROMPTS.all,
+        system: SYSTEM_PROMPTS.base,
         messages: coreMessages,
         maxSteps: 5,
         toolChoice: 'auto',

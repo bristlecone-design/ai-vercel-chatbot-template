@@ -1,13 +1,13 @@
 'use client';
 
+import { useState } from 'react';
 import { isAfter } from 'date-fns';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
 import { useSWRConfig } from 'swr';
 import { useWindowSize } from 'usehooks-ts';
 
+import { getDocumentTimestampByIndex } from '@/lib/ai/doc-utils';
 import type { Document } from '@/lib/db/schema';
-import { getDocumentTimestampByIndex } from '@/lib/utils';
 
 import type { UIBlock } from './block';
 import { LoaderIcon } from './icons';
@@ -36,7 +36,7 @@ export const VersionFooter = ({
 
   return (
     <motion.div
-      className="absolute flex flex-col gap-4 lg:flex-row bottom-0 bg-background p-4 w-full border-t z-50 justify-between"
+      className="absolute bottom-0 z-50 flex w-full flex-col justify-between gap-4 border-t bg-background p-4 lg:flex-row"
       initial={{ y: isMobile ? 200 : 77 }}
       animate={{ y: 0 }}
       exit={{ y: isMobile ? 200 : 77 }}
@@ -44,7 +44,7 @@ export const VersionFooter = ({
     >
       <div>
         <div>You are viewing a previous version</div>
-        <div className="text-muted-foreground text-sm">
+        <div className="text-sm text-muted-foreground">
           Restore this version to make edits
         </div>
       </div>
@@ -62,7 +62,7 @@ export const VersionFooter = ({
                 body: JSON.stringify({
                   timestamp: getDocumentTimestampByIndex(
                     documents,
-                    currentVersionIndex,
+                    currentVersionIndex
                   ),
                 }),
               }),
@@ -75,14 +75,14 @@ export const VersionFooter = ({
                           new Date(
                             getDocumentTimestampByIndex(
                               documents,
-                              currentVersionIndex,
-                            ),
-                          ),
-                        ),
+                              currentVersionIndex
+                            )
+                          )
+                        )
                       ),
                     ]
                   : [],
-              },
+              }
             );
           }}
         >

@@ -1,7 +1,9 @@
 export class ApplicationError extends Error {
   constructor(
     message: string,
-    public data: Record<string, any> = {}
+    public info: string,
+    public status: number,
+    public data: Record<string, any> = {},
   ) {
     super(message);
   }

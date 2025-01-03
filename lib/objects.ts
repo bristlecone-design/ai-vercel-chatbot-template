@@ -28,5 +28,7 @@ export const areSimpleObjectsEqual = (
 /**
  * Is the given object an empty object?
  */
-export const isEmptyObject = (obj: SimpleObject): boolean =>
-  Object.keys(obj).length === 0;
+export const isEmptyObject = (obj: SimpleObject): boolean => {
+  if (!obj) return true;
+  return Object.keys(obj).length === 0 && obj.constructor === Object;
+};

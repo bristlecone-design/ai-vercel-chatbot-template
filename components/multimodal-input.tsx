@@ -15,7 +15,8 @@ import cx from 'classnames';
 import { toast } from 'sonner';
 import { useLocalStorage, useWindowSize } from 'usehooks-ts';
 
-import { cn, sanitizeUIMessages } from '@/lib/utils';
+import { sanitizeUIMessages } from '@/lib/ai/chat-utils';
+import { cn } from '@/lib/utils';
 
 import { AudioCountdownDialog } from './audio/audio-countdown-dialog';
 import {

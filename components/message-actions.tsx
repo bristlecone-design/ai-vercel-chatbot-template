@@ -3,8 +3,9 @@ import { toast } from 'sonner';
 import { useSWRConfig } from 'swr';
 import { useCopyToClipboard } from 'usehooks-ts';
 
+import { getMessageIdFromAnnotations } from '@/lib/ai/chat-utils';
 import type { Vote } from '@/lib/db/schema';
-import { cn, getMessageIdFromAnnotations } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 import { CopyIcon, ThumbDownIcon, ThumbUpIcon } from './icons';
 import { Button } from './ui/button';

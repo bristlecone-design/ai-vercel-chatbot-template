@@ -1,6 +1,8 @@
+import type { ApplicationError } from './errors';
+
 export default async function fetcher<JSON = any>(
   input: RequestInfo,
-  init?: RequestInit
+  init?: RequestInit,
 ): Promise<JSON> {
   const res = await fetch(input, init);
 
@@ -13,9 +15,9 @@ export default async function fetcher<JSON = any>(
     const json = await res.json();
 
     if (json.error) {
-      const error = new Error(json.error) as Error & {
-        status: number;
-      };
+      const error = new Error(json.error) as ApplicationError;
+
+      error.info = await res.json();
       error.status = res.status;
       throw error;
     } else {

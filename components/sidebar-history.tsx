@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 import useSWR from 'swr';
 
 import type { Chat } from '@/lib/db/schema';
-import { fetcher } from '@/lib/utils';
+import fetcher from '@/lib/fetcher';
 import {
   AlertDialog,
   AlertDialogAction,

@@ -15,13 +15,13 @@ import {
   saveChat,
   saveMessages,
 } from '@/lib/db/queries';
+
 import {
   generateUUID,
   getMostRecentUserMessage,
   getMostRecentUserMessageAttachments,
   sanitizeResponseMessages,
-} from '@/lib/utils';
-
+} from '@/lib/ai/chat-utils';
 import { discoverToolDefinition } from '@/lib/ai/tools/tool-discover';
 import { getWeathereatherToolDefinition } from '@/lib/ai/tools/tool-weather';
 import { coreBetaPlatformTools } from '@/lib/ai/tools/types';

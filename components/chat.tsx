@@ -12,11 +12,12 @@ import { useWindowSize } from 'usehooks-ts';
 
 import type { Vote } from '@/lib/db/schema';
 import { getErrorMessage } from '@/lib/errors';
+import fetcher from '@/lib/fetcher';
 import {
   removeFileFetch,
   uploadFileFetch,
 } from '@/lib/storage/vercel-blob-fetch';
-import { cn, fetcher } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { ChatHeader } from '@/components/header-chat';
 import { PreviewMessage, ThinkingMessage } from '@/components/message';
 import { useScrollToBottom } from '@/components/use-scroll-to-bottom';
@@ -121,10 +122,10 @@ export function Chat({
   );
 
   const {
+    isVisible,
+    isAtBottom,
     containerRef: messagesContainerRef,
     endRef: messagesEndRef,
-    isAtBottom,
-    isVisible,
   } = useScrollToBottom<HTMLDivElement>();
 
   const [isAudioRecording, setIsAudioRecording] = useState(false);
