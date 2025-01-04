@@ -1,25 +1,12 @@
 import { db } from '@/lib/db/connect';
 import { type NewEmbeddingParams, embeddings } from '@/lib/db/schema';
+import { generateChunks, generateResourceContentHash } from '@/lib/embed-utils';
 import { getErrorMessage } from '@/lib/errors';
 import { openai } from '@ai-sdk/openai';
 import { type EmbeddingModelUsage, embed, embedMany } from 'ai';
-import { cosineDistance, desc, gt, sql } from 'drizzle-orm';
-import { md5 } from 'js-md5';
+import { and, cosineDistance, desc, eq, gt, isNotNull, sql } from 'drizzle-orm';
 
 const embeddingModel = openai.embedding('text-embedding-ada-002');
-
-const generateChunks = (input: string): string[] => {
-  return input
-    .trim()
-    .split('.')
-    .filter((i) => i !== '');
-};
-
-const generateContentHash = (content: string, userId?: string): string => {
-  const seed = userId ? `${content}${userId}` : content;
-  const hash = md5(seed);
-  return hash;
-};
 
 export const generateEmbeddings = async (
   value: string,
@@ -93,10 +80,17 @@ export const insertSingleEmbedding = async (data: NewEmbeddingParams) => {
 
 export const insertEmbeddings = async (data: Array<NewEmbeddingParams>) => {
   try {
-    const dataWithHash = data.map((d) => ({
-      ...d,
-      contentHash: generateContentHash(d.content, d.userId),
-    }));
+    const dataWithHash = data.map((d) => {
+      const { hash: contentHash, seed: contentSeed } =
+        generateResourceContentHash({ content: d.content, userId: d.userId });
+
+      return {
+        ...d,
+        contentHash: d.contentHash || contentHash,
+        contentSeed: d.contentSeed || contentSeed,
+        // description: d.description || contentSeed,
+      };
+    });
 
     const newEmbeddings = await db
       .insert(embeddings)
@@ -115,4 +109,39 @@ export const insertEmbeddings = async (data: Array<NewEmbeddingParams>) => {
       msg: `Failed to insert embeddings: ${errMsg}`,
     };
   }
+};
+
+export const deleteEmbedding = async (id: string) => {
+  try {
+    const deletedEmbedding = await db
+      .delete(embeddings)
+      .where(eq(embeddings.id, id))
+      .returning();
+
+    return {
+      error: false,
+      data: deletedEmbedding[0],
+    };
+  } catch (error) {
+    const errMsg = getErrorMessage(error);
+    return {
+      error: true,
+      data: null,
+      msg: `Failed to delete embedding: ${errMsg}`,
+    };
+  }
+};
+
+export const lookupEmbeddingByHash = async (contentHash: string) => {
+  const [lookupEmbed] = await db
+    .select()
+    .from(embeddings)
+    .where(
+      and(
+        eq(embeddings.contentHash, contentHash),
+        isNotNull(embeddings.resourceId),
+      ),
+    );
+
+  return lookupEmbed;
 };

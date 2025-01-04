@@ -2,11 +2,16 @@
 import { StatusCodes } from 'http-status-codes';
 import { type NextRequest, NextResponse } from 'next/server';
 
-import { insertResourceWithEmbeddings } from '@/lib/db/queries/resource';
+import { lookupEmbeddingByHash } from '@/lib/db/queries/embeddings';
+import {
+  deleteResource,
+  insertResourceWithEmbeddings,
+} from '@/lib/db/queries/resource';
 import {
   type NewResourceParams,
   resourceInsertSchema,
 } from '@/lib/db/schemas/schema-content-resources';
+import { generateResourceContentHash } from '@/lib/embed-utils';
 import { getUserFromSession } from '@/lib/session';
 
 // https://beta.nextjs.org/docs/routing/route-handlers
@@ -18,6 +23,7 @@ type POST_PARAMS = {
   userId: string;
   bypassAuth?: boolean;
   useAdminId?: boolean;
+  reinsert?: boolean;
   resource: NewResourceParams;
 };
 
@@ -32,6 +38,7 @@ const handler = async (request: NextRequest) => {
     userId: userIdProp,
     bypassAuth = false,
     useAdminId = false,
+    reinsert = false,
   } = body;
 
   let user;
@@ -57,6 +64,7 @@ const handler = async (request: NextRequest) => {
     userId,
   } as NewResourceParams;
 
+  // Validate the resource data
   const resourceValid = resourceInsertSchema.safeParse(createPayload);
 
   if (!resourceValid.success) {
@@ -68,10 +76,35 @@ const handler = async (request: NextRequest) => {
     );
   }
 
-  // All good - insert the resource
-  const insertedResource = await insertResourceWithEmbeddings({
-    resource: createPayload,
-  });
+  // Check for existing resource with same hash
+  const { hash: contentHash, seed: contentSeed } =
+    generateResourceContentHash(createPayload);
 
-  return NextResponse.json(insertedResource);
+  const existingResource = await lookupEmbeddingByHash(contentHash);
+  const { resourceId: existingResourceId } = existingResource || {};
+
+  // All good - insert away if no existing resource or reinsert flag is set
+  if (reinsert || !existingResourceId) {
+    const insertedResource = await insertResourceWithEmbeddings({
+      resource: createPayload,
+    });
+
+    // If reinserting, delete the existing resource
+    if (insertedResource && existingResourceId && reinsert) {
+      await deleteResource(existingResourceId);
+    }
+
+    return NextResponse.json({
+      msg: 'Resource inserted',
+      reinserted: reinsert && reinsert,
+      insertedResource,
+      existingResource,
+    });
+  }
+
+  return NextResponse.json({
+    msg: 'Resource already exists and not reinserted',
+    reinserted: reinsert,
+    existingResource,
+  });
 };

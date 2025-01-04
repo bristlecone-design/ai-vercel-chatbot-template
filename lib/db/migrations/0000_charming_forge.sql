@@ -131,6 +131,7 @@ CREATE TABLE "embeddings" (
 	"type" "entityType" DEFAULT 'content',
 	"content" text NOT NULL,
 	"contentHash" text,
+	"contentSeed" text,
 	"description" text,
 	"embedding" vector(1536),
 	"model" text NOT NULL,

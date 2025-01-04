@@ -10,6 +10,7 @@ import {
 } from 'drizzle-orm/pg-core';
 
 import { genId } from '@/lib/id';
+import { createSelectSchema } from 'drizzle-zod';
 import { chat, message } from './schema-chats';
 import { resource } from './schema-content-resources';
 import { entityEnum } from './schema-entities';
@@ -34,7 +35,9 @@ export const embeddings = pgTable(
 
     content: text('content').notNull(), // source used to generate the embedding
 
-    contentHash: text('contentHash'), // hash of the content as an alternative to the content for lookup
+    contentHash: text('contentHash'), // Hash of the content seed as an alternative lookup key
+
+    contentSeed: text('contentSeed'), // seed used to generate the contentHash which is the content + other metadata for the embedding
 
     description: text('description'), // A description of the embedding for humans. If defined, this will/can be used to give the AI assistant more context.
 
@@ -73,6 +76,8 @@ export const embeddings = pgTable(
     },
   ],
 );
+
+export const embeddingsSchema = createSelectSchema(embeddings);
 
 export type Embeddings = InferSelectModel<typeof embeddings>;
 

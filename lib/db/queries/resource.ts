@@ -1,5 +1,7 @@
+import { generateResourceContentHash } from '@/lib/embed-utils';
 import { getErrorMessage } from '@/lib/errors';
 import type { NewResourceEmbeddingsParams } from '@/types/resource-embeddings';
+import { eq } from 'drizzle-orm';
 import { db } from '../connect';
 import {
   type NewResourceParams,
@@ -46,11 +48,16 @@ export async function insertResourceWithEmbeddings(
     const { data } = newResource;
     const { id: resourceId } = data;
 
-    const embeds = await generateEmbeddings(content);
+    const { hash: resourceHash, seed: resourceContentSeed } =
+      generateResourceContentHash(props.resource as any);
+
+    const embeds = await generateEmbeddings(resourceContentSeed);
 
     const embedsPayload = embeds.map((embedding) => ({
       resourceId: resourceId,
-      content: embedding.content,
+      content: content,
+      contentHash: resourceHash,
+      contentSeed: resourceContentSeed,
       embedding: embedding.embedding,
       model: embedding.model,
       usage: embedding.usage,
@@ -75,6 +82,25 @@ export async function insertResourceWithEmbeddings(
       resource: null,
       embedding: null,
       msg: `Failed to insert resource with embeddings: ${errMsg}`,
+    };
+  }
+}
+
+export async function deleteResource(id: string) {
+  try {
+    const deletedResource = await db
+      .delete(resource)
+      .where(eq(resource.id, id))
+      .returning();
+
+    return { data: deletedResource[0], error: false, msg: '' };
+  } catch (e) {
+    const errMsg = getErrorMessage(e);
+    console.error('Error deleting resource:', e);
+    return {
+      error: true,
+      data: null,
+      msg: `Failed to delete resource: ${errMsg}`,
     };
   }
 }
