@@ -95,11 +95,11 @@ export default function AppStateProvider({
         suspense: false,
         fallbackData: userSessionProp,
         keepPreviousData: true,
-        revalidateOnFocus: false,
-        revalidateIfStale: false,
+        revalidateOnFocus: true,
+        revalidateIfStale: true,
         revalidateOnMount: true,
         revalidateOnReconnect: false,
-        refreshInterval: 0,
+        refreshInterval: 5000, // Off by default
         shouldRetryOnError: false,
       }
     );
@@ -133,8 +133,8 @@ export default function AppStateProvider({
         keepPreviousData: true,
         fallbackData: userProfileFallback,
         refreshInterval: 0, //60000,
-        revalidateOnFocus: false,
-        revalidateIfStale: false,
+        revalidateOnFocus: true,
+        revalidateIfStale: true,
         revalidateOnMount: true,
         revalidateOnReconnect: false,
         // shouldRetryOnError: false,
@@ -247,7 +247,7 @@ export default function AppStateProvider({
     // Establish User Geo Location
     const {
       coords,
-      timestamp,
+      timestamp: geoTimestamp,
       isGeolocationAvailable,
       isGeolocationEnabled,
       positionError,
@@ -284,7 +284,7 @@ export default function AppStateProvider({
     const handleGettingUserGeo = (): UserAppGeo => {
       return {
         coords,
-        timestamp,
+        timestamp: geoTimestamp,
         location: userLocation,
         isGeolocationAvailable,
         isGeolocationEnabled,
@@ -398,14 +398,21 @@ export default function AppStateProvider({
       if (!isMounted) setIsMounted(true);
       // handleRefreshingUserSession();
       // handleRefreshingUserProfile();
-      if (isReady) return;
+      // if (isReady) return;
 
       // Set the user location from cookies on mount
       // Main geo location hook will override this if it has a more precise location and the user has allowed it
-      handleSettingGeoUserLocationFromCookies();
-
-      setIsReady(true);
-    }, [isMounted, isReady, isCurrentPathRouteReady]);
+      if (isMounted) {
+        handleSettingGeoUserLocationFromCookies();
+        if (!isReady) setIsReady(true);
+      }
+    }, [
+      isMounted,
+      isReady,
+      isAuthenticated,
+      geoTimestamp,
+      isCurrentPathRouteReady,
+    ]);
 
     // Prepare the context value
     const providerProps = useMemo<AppStateContext>(() => {
@@ -485,6 +492,7 @@ export default function AppStateProvider({
       isAuthenticated,
       isProfilePublic,
       isInPrivateBeta,
+      isUserSessionLoading,
       activeUserId,
       userSession,
       userProfile,
@@ -497,6 +505,7 @@ export default function AppStateProvider({
       profileProfession,
       profileInterests,
       profileLocation,
+      geoTimestamp,
     ]);
 
     // if (!isReady) {
