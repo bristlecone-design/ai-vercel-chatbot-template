@@ -82,7 +82,10 @@ export const insertEmbeddings = async (data: Array<NewEmbeddingParams>) => {
   try {
     const dataWithHash = data.map((d) => {
       const { hash: contentHash, seed: contentSeed } =
-        generateResourceContentHash({ content: d.content, userId: d.userId });
+        generateResourceContentHash({
+          content: d.content,
+          userId: d.userId,
+        } as NewEmbeddingParams);
 
       return {
         ...d,

@@ -20,7 +20,7 @@ export const resourceContentHashSchema = embeddingsSchema
   })
   .merge(
     resourceSelectSchema.pick({
-      title: true,
+      // title: true,
       // url: true,
       // note: true,
       // content: true,
@@ -28,6 +28,7 @@ export const resourceContentHashSchema = embeddingsSchema
     }),
   )
   .extend({
+    title: resourceSelectSchema.shape.title.optional(),
     url: resourceSelectSchema.shape.url.optional(),
     note: resourceSelectSchema.shape.note.optional(),
   });
