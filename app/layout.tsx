@@ -9,6 +9,8 @@ import { Toaster } from '@/components/toaster';
 
 import '@/styles/globals.css';
 
+import { Suspense } from 'react';
+
 export { metadata } from '@/config/site-meta';
 
 export const viewport = {
@@ -78,7 +80,9 @@ export default async function RootLayout({
         />
       </head>
       <body className={cn(GeistSans.variable, GeistMono.variable)}>
-        <AppContent>{children}</AppContent>
+        <Suspense fallback={null}>
+          <AppContent>{children}</AppContent>
+        </Suspense>
       </body>
     </html>
   );

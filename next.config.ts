@@ -63,7 +63,16 @@ const nextConfig: NextConfig = {
   /* config options here */
   experimental: {
     ppr: true,
-    // dynamicIO: true,
+    dynamicIO: true,
+
+    // https://nextjs.org/docs/app/api-reference/config/next-config-js/cacheLife
+    cacheLife: {
+      resource: {
+        stale: 300, // 5 minutes
+        revalidate: 900, // 15 minutes
+        expire: 86400, // 1 day
+      },
+    },
 
     // https://nextjs.org/docs/app/api-reference/next-config-js/serverComponentsHmrCache
     serverComponentsHmrCache: IS_LOCAL_DEVELOPMENT,

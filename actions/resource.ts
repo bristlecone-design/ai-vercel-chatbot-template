@@ -1,5 +1,7 @@
 'use server';
 
+import { unstable_cacheLife as cacheLife } from 'next/cache';
+
 import {
   findRelevantContent,
   generateEmbedding,
@@ -23,6 +25,9 @@ import { generateResourceContentHash } from '@/lib/embed-utils';
 export async function retrieveRelevantContent(
   ...args: Parameters<typeof findRelevantContent>
 ) {
+  'use cache';
+  cacheLife('resource');
+
   return findRelevantContent(...args);
 }
 
