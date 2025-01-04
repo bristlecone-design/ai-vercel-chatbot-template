@@ -34,7 +34,7 @@ function OverviewAvatar({
 
   const renderedAvatar = (
     <motion.div
-      key={userAvatar}
+      // key={userAvatar}
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.98 }}
@@ -50,18 +50,29 @@ function OverviewAvatar({
         containerClassName
       )}
     >
-      <UserAvatar
-        src={userAvatar}
-        alt={userDisplayName ?? 'User'}
-        className={cn(
-          'border-border-alt/25 hover:border-border-alt/50 rounded-full border-2',
-          {
-            'animate-pulse': ping,
-          },
-          className
-        )}
-        sizeClassName="size-14 md:size-16"
-      />
+      <motion.div
+        key={userAvatar}
+        initial={{ opacity: 0, rotate: 0 }}
+        animate={{
+          opacity: [0.25, 0.5, 0.75, 1],
+          rotate: 0,
+        }}
+        exit={{ opacity: 0, rotate: 1440 }}
+        transition={{ delay: 0.25 }}
+      >
+        <UserAvatar
+          src={userAvatar}
+          alt={userDisplayName ?? 'User'}
+          className={cn(
+            'border-border-alt/25 hover:border-border-alt/50 rounded-full border-2',
+            {
+              'animate-pulse': ping,
+            },
+            className
+          )}
+          sizeClassName="size-14 md:size-16"
+        />
+      </motion.div>
     </motion.div>
   );
 
