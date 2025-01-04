@@ -1,18 +1,13 @@
-// import { getUserProfileDb } from '@/actions/user-db';
-import { StatusCodes } from 'http-status-codes';
-import { type NextRequest, NextResponse } from 'next/server';
-
-import { lookupEmbeddingByHash } from '@/lib/db/queries/embeddings';
-import {
-  deleteResource,
-  insertResourceWithEmbeddings,
-} from '@/lib/db/queries/resource';
+import { createResourceContent } from '@/actions/resource';
 import {
   type NewResourceParams,
   resourceInsertSchema,
 } from '@/lib/db/schemas/schema-content-resources';
-import { generateResourceContentHash } from '@/lib/embed-utils';
+import { getErrorMessage } from '@/lib/errors';
 import { getUserFromSession } from '@/lib/session';
+// import { getUserProfileDb } from '@/actions/user-db';
+import { StatusCodes } from 'http-status-codes';
+import { type NextRequest, NextResponse } from 'next/server';
 
 // https://beta.nextjs.org/docs/routing/route-handlers
 
@@ -76,35 +71,25 @@ const handler = async (request: NextRequest) => {
     );
   }
 
-  // Check for existing resource with same hash
-  const { hash: contentHash, seed: contentSeed } =
-    generateResourceContentHash(createPayload);
-
-  const existingResource = await lookupEmbeddingByHash(contentHash);
-  const { resourceId: existingResourceId } = existingResource || {};
-
-  // All good - insert away if no existing resource or reinsert flag is set
-  if (reinsert || !existingResourceId) {
-    const insertedResource = await insertResourceWithEmbeddings({
-      resource: createPayload,
+  try {
+    const {
+      msg,
+      reinserted,
+      resource: insertedResource,
+    } = await createResourceContent(createPayload, {
+      reinsert,
+      userId,
     });
-
-    // If reinserting, delete the existing resource
-    if (insertedResource && existingResourceId && reinsert) {
-      await deleteResource(existingResourceId);
-    }
 
     return NextResponse.json({
-      msg: 'Resource inserted',
-      reinserted: reinsert && reinsert,
-      insertedResource,
-      existingResource,
+      msg,
+      reinserted,
+      resource: insertedResource,
+    });
+  } catch (error) {
+    const errMsg = getErrorMessage(error);
+    return new Response(errMsg, {
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
     });
   }
-
-  return NextResponse.json({
-    msg: 'Resource already exists and not reinserted',
-    reinserted: reinsert,
-    existingResource,
-  });
 };

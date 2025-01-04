@@ -40,7 +40,12 @@ export async function insertResourceWithEmbeddings(
   const newResource = await insertResource(resourceInput);
 
   if (newResource.error || !newResource.data) {
-    return newResource;
+    return {
+      error: true,
+      embedding: null,
+      resource: newResource,
+      msg: newResource.msg,
+    };
   }
 
   try {
@@ -93,13 +98,14 @@ export async function deleteResource(id: string) {
       .where(eq(resource.id, id))
       .returning();
 
-    return { data: deletedResource[0], error: false, msg: '' };
+    return { data: deletedResource[0], deleted: true, error: false, msg: '' };
   } catch (e) {
     const errMsg = getErrorMessage(e);
     console.error('Error deleting resource:', e);
     return {
       error: true,
       data: null,
+      deleted: false,
       msg: `Failed to delete resource: ${errMsg}`,
     };
   }
