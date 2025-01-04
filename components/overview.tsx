@@ -33,7 +33,11 @@ function OverviewAvatar({
     isAuthenticated && !noProfileLink ? '/profile/edit' : '';
 
   const renderedAvatar = (
-    <div
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.98 }}
+      transition={{ delay: 0.75 }}
       className={cn(
         'relative',
         {
@@ -57,7 +61,7 @@ function OverviewAvatar({
         )}
         sizeClassName="size-14 md:size-16"
       />
-    </div>
+    </motion.div>
   );
 
   return userProfileEditPermalink ? (
@@ -90,7 +94,7 @@ export const Overview = memo(
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.98 }}
-        transition={{ delay: 0.25 }}
+        transition={{ delay: 0.325 }}
       >
         <div className="flex max-w-3xl flex-col items-center gap-12 rounded-xl py-14 text-center leading-relaxed">
           <DiscoveryMasthead />
