@@ -1,5 +1,4 @@
 import { Suspense } from 'react';
-import { cookies } from 'next/headers';
 import type { Session } from 'next-auth';
 
 import { DEFAULT_MODEL_NAME, models } from '@/lib/ai/models';
@@ -9,6 +8,8 @@ import { getUserSession } from '@/lib/session';
 import { Chat } from '@/components/chat';
 import { ExperienceSplashScreen } from '@/components/discovery/discovery-splash-screen';
 
+import { getModelId } from './actions';
+
 async function DynamicAuthenicatedChatView({
   user,
 }: {
@@ -16,8 +17,7 @@ async function DynamicAuthenicatedChatView({
 }) {
   const id = genChatId();
 
-  const cookieStore = await cookies();
-  const modelIdFromCookie = cookieStore.get('model-id')?.value;
+  const modelIdFromCookie = await getModelId();
 
   const selectedModelId =
     models.find((model) => model.id === modelIdFromCookie)?.id ||

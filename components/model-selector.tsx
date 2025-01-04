@@ -30,6 +30,7 @@ export function ModelSelector({
     () => models.find((model) => model.id === optimisticModelId),
     [optimisticModelId]
   );
+  console.log('optimisticModelId', optimisticModelId);
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -55,33 +56,35 @@ export function ModelSelector({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="min-w-[300px]">
-        {models.map((model) => (
-          <DropdownMenuItem
-            key={`${model.id}-${model.label}`}
-            onSelect={() => {
-              setOpen(false);
+        {models
+          .filter((m) => m.active)
+          .map((model) => (
+            <DropdownMenuItem
+              key={`${model.id}-${model.label}-${model.id}`}
+              onSelect={() => {
+                setOpen(false);
 
-              startTransition(() => {
-                setOptimisticModelId(model.id);
-                saveModelId(model.id);
-              });
-            }}
-            className="group/item flex flex-row items-center justify-between gap-4"
-            data-active={model.id === optimisticModelId}
-          >
-            <div className="flex flex-col items-start gap-1">
-              {model.label}
-              {model.description && (
-                <div className="text-xs text-muted-foreground">
-                  {model.description}
-                </div>
-              )}
-            </div>
-            <div className="text-primary opacity-0 group-data-[active=true]/item:opacity-100 dark:text-primary-foreground">
-              <IconCircleCheck className="text-success" />
-            </div>
-          </DropdownMenuItem>
-        ))}
+                startTransition(() => {
+                  setOptimisticModelId(model.id);
+                  saveModelId(model.id);
+                });
+              }}
+              className="group/item flex flex-row items-center justify-between gap-4"
+              data-active={model.id === optimisticModelId}
+            >
+              <div className="flex flex-col items-start gap-1">
+                {model.label}
+                {model.description && (
+                  <div className="text-xs text-muted-foreground">
+                    {model.description}
+                  </div>
+                )}
+              </div>
+              <div className="text-primary opacity-0 group-data-[active=true]/item:opacity-100 dark:text-primary-foreground">
+                <IconCircleCheck className="text-success" />
+              </div>
+            </DropdownMenuItem>
+          ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );

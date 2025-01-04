@@ -10,6 +10,11 @@ export async function saveModelId(model: string) {
   cookieStore.set('model-id', model);
 }
 
+export async function getModelId() {
+  const cookieStore = await cookies();
+  return cookieStore.get('model-id')?.value;
+}
+
 export async function generateTitleFromUserMessage({
   message,
 }: {
