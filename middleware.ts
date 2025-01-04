@@ -1,4 +1,4 @@
-import { auth } from '@/app/(auth)/auth-edge';
+import { auth } from '@/app/(auth)/auth';
 
 const rootPath = '/';
 const loginPath = '/login';
