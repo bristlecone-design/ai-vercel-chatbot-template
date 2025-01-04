@@ -16,6 +16,7 @@ type POST_PARAMS = {
   query: string;
   score?: number;
   limit?: number;
+  includeResource?: boolean;
   bypassAuth?: boolean;
 };
 
@@ -23,7 +24,13 @@ export { handler as POST };
 
 const handler = async (request: NextRequest) => {
   const body = (await request.json()) as POST_PARAMS;
-  const { limit, score, query: userQuery, bypassAuth = false } = body;
+  const {
+    limit,
+    score,
+    query: userQuery,
+    bypassAuth = false,
+    includeResource = true,
+  } = body;
 
   if (!userQuery) {
     return new Response('No query provided', {
@@ -42,7 +49,11 @@ const handler = async (request: NextRequest) => {
   }
 
   try {
-    const response = await retrieveRelevantContent(userQuery, score, limit);
+    const response = await retrieveRelevantContent(userQuery, {
+      score,
+      limit,
+      includeResource,
+    });
 
     return NextResponse.json(response);
   } catch (error) {

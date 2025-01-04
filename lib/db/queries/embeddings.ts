@@ -2,9 +2,19 @@ import { db } from '@/lib/db/connect';
 import { type NewEmbeddingParams, embeddings } from '@/lib/db/schema';
 import { generateChunks, generateResourceContentHash } from '@/lib/embed-utils';
 import { getErrorMessage } from '@/lib/errors';
+import type { EmbeddingQueryWithResource } from '@/types/resource-embeddings';
 import { openai } from '@ai-sdk/openai';
 import { type EmbeddingModelUsage, embed, embedMany } from 'ai';
-import { and, cosineDistance, desc, eq, gt, isNotNull, sql } from 'drizzle-orm';
+import {
+  and,
+  cosineDistance,
+  desc,
+  eq,
+  gte,
+  isNotNull,
+  sql,
+} from 'drizzle-orm';
+import { getResourceById } from './resource';
 
 const embeddingModel = openai.embedding('text-embedding-ada-002');
 
@@ -46,18 +56,40 @@ export const generateEmbedding = async (
 
 export const findRelevantContent = async (
   userQuery: string,
-  simScore = 0.5,
-  limit = 4,
-) => {
+  opts = {} as {
+    includeResource?: boolean;
+    score?: number;
+    limit?: number;
+  },
+): Promise<Array<EmbeddingQueryWithResource>> => {
+  const { includeResource = true, score: simScore = 0.5, limit = 4 } = opts;
+
   const userQueryEmbedded = await generateEmbedding(userQuery);
   const similarity = sql<number>`1 - (${cosineDistance(embeddings.embedding, userQueryEmbedded)})`;
-  const similarGuides = await db
-    .select({ name: embeddings.content, similarity })
+
+  const similarEmbeds = await db
+    .select({
+      content: embeddings.content,
+      similarity,
+      resourceId: embeddings.resourceId,
+    })
     .from(embeddings)
-    .where(gt(similarity, simScore))
+    .where(gte(similarity, simScore))
     .orderBy((t) => desc(t.similarity))
     .limit(limit);
-  return similarGuides;
+
+  if (includeResource) {
+    const embedsWithResources = await Promise.all(
+      similarEmbeds.map(async (e) => {
+        const { data: r } = await getResourceById(e.resourceId);
+        return { ...e, resource: r } as EmbeddingQueryWithResource;
+      }),
+    );
+
+    return embedsWithResources;
+  }
+
+  return similarEmbeds as Array<EmbeddingQueryWithResource>;
 };
 
 export const insertSingleEmbedding = async (data: NewEmbeddingParams) => {

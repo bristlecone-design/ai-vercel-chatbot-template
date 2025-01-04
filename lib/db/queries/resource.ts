@@ -110,3 +110,22 @@ export async function deleteResource(id: string) {
     };
   }
 }
+
+export async function getResourceById(id: string) {
+  try {
+    const [resourceData] = await db
+      .select()
+      .from(resource)
+      .where(eq(resource.id, id));
+
+    return { data: resourceData, error: false, msg: '' };
+  } catch (e) {
+    const errMsg = getErrorMessage(e);
+    console.error('Error getting resource by ID:', errMsg);
+    return {
+      error: true,
+      data: null,
+      msg: `Failed to get resource by ID: ${errMsg}`,
+    };
+  }
+}

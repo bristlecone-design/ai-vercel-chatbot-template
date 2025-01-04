@@ -1,8 +1,10 @@
 import { type NewEmbeddingParams, embeddingsSchema } from '@/lib/db/schema';
 import {
   type NewResourceParams,
+  type Resource,
   resourceSelectSchema,
 } from '@/lib/db/schemas/schema-content-resources';
+import type { Embeddings } from '@/lib/db/schemas/schema-embeddings';
 import type { z } from 'zod';
 
 export type NewResourceEmbeddingsParams = {
@@ -36,3 +38,13 @@ export const resourceContentHashSchema = embeddingsSchema
 export type ResourceContentHashParams = z.infer<
   typeof resourceContentHashSchema
 >;
+
+/**
+ * Embedding with Resource Record
+ */
+export type EmbeddingQueryWithResource = {
+  content: Embeddings['content'];
+  resource?: Resource | null;
+  similarity: number;
+  resourceId?: string;
+};
