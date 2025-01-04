@@ -1,4 +1,5 @@
 'use server';
+
 import {
   findRelevantContent,
   generateEmbedding,
@@ -18,6 +19,12 @@ import { generateResourceContentHash } from '@/lib/embed-utils';
 /**
  * Resource Content Plus Embed Actions
  */
+
+export async function retrieveRelevantContent(
+  ...args: Parameters<typeof findRelevantContent>
+) {
+  return findRelevantContent(...args);
+}
 
 export async function createSingleResourceEmbedding(
   ...args: Parameters<typeof generateEmbedding>
@@ -98,10 +105,4 @@ export async function createResourceContent(
       msg: errMsg,
     };
   }
-}
-
-export async function retrieveRelevantContent(
-  ...args: Parameters<typeof findRelevantContent>
-) {
-  return findRelevantContent(...args);
 }
