@@ -21,8 +21,8 @@ importers:
         specifier: 1.0.13
         version: 1.0.13(zod@3.24.1)
       '@ai-sdk/togetherai':
-        specifier: 0.0.15
-        version: 0.0.15(zod@3.24.1)
+        specifier: 0.0.16
+        version: 0.0.16(zod@3.24.1)
       '@auth/drizzle-adapter':
         specifier: 1.7.4
         version: 1.7.4
@@ -661,8 +661,8 @@ packages:
       zod:
         optional: true
 
-  '@ai-sdk/togetherai@0.0.15':
-    resolution: {integrity: sha512-7mkr+Bvvkyqst6xXNwm3HO9rf6YFQ+Hb1+leor3GvZ61QvuLqP3znw7YBBoAXM6nosz56aYQprNj5DpyUFNF6A==}
+  '@ai-sdk/togetherai@0.0.16':
+    resolution: {integrity: sha512-XteY6BxUQKVDqId/lofIFN1ectTMjmDa287hCT8xlQUcChoEbhhZ8aSOgNBhLY9Xho7q/J4Dq1gFrzt3fNYRDg==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.0.0
@@ -7031,7 +7031,7 @@ snapshots:
       react: 19.0.0-rc-65e06cb7-20241218
       zod: 3.24.1
 
-  '@ai-sdk/togetherai@0.0.15(zod@3.24.1)':
+  '@ai-sdk/togetherai@0.0.16(zod@3.24.1)':
     dependencies:
       '@ai-sdk/openai-compatible': 0.0.13(zod@3.24.1)
       '@ai-sdk/provider': 1.0.3
