@@ -22,7 +22,12 @@ export default async function Layout({
   return (
     <SidebarProvider defaultOpen={!isCollapsed}>
       <AppSidebar closeSidebarOnMount={!isAuthenticated} user={session?.user} />
-      <DiscoveryBgImageContainer noFullSize showOnMobile className="">
+      <DiscoveryBgImageContainer
+        noFullSize
+        showOnMobile
+        enableCarousel
+        className=""
+      >
         <SidebarInset
           className={cn({
             'bg-transparent': true,

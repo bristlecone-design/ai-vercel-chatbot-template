@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useInterval } from 'usehooks-ts';
 
 import { cn, randomRange } from '@/lib/utils';
 
@@ -9,6 +10,8 @@ export type DiscoveryRandomBgImageProps = React.ComponentProps<'div'> & {
   className?: string;
   scrimClassName?: string;
   containerClassName?: string;
+  enableCarousel?: boolean;
+  carouselDelay?: number;
   numImages?: number;
   bgImageNum?: number;
 };
@@ -16,6 +19,8 @@ export type DiscoveryRandomBgImageProps = React.ComponentProps<'div'> & {
 export const NUM_IMAGES = 30;
 
 export function DiscoveryRandomBgImage({
+  enableCarousel = false,
+  carouselDelay: delay = 8500,
   className,
   scrimClassName,
   containerClassName,
@@ -38,23 +43,41 @@ export function DiscoveryRandomBgImage({
 
   const isReady = isMounted && bgImage !== undefined;
 
+  // Carousel interval
+  useInterval(
+    () => {
+      const getRandomImage = (min: number, max: number): number => {
+        const randNum = randomRange(min, max);
+        // If the random number is the same as the current bgImage, call the function again
+        return randNum === bgImage || !randNum
+          ? getRandomImage(min, max)
+          : randNum;
+      };
+      const newBgImgNum = getRandomImage(0, numImagesProp);
+      setBgImage(newBgImgNum);
+    },
+    // Delay in milliseconds or null to stop it
+    isReady && enableCarousel ? delay : null
+  );
+
   return (
     <div className={cn('absolute -z-10 size-full', containerClassName)}>
       <motion.div
+        key={`bg-image-${bgImage}`}
         initial={{
           opacity: 0,
         }}
         animate={
           isReady
             ? {
-                opacity: 1,
+                opacity: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
                 animationDelay: '0.5s',
                 animationDuration: '1s',
               }
             : {}
         }
         exit={{
-          opacity: 0,
+          opacity: [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0],
         }}
         className={cn(
           'fixed -z-50 hidden size-full bg-cover hover:blur-none sm:block',
@@ -78,6 +101,8 @@ export function DiscoveryRandomBgImage({
 }
 
 export type DiscoveryBgImageContainerProps = React.ComponentProps<'div'> & {
+  enableCarousel?: DiscoveryRandomBgImageProps['enableCarousel'];
+  carouselDelay?: DiscoveryRandomBgImageProps['carouselDelay'];
   numImages?: DiscoveryRandomBgImageProps['numImages'];
   bgImageNum?: DiscoveryRandomBgImageProps['bgImageNum'];
   bgImageClassName?: string;
@@ -94,6 +119,8 @@ export function DiscoveryBgImageContainer({
   bgImageClassName,
   noFullSize = false,
   showOnMobile = false,
+  enableCarousel = false,
+  carouselDelay,
   children,
 }: DiscoveryBgImageContainerProps) {
   const fullsizeClass = noFullSize ? 'size-full' : 'h-dvh w-screen';
@@ -108,6 +135,8 @@ export function DiscoveryBgImageContainer({
       <DiscoveryRandomBgImage
         numImages={numImages}
         bgImageNum={bgImageNum}
+        enableCarousel={enableCarousel}
+        carouselDelay={carouselDelay}
         className={cn(
           {
             block: showOnMobile,
