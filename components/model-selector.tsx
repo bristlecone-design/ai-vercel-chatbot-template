@@ -30,7 +30,6 @@ export function ModelSelector({
     () => models.find((model) => model.id === optimisticModelId),
     [optimisticModelId]
   );
-  console.log('optimisticModelId', optimisticModelId);
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
