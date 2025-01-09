@@ -102,14 +102,14 @@ export function DiscoveryRandomBgImage({
             ? {
                 opacity: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
                 animationDelay: '0.5s',
-                animationDuration: '1.5s',
+                animationDuration: '1.75s',
               }
             : {}
         }
         exit={{
           opacity: [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0],
           animationDelay: '0',
-          animationDuration: '0.5s',
+          animationDuration: '0.25s',
         }}
         className={cn(
           'fixed -z-50 hidden size-full bg-cover hover:blur-none sm:block',
