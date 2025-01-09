@@ -20,7 +20,7 @@ export const NUM_IMAGES = 30;
 
 export function DiscoveryRandomBgImage({
   enableCarousel = false,
-  carouselDelay: delay = 8500,
+  carouselDelay: delay = 12500,
   className,
   scrimClassName,
   containerClassName,
@@ -28,33 +28,63 @@ export function DiscoveryRandomBgImage({
   bgImageNum: bgImageNumProp,
 }: DiscoveryRandomBgImageProps) {
   const [isMounted, setIsMounted] = React.useState(false);
-  const [bgImage, setBgImage] = React.useState<number | undefined>(
-    bgImageNumProp
-  );
 
+  // The first index is the current image, the second index is the next image
+  const [queuedImgs, setQueudImgs] = React.useState<Array<number | undefined>>([
+    bgImageNumProp,
+    undefined,
+  ]);
+
+  const currentImg = queuedImgs[0];
+  const nextImg = queuedImgs[1];
+
+  // Create image path
+  const getImagePath = (imgNum: number) =>
+    `/assets/bg/exp-nv/exp-nv-bg-${imgNum}.jpg`;
+
+  // get a random number between min and max, excluding the current image
+  const getRandomImage = (
+    min: number,
+    max: number,
+    current = currentImg
+  ): number => {
+    const randNum = randomRange(min, max);
+
+    // If the random number is the same as the current bgImage, call the function again
+    return randNum === current || !randNum ? getRandomImage(min, max) : randNum;
+  };
+
+  const preloadNextImage = (newNextBgImgNum: number) => {
+    const img = new Image();
+    img.src = getImagePath(newNextBgImgNum);
+  };
+
+  // Create the necessary logic to determine the  nextd image, preload it, and update the current image
+  const generateBgImages = (current: number | undefined = undefined) => {
+    const newCurrentBgImgNum = getRandomImage(1, numImagesProp, current);
+
+    preloadNextImage(newCurrentBgImgNum);
+
+    // Shift the current image to the next image and set the new current image
+    setQueudImgs((prev) => [prev[1], newCurrentBgImgNum]);
+  };
+
+  // Initial setup
   React.useEffect(() => {
     setIsMounted(true);
 
-    if (!bgImage) {
-      const bgImageNum = randomRange(0, numImagesProp);
-      setBgImage(bgImageNum);
+    // New current index background image index
+    if (!queuedImgs[0]) {
+      generateBgImages();
     }
-  }, [bgImage, numImagesProp]);
+  }, [queuedImgs, numImagesProp]);
 
-  const isReady = isMounted && bgImage !== undefined;
+  const isReady = isMounted && currentImg !== undefined;
 
   // Carousel interval
   useInterval(
     () => {
-      const getRandomImage = (min: number, max: number): number => {
-        const randNum = randomRange(min, max);
-        // If the random number is the same as the current bgImage, call the function again
-        return randNum === bgImage || !randNum
-          ? getRandomImage(min, max)
-          : randNum;
-      };
-      const newBgImgNum = getRandomImage(0, numImagesProp);
-      setBgImage(newBgImgNum);
+      generateBgImages(currentImg);
     },
     // Delay in milliseconds or null to stop it
     isReady && enableCarousel ? delay : null
@@ -63,7 +93,7 @@ export function DiscoveryRandomBgImage({
   return (
     <div className={cn('absolute -z-10 size-full', containerClassName)}>
       <motion.div
-        key={`bg-image-${bgImage}`}
+        key={`bg-image-${currentImg}`}
         initial={{
           opacity: 0,
         }}
@@ -85,7 +115,7 @@ export function DiscoveryRandomBgImage({
         )}
         style={{
           backgroundImage: isReady
-            ? `url(/assets/bg/exp-nv/exp-nv-bg-${bgImage}.jpg)`
+            ? `url(${getImagePath(currentImg)})`
             : 'none',
         }}
       />
