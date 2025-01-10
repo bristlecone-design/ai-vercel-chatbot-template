@@ -63,11 +63,13 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
     models.find((model) => model.id === modelIdFromCookie)?.id ||
     DEFAULT_MODEL_NAME;
 
+  const uiMessages = convertToUIMessages(messagesFromDb);
+
   return (
     <PreviewChat
       id={chat.id}
       disabled={disabledActions}
-      initialMessages={convertToUIMessages(messagesFromDb)}
+      initialMessages={uiMessages}
       selectedModelId={selectedModelId}
       // msgsContainerClassName="backdrop-blur-sm bg-accent/10 sm:p-4 sm:rounded-3xl sm:border sm:border-border/40"
     />

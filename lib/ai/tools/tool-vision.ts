@@ -11,60 +11,70 @@ import type { customModel } from '..';
 import { generateUUID } from '../chat-utils';
 import { SYSTEM_PROMPTS } from '../prompts';
 
-export type DiscoverToolCall = CoreToolCallUnion<
-  ReturnType<typeof discoverToolDefinition>
+export type VisionToolCall = CoreToolCallUnion<
+  ReturnType<typeof visionToolDefinition>
 >;
 
-export type DiscoverToolResult = CoreToolResultUnion<
-  ReturnType<typeof discoverToolDefinition>
+export type VisionToolResult = CoreToolResultUnion<
+  ReturnType<typeof visionToolDefinition>
 >;
 
-export type DiscoverToolOpts = {
+export type VisionToolOpts = {
   userMessage: any;
-  discoverEnabled?: boolean;
+  visionEnabled?: boolean;
   fallbackPrompt?: string;
   description?: string;
   session?: Session;
 };
 
-export const getDiscoverToolDefinition = (
-  ...args: Parameters<typeof discoverToolDefinition>
+export const getVisionToolDefinition = (
+  ...args: Parameters<typeof visionToolDefinition>
 ) => {
-  return discoverToolDefinition(...args);
+  return visionToolDefinition(...args);
 };
 
-export function discoverToolDefinition(
+export function visionToolDefinition(
   llmModel: ReturnType<typeof customModel>,
   dataStream?: DataStreamWriter,
-  opts = {} as DiscoverToolOpts,
+  opts = {} as VisionToolOpts,
 ) {
   const {
     session,
     userMessage,
-    discoverEnabled = false,
-    fallbackPrompt = 'Help me discover something new based on provided context and known interests',
-    description = 'Discover new experiences, connections, suggestions, collaborations, opportunities and specific knowledge based on user interests and preferences.',
+    visionEnabled = false,
+    fallbackPrompt = 'Describe this asset for the user',
+    description = 'Describes/interprets/understands multimedia content, such as images, videos, audio, etc.',
   } = opts;
+
+  console.log('Vision tool  called with opts', {
+    session,
+    visionEnabled,
+    fallbackPrompt,
+    description,
+    userMessage: JSON.stringify(userMessage, null, 2),
+  });
 
   return {
     // name: 'discover' as AllowedTools,
-    discover: tool({
+    vision: tool({
       description,
       parameters: z.object({
-        location: z.string().optional(),
-        interests: z.array(z.string()).optional(),
+        numAssetsToAnalyze: z
+          .string()
+          .describe('Number of assets to analyze/interpret/understand')
+          .optional(),
       }),
       execute: async (args, meta) => {
-        const { location, interests = [] } = args;
+        const { numAssetsToAnalyze } = args;
         const { abortSignal, toolCallId, messages: metaMsgs } = meta;
-        // console.log('Discover tool executed with:', {
+        // console.log('vision tool executed with', {
         //   metaMsgs,
-        //   userMessage,
+        //   numAssetsToAnalyze,
+        //   userMessage: JSON.stringify(userMessage, null, 2),
         // });
-        // console.log('discover tool args', args);
 
         const id = generateUUID();
-        let discoveryText = '';
+        let visionRecognitionText = '';
 
         if (dataStream) {
           dataStream.writeData({
@@ -73,23 +83,22 @@ export function discoverToolDefinition(
           });
         }
 
-        const isUserMsgString = typeof userMessage.content === 'string';
-
         const { fullStream } = streamText({
           model: llmModel,
-          system: discoverEnabled
-            ? SYSTEM_PROMPTS.discovery
-            : SYSTEM_PROMPTS.discoveryInactive,
-          prompt: isUserMsgString
-            ? (userMessage.content as string)
-            : `${fallbackPrompt}: ${interests.join(', ')}`,
-          messages: !isUserMsgString ? metaMsgs : undefined,
+          system: visionEnabled
+            ? SYSTEM_PROMPTS.vision
+            : SYSTEM_PROMPTS.visionInactive,
+          // prompt: visionPrompt,
+          messages: metaMsgs,
           experimental_continueSteps: true,
           onStepFinish: (step) => {
             // dataStream.writeData({
             //   type: 'step',
             //   content: `Completed step: ${JSON.stringify(step)}`,
             // });
+          },
+          onFinish: async (event) => {
+            console.log('Finished vision tool', JSON.stringify(event, null, 2));
           },
         });
 
@@ -100,7 +109,7 @@ export function discoverToolDefinition(
           if (type === 'text-delta') {
             const { textDelta } = delta;
 
-            discoveryText += textDelta;
+            visionRecognitionText += textDelta;
 
             if (dataStream) {
               dataStream.writeData({
@@ -115,13 +124,9 @@ export function discoverToolDefinition(
           dataStream.writeData({ type: 'finish', content: '' });
         }
 
-        if (session?.user?.id) {
-          // TODO: Save discovery chat
-        }
-
         return {
           id,
-          content: discoveryText,
+          content: visionRecognitionText,
         };
       },
     }),

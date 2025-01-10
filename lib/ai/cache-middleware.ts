@@ -96,7 +96,7 @@ export const cacheMiddleware: LanguageModelV1Middleware = {
         // Create a simulated ReadableStream that returns the cached response.
         stream: simulateReadableStream({
           initialDelayInMs: 0,
-          chunkDelayInMs: 10,
+          chunkDelayInMs: 7,
           chunks: formattedChunks,
         }),
         rawCall: { rawPrompt: null, rawSettings: {} },

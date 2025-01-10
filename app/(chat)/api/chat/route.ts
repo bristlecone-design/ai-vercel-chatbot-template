@@ -16,7 +16,8 @@ import {
   getMostRecentUserMessageAttachments,
   sanitizeResponseMessages,
 } from '@/lib/ai/chat-utils';
-import { discoverToolDefinition } from '@/lib/ai/tools/tool-discover';
+import { getDiscoverToolDefinition } from '@/lib/ai/tools/tool-discover';
+import { getVisionToolDefinition } from '@/lib/ai/tools/tool-vision';
 import { getWeathereatherToolDefinition } from '@/lib/ai/tools/tool-weather';
 import { coreBetaPlatformTools } from '@/lib/ai/tools/types';
 import {
@@ -151,16 +152,40 @@ export async function POST(request: Request) {
         experimental_activeTools: coreBetaPlatformTools,
         tools: {
           // Discover
-          ...discoverToolDefinition(llmModel, dataStream, {
+          ...getDiscoverToolDefinition(llmModel, dataStream, {
             userMessage,
             discoverEnabled,
             session,
           }),
+
+          // Image recognition / vision
+          ...getVisionToolDefinition(llmModel, dataStream, {
+            userMessage,
+            visionEnabled: discoverEnabled,
+            session,
+          }),
+
           // Weather
           ...getWeathereatherToolDefinition(llmModel, dataStream),
         },
+        onChunk: (chunk) => {
+          // console.log(
+          //   'Chunk in root stream response:',
+          //   JSON.stringify(chunk, null, 2),
+          // );
+        },
+        onStepFinish: (step) => {
+          // console.log(
+          //   'Completed step in root data stream response:',
+          //   JSON.stringify(step, null, 2),
+          // );
+        },
         onFinish: async (event) => {
           const responseMessages = event.response.messages;
+          // console.log(
+          //   'Finished chat in root entry point::',
+          //   JSON.stringify(event, null, 2),
+          // );
 
           if (session.user?.id) {
             try {

@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 const AllowedToolsDictionary = {
   discover: 'discover',
+  vision: 'vision', // Multimedia vision tool (e.g. image, video, audio, etc.)
   createDocument: 'createDocument',
   updateDocument: 'updateDocument',
   requestDocumentSuggestions: 'requestDocumentSuggestions',
@@ -12,7 +13,7 @@ export const allowedToolsSchema = z.nativeEnum(AllowedToolsDictionary);
 
 export type AllowedTools = z.infer<typeof allowedToolsSchema>;
 
-export const discoveryTools = ['discover'] satisfies AllowedTools[];
+export const discoveryTools = ['discover', 'vision'] satisfies AllowedTools[];
 
 export const weatherTools = ['getWeather'] satisfies AllowedTools[];
 

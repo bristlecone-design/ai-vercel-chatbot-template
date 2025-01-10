@@ -8,22 +8,22 @@ import { z } from 'zod';
 import type { customModel } from '..';
 
 export type WeatherToolCall = CoreToolCallUnion<
-  ReturnType<typeof getWeathereatherToolDefinition>
+  ReturnType<typeof weathereatherToolDefinition>
 >;
 
 export type WeatherToolResult = CoreToolResultUnion<
-  ReturnType<typeof getWeathereatherToolDefinition>
+  ReturnType<typeof weathereatherToolDefinition>
 >;
 
 export type WeatherToolOpts = Record<string, never>;
 
-export const getWeathereatherToolWrapper = (
-  ...args: Parameters<typeof getWeathereatherToolDefinition>
+export const getWeathereatherToolDefinition = (
+  ...args: Parameters<typeof weathereatherToolDefinition>
 ) => {
-  return getWeathereatherToolDefinition(...args);
+  return weathereatherToolDefinition(...args);
 };
 
-export function getWeathereatherToolDefinition(
+export function weathereatherToolDefinition(
   llmModel?: ReturnType<typeof customModel>,
   dataStream?: DataStreamWriter,
   opts = {} as WeatherToolOpts,
