@@ -18,19 +18,29 @@ export async function getLocationFromLatLong(lat: string, long: string) {
   // });
 
   // return { text, finishReason, usage };
-  const result = await fetch(
-    `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=${process.env.NEXT_PUBLIC_GEO_API_KEY}`,
-  );
+  try {
+    const fetchPath = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=${process.env.NEXT_PUBLIC_GEO_API_KEY}`;
 
-  const data = await result.json();
+    const result = await fetch(fetchPath);
 
-  // Get the first result then the address components then the long name from the locality field
-  const city = data.results[0].address_components.find(
-    (component: { types: string | string[] }) =>
-      component.types.includes('locality'),
-  ).long_name;
+    const data = await result.json();
+    // console.log(
+    //   'data from getLocationFromLatLong',
+    //   JSON.stringify(data, null, 2),
+    // );
 
-  return city;
+    // Get the first result then the address components then the long name from the locality field
+    const city = data.results[0].address_components.find(
+      (component: { types: string | string[] }) =>
+        component.types.includes('locality'),
+    ).long_name;
+
+    return { city, error: false, msg: '' };
+  } catch (error) {
+    console.error('Error in getLocationFromLatLong', error);
+    const errorMsg = getErrorMessage(error);
+    return { city: null, error: true, msg: errorMsg };
+  }
 }
 
 export async function getCachedLocationFromLatLong(lat: string, long: string) {

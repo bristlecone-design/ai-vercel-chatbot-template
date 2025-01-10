@@ -99,7 +99,7 @@ export default function AppStateProvider({
         revalidateIfStale: true,
         revalidateOnMount: true,
         revalidateOnReconnect: false,
-        refreshInterval: 5000, // Off by default
+        refreshInterval: isReady ? 25000 : 5000, // Off by default
         shouldRetryOnError: false,
       }
     );
@@ -198,12 +198,9 @@ export default function AppStateProvider({
 
     const debouncedOnGeoSuccess = useDebouncedCallback(
       async (geoPosition) => {
-        // console.log('**** GEO API coords onSuccess', {
-        //   geoPosition,
-        // });
-        if (!isCurrentPathRouteReady) {
-          return;
-        }
+        console.log('**** GEO API coords onSuccess', {
+          geoPosition,
+        });
 
         setIsPreciseLocation(true);
 
@@ -220,11 +217,20 @@ export default function AppStateProvider({
 
         // Get the location from the lat and long
         if (lat && long) {
-          const location = await getCachedLocationFromLatLong(
+          const {
+            city: location,
+            error: cachedLocationErr,
+            msg: cachedLocationMsg,
+          } = await getCachedLocationFromLatLong(
             lat,
             long
             // activeUserId
           );
+          // console.log('**** GEO API coords onSuccess location', {
+          //   location,
+          //   cachedLocationErr,
+          //   cachedLocationMsg,
+          // });
 
           if (location) {
             setUserGeoLocation(location);
@@ -254,8 +260,8 @@ export default function AppStateProvider({
       getPosition: getGeoPosition,
     } = useGeolocated({
       positionOptions: {
-        enableHighAccuracy: true,
         maximumAge: 0,
+        enableHighAccuracy: true,
         timeout: Number.POSITIVE_INFINITY,
       },
       watchPosition: true,
@@ -299,7 +305,6 @@ export default function AppStateProvider({
       if (userCookieLocation?.value) {
         setUserGeoLocation(userCookieLocation.value);
       }
-
       return userCookieLocation?.value;
     };
 
@@ -394,6 +399,16 @@ export default function AppStateProvider({
 
     // Ensure the user session and profile are loaded
     useEffect(() => {
+      // Retrieve the user's geo location from cookies
+      // first, otherwise, we will init from the hook
+      const retrieveUserGeo = async () => {
+        const location = await handleSettingGeoUserLocationFromCookies();
+
+        if (!location) {
+          getGeoPosition();
+        }
+      };
+
       // if (!isCurrentPathRouteReady) return;
       if (!isMounted) setIsMounted(true);
       // handleRefreshingUserSession();
@@ -403,7 +418,7 @@ export default function AppStateProvider({
       // Set the user location from cookies on mount
       // Main geo location hook will override this if it has a more precise location and the user has allowed it
       if (isMounted) {
-        handleSettingGeoUserLocationFromCookies();
+        retrieveUserGeo();
         if (!isReady) setIsReady(true);
       }
     }, [

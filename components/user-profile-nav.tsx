@@ -17,7 +17,11 @@ import {
 
 import { ThemeToggle } from './theme-toggle';
 import { Button } from './ui/button';
-import { IconChevronDown, IconProfileUserCircle } from './ui/icons';
+import {
+  IconChevronDown,
+  IconMapNavigation,
+  IconProfileUserCircle,
+} from './ui/icons';
 import { BlockSkeleton } from './ui/skeleton';
 import { UserAvatar } from './user-avatar';
 
@@ -38,11 +42,15 @@ export function UserProfileNav({ flipChevron }: UserProfileNavProps) {
     userDisplayName,
     userProfilePermalink,
     userProfileLoading,
+    userLocation,
+    userGeoLocation,
   } = useAppState();
 
   if (!isAuthenticated) {
     return null;
   }
+
+  const derivedUserLocation = userLocation || userGeoLocation;
 
   return (
     <DropdownMenu>
@@ -146,6 +154,18 @@ export function UserProfileNav({ flipChevron }: UserProfileNavProps) {
             </DropdownMenuItem>
             <DropdownMenuSeparator />
           </React.Fragment>
+        )}
+        {derivedUserLocation && (
+          <DropdownMenuItem
+            disabled
+            className="cursor-pointer justify-between"
+            onSelect={(event) => {
+              // console.log('onSelect invoked', event);
+            }}
+          >
+            <span className="font-medium">{derivedUserLocation}</span>
+            <IconMapNavigation />
+          </DropdownMenuItem>
         )}
         <DropdownMenuItem
           asChild
