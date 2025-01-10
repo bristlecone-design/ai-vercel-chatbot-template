@@ -33,7 +33,7 @@ export const MessageIconAssistant = ({
   return (
     <div
       className={cn(
-        'ring-border-alt/30 mt-1.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 ring-1 backdrop-blur-sm',
+        'mt-1.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 ring-1 ring-border-alt/30 backdrop-blur-sm',
         className
       )}
     >
@@ -162,7 +162,9 @@ export const PreviewMessage = ({
                           setBlock={setBlock}
                         />
                       ) : (
-                        <pre>{JSON.stringify(result, null, 2)}</pre>
+                        <pre className="whitespace-normal">
+                          {JSON.stringify(result, null, 2)}
+                        </pre>
                       )}
                     </div>
                   );
