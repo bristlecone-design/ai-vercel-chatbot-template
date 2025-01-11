@@ -82,7 +82,18 @@ export const findRelevantContent = async (
     const embedsWithResources = await Promise.all(
       similarEmbeds.map(async (e) => {
         const { data: r } = await getResourceById(e.resourceId);
-        return { ...e, resource: r } as EmbeddingQueryWithResource;
+        return {
+          ...e,
+          resource: r,
+          source: {
+            url: r?.sourceUrl,
+            title: r?.sourceTitle,
+            description: r?.sourceDescription,
+            ogTitle: r?.sourceOpenGraphTitle,
+            ogImage: r?.sourceOpenGraphImage,
+            ogVideo: r?.sourceOpenGraphVideo,
+          },
+        } as EmbeddingQueryWithResource;
       }),
     );
 

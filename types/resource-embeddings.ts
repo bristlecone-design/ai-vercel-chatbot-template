@@ -2,6 +2,7 @@ import { type NewEmbeddingParams, embeddingsSchema } from '@/lib/db/schema';
 import {
   type NewResourceParams,
   type Resource,
+  type ResourceSourceInfo,
   resourceSelectSchema,
 } from '@/lib/db/schemas/schema-content-resources';
 import type { Embeddings } from '@/lib/db/schemas/schema-embeddings';
@@ -45,6 +46,7 @@ export type ResourceContentHashParams = z.infer<
 export type EmbeddingQueryWithResource = {
   content: Embeddings['content'];
   resource?: Resource | null;
+  source?: ResourceSourceInfo;
   similarity: number;
   resourceId?: string;
 };

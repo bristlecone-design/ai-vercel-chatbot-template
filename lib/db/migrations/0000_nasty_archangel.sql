@@ -1,3 +1,4 @@
+CREATE TYPE "public"."resourceType" AS ENUM('image', 'video', 'audio', 'text', 'other');--> statement-breakpoint
 CREATE TYPE "public"."discoverySuggestionType" AS ENUM('discover', 'experience', 'share', 'learn', 'other');--> statement-breakpoint
 CREATE TYPE "public"."entityType" AS ENUM('place', 'post', 'guide', 'discovery', 'experience', 'embedding', 'content', 'generic', 'event', 'research', 'other');--> statement-breakpoint
 CREATE TYPE "public"."experienceType" AS ENUM('post', 'discover', 'experience');--> statement-breakpoint
@@ -102,6 +103,12 @@ CREATE TABLE "resource" (
 	"title" text,
 	"content" text NOT NULL,
 	"url" text DEFAULT '',
+	"type" "resourceType" DEFAULT 'text',
+	"sourceTitle" text DEFAULT '',
+	"sourceDescription" text DEFAULT '',
+	"sourceOpenGraphTitle" text DEFAULT '',
+	"sourceOpenGraphImage" text DEFAULT '',
+	"sourceOpenGraphVideo" text DEFAULT '',
 	"public" boolean DEFAULT false,
 	"keywords" text[] DEFAULT ARRAY[]::text[] NOT NULL,
 	"categories" text[] DEFAULT ARRAY[]::text[] NOT NULL,

@@ -1,5 +1,5 @@
 {
-  "id": "5e57b6f1-5da3-42a1-8242-758dd9614d0c",
+  "id": "8b69b3a0-a799-43b8-a6e2-eea365ee1315",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -701,6 +701,49 @@
         },
         "url": {
           "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "''"
+        },
+        "type": {
+          "name": "type",
+          "type": "resourceType",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'text'"
+        },
+        "sourceTitle": {
+          "name": "sourceTitle",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "''"
+        },
+        "sourceDescription": {
+          "name": "sourceDescription",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "''"
+        },
+        "sourceOpenGraphTitle": {
+          "name": "sourceOpenGraphTitle",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "''"
+        },
+        "sourceOpenGraphImage": {
+          "name": "sourceOpenGraphImage",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "''"
+        },
+        "sourceOpenGraphVideo": {
+          "name": "sourceOpenGraphVideo",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
@@ -3610,6 +3653,17 @@
     }
   },
   "enums": {
+    "public.resourceType": {
+      "name": "resourceType",
+      "schema": "public",
+      "values": [
+        "image",
+        "video",
+        "audio",
+        "text",
+        "other"
+      ]
+    },
     "public.discoverySuggestionType": {
       "name": "discoverySuggestionType",
       "schema": "public",

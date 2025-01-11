@@ -7,6 +7,7 @@
 
 export * from './schemas/schema-accounts';
 export * from './schemas/schema-chats';
+export * from './schemas/schema-content-resources';
 export * from './schemas/schema-discovery';
 export * from './schemas/schema-embeddings';
 export * from './schemas/schema-entities';
