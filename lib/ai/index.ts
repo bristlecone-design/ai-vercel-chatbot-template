@@ -13,6 +13,7 @@ import type {
   AllAIModels,
   AnthropicAIModels,
   GoogleAIModels,
+  OpenAIModelSettings,
   OpenAIModels,
 } from './model-types';
 
@@ -30,9 +31,12 @@ export const googleModel = (apiIdentifier: GoogleAIModels) => {
   });
 };
 
-export const openaiModel = (apiIdentifier: OpenAIModels) => {
+export const openaiModel = (
+  apiIdentifier: OpenAIModels,
+  settings?: OpenAIModelSettings,
+) => {
   return wrapLanguageModel({
-    model: openai(apiIdentifier),
+    model: openai(apiIdentifier, settings),
     middleware: customMiddleware,
   });
 };

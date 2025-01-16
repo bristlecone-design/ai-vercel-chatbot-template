@@ -10,6 +10,8 @@ export type AnthropicAIModels = Parameters<typeof anthropic>[0];
 
 export type OpenAIModels = Parameters<typeof openai>[0];
 
+export type OpenAIModelSettings = Parameters<typeof openai>[1];
+
 export type GoogleAIModels = Parameters<typeof google>[0];
 
 export type AllAIModels =
