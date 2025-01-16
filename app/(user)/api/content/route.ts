@@ -9,7 +9,13 @@ import { getUserFromSession } from '@/lib/session';
 import { StatusCodes } from 'http-status-codes';
 import { type NextRequest, NextResponse } from 'next/server';
 
-// https://beta.nextjs.org/docs/routing/route-handlers
+/**
+ * Create a new resource content for all users
+ *
+ * @note Resource content is discoverable by users via the search and GenUI user interfaces
+ */
+
+// https://nextjs.org/docs/app/building-your-application/routing/route-handlers
 
 // https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config#runtime
 // export const runtime = 'nodejs';
