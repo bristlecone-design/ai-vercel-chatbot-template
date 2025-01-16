@@ -23,6 +23,16 @@ const FileSchema = z.object({
           'audio/ogg',
           'audio/wav',
           'audio/mpeg',
+          'text/plain',
+          'text/markdown',
+          'application/pdf',
+          'application/msword',
+          'application/vnd.ms-excel',
+          'video/mp4',
+          'video/webm',
+          'video/ogg',
+          'video/quicktime',
+          'video/mov',
         ].includes(file.type),
       {
         message: 'File type should be JPEG or PNG',
@@ -128,7 +138,7 @@ export async function DELETE(request: Request) {
   } catch (error) {
     return NextResponse.json(
       { error: 'Failed to delete file' },
-      { status: 500 },
+      { status: StatusCodes.INTERNAL_SERVER_ERROR },
     );
   }
 }
