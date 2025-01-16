@@ -83,6 +83,7 @@ export function Chat({
     reload,
     data: streamingData,
   } = useChat({
+    api: `/api/chat`,
     body: {
       id,
       modelId: selectedModelId,
@@ -297,7 +298,7 @@ export function Chat({
         <ChatHeader selectedModelId={selectedModelId} />
         <div
           className={cn(
-            'flex w-full grow flex-col items-center gap-2 self-center overflow-clip p-2 py-10 transition-transform duration-200 md:max-w-3xl',
+            'flex w-full grow flex-col items-center gap-2 self-center p-2 py-10 transition-transform duration-200 md:max-w-3xl',
             {
               'scale-95': isDragging,
             }
@@ -307,7 +308,7 @@ export function Chat({
           <div
             ref={messagesContainerRef}
             className={cn(
-              'flex min-w-0 flex-1 flex-col gap-6 overflow-y-scroll',
+              'flex min-w-0 flex-1 flex-col gap-6',
               'size-full',
               msgsContainerClassName
             )}
