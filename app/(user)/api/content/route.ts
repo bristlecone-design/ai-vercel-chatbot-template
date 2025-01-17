@@ -10,9 +10,9 @@ import { StatusCodes } from 'http-status-codes';
 import { type NextRequest, NextResponse } from 'next/server';
 
 /**
- * Create a new resource content for all users
+ * Creates new resource content for users
  *
- * @note Resource content is discoverable by users via the search and GenUI user interfaces
+ * @note Content is discoverable via the search and GenUI user interfaces
  */
 
 // https://nextjs.org/docs/app/building-your-application/routing/route-handlers
