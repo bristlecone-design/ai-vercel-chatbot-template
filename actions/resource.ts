@@ -26,6 +26,7 @@ export async function retrieveRelevantContent(
   ...args: Parameters<typeof findRelevantContent>
 ) {
   'use cache';
+
   cacheLife('resource');
 
   return findRelevantContent(...args);
