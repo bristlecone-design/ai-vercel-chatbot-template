@@ -206,7 +206,7 @@
     "@types/react-dom": "19.0.3",
     "@types/react-syntax-highlighter": "15.5.13",
     "drizzle-kit": "0.30.2",
-    "eslint": "9.18.0",
+    "eslint": "9.19.0",
     "eslint-config-next": "15.2.0-canary.27",
     "eslint-config-prettier": "10.0.1",
     "eslint-import-resolver-typescript": "3.7.0",
