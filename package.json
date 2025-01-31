@@ -99,7 +99,7 @@
     "@vercel/kv": "3.0.0",
     "@vercel/og": "0.6.5",
     "@vercel/postgres": "0.10.0",
-    "ai": "4.1.15",
+    "ai": "4.1.16",
     "bcrypt-ts": "5.0.3",
     "bottleneck": "2.19.5",
     "camelcase-keys": "9.1.3",
