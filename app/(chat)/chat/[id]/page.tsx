@@ -12,6 +12,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const { id } = params;
   const [chat] = await getChatById({ id, includeUser: true });
+  // console.log({ id, chat });
 
   if (!chat) {
     notFound();

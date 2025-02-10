@@ -1,37 +1,23 @@
-import {
-  type Message,
-  convertToCoreMessages,
-  createDataStreamResponse,
-  streamText,
-} from 'ai';
+import { openai } from '@ai-sdk/openai';
 
 import { auth } from '@/app/(auth)/auth';
-import { customModel } from '@/lib/ai';
-import { models } from '@/lib/ai/models';
-import { SYSTEM_PROMPTS } from '@/lib/ai/prompts';
-
 import {
-  generateUUID,
   getMostRecentUserMessage,
   getMostRecentUserMessageAttachments,
   sanitizeResponseMessages,
 } from '@/lib/ai/chat-utils';
-import { getDiscoverToolDefinition } from '@/lib/ai/tools/tool-discover';
-import { getVisionToolDefinition } from '@/lib/ai/tools/tool-vision';
-import { getWeathereatherToolDefinition } from '@/lib/ai/tools/tool-weather';
-import { coreBetaPlatformTools } from '@/lib/ai/tools/types';
-import {
-  deleteChatById,
-  getChatById,
-  saveChat,
-  saveMessages,
-} from '@/lib/db/queries/chat';
+import { models } from '@/lib/ai/models';
+import { getChatById, saveChat, saveMessages } from '@/lib/db/queries/chat';
 import { genId } from '@/lib/id';
+import {
+  type Message,
+  convertToCoreMessages,
+  createDataStreamResponse,
+  smoothStream,
+  streamText,
+} from 'ai';
+import { StatusCodes } from 'http-status-codes';
 import { generateTitleFromUserMessage } from '../../actions';
-
-export const maxDuration = 300;
-
-// export const runtime = 'edge';
 
 type POST_PARAMS = {
   id: string;
@@ -42,39 +28,8 @@ type POST_PARAMS = {
   maxSteps?: number;
 };
 
-export async function DELETE(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const id = searchParams.get('id');
-
-  if (!id) {
-    return new Response('Not Found', { status: 404 });
-  }
-
-  const session = await auth();
-
-  if (!session || !session.user) {
-    return new Response('Unauthorized', { status: 401 });
-  }
-
-  try {
-    const [chat] = await getChatById({ id });
-
-    if (chat.userId !== session.user.id) {
-      return new Response('Unauthorized', { status: 401 });
-    }
-
-    await deleteChatById({ id });
-
-    return new Response('Chat deleted', { status: 200 });
-  } catch (error) {
-    return new Response('An error occurred while processing your request', {
-      status: 500,
-    });
-  }
-}
-
-export async function POST(request: Request) {
-  const body: POST_PARAMS = await request.json();
+export async function POST(req: Request) {
+  const body: POST_PARAMS = await req.json();
   const {
     id,
     modelId,
@@ -83,10 +38,7 @@ export async function POST(request: Request) {
     discoverEnabled = false,
     regenerateResponse = false,
   } = body;
-  // console.log('chat post body data', {
-  //   body: JSON.stringify(body, null, 2),
-  //   regenerateResponse,
-  // });
+  console.log('body content in api/chat::', body);
 
   const session = await auth();
 
@@ -97,7 +49,7 @@ export async function POST(request: Request) {
   const model = models.find((model) => model.id === modelId);
 
   if (!model) {
-    return new Response('Model not found', { status: 404 });
+    return new Response('Model not found', { status: StatusCodes.NOT_FOUND });
   }
 
   const coreMessages = convertToCoreMessages(messages);
@@ -119,8 +71,9 @@ export async function POST(request: Request) {
   const userMessageId = genId('msg');
 
   // Only save if we are not regenerating the response
+  let savedMsgId: string | undefined;
   if (!regenerateResponse) {
-    await saveMessages({
+    const [savedMsg] = await saveMessages({
       messages: [
         {
           ...userMessage,
@@ -131,61 +84,60 @@ export async function POST(request: Request) {
         },
       ],
     });
+
+    savedMsgId = savedMsg.id;
   }
 
-  const llmModel = customModel(model.apiIdentifier);
-  // const activeTools = discoverEnabled ? allTools : toolsSansDiscover;
-
+  /**
+   * In your server-side route handler, you can use createDataStreamResponse and pipeDataStreamToResponse in combination with streamText.
+   *
+   * This approach allows us to immediately start streaming (solves RAG issues with status, etc.)
+   *
+   * @annotations https://sdk.vercel.ai/docs/ai-sdk-ui/streaming-data#accessing-message-annotations
+   *
+   */
   return createDataStreamResponse({
     execute: (dataStream) => {
-      dataStream.writeData({
-        type: 'user-message-id',
-        content: userMessageId,
-      });
+      dataStream.writeData({ type: 'action', content: 'initialized call' });
 
       const result = streamText({
-        model: llmModel,
-        system: SYSTEM_PROMPTS.base,
-        messages: coreMessages,
-        maxSteps,
-        toolChoice: 'auto',
-        experimental_activeTools: coreBetaPlatformTools,
-        tools: {
-          // Discover
-          ...getDiscoverToolDefinition(llmModel, dataStream, {
-            userMessage,
-            discoverEnabled,
-            session,
-          }),
+        model: openai('gpt-4o'),
+        messages,
 
-          // Image recognition / vision
-          ...getVisionToolDefinition(llmModel, dataStream, {
-            userMessage,
-            visionEnabled: discoverEnabled,
-            session,
-          }),
+        experimental_telemetry: {
+          isEnabled: false,
+          functionId: 'stream-text',
+        },
 
-          // Weather
-          ...getWeathereatherToolDefinition(llmModel, dataStream),
+        experimental_transform: smoothStream(),
+        // https://sdk.vercel.ai/docs/ai-sdk-core/generating-text#onchunk-callback
+        onChunk({ chunk }) {
+          // implement your own logic here, e.g.:
+          if (chunk.type === 'text-delta') {
+            dataStream.writeMessageAnnotation({
+              type: 'text-delta',
+              chunk: chunk.textDelta,
+            });
+          }
         },
-        onChunk: (chunk) => {
-          // console.log(
-          //   'Chunk in root stream response:',
-          //   JSON.stringify(chunk, null, 2),
-          // );
-        },
+
+        // https://sdk.vercel.ai/docs/ai-sdk-core/tools-and-tool-calling#onstepfinish-callback
         onStepFinish: (step) => {
-          // console.log(
-          //   'Completed step in root data stream response:',
-          //   JSON.stringify(step, null, 2),
-          // );
+          console.log(
+            'Completed step in root data stream response:',
+            JSON.stringify(step, null, 2),
+          );
         },
-        onFinish: async (event) => {
-          const responseMessages = event.response.messages;
-          // console.log(
-          //   'Finished chat in root entry point::',
-          //   JSON.stringify(event, null, 2),
-          // );
+
+        // https://sdk.vercel.ai/docs/ai-sdk-core/generating-text#onfinish-callback
+        async onFinish({ text, finishReason, usage, response }) {
+          // your own logic, e.g. for saving the chat history or recording usage
+
+          const responseMessages = response.messages;
+          console.log(
+            'onFinished invoked in LLM chat in root entry point::',
+            JSON.stringify(response, null, 2),
+          );
 
           if (session.user?.id) {
             try {
@@ -195,16 +147,18 @@ export async function POST(request: Request) {
               await saveMessages({
                 messages: responseMessagesWithoutIncompleteToolCalls.map(
                   (message) => {
-                    const messageId = generateUUID();
+                    const responseMsgId = genId('msg');
 
                     if (message.role === 'assistant') {
                       dataStream.writeMessageAnnotation({
-                        messageIdFromServer: messageId,
+                        type: 'message-id',
+                        subType: 'assistant',
+                        messageIdFromServer: responseMsgId,
                       });
                     }
 
                     return {
-                      id: messageId,
+                      id: responseMsgId,
                       chatId: id,
                       role: message.role,
                       content: message.content,
@@ -213,19 +167,34 @@ export async function POST(request: Request) {
                   },
                 ),
               });
+
+              if (savedMsgId) {
+                // message annotation:
+                dataStream.writeMessageAnnotation({
+                  type: 'message-id',
+                  subType: 'user',
+                  content: savedMsgId, // ID from saved DB record
+                });
+              }
             } catch (error) {
               console.error('Failed to save chat');
             }
           }
-        },
-        experimental_telemetry: {
-          isEnabled: false,
-          functionId: 'stream-text',
+
+          // call annotation:
+          dataStream.writeData({
+            type: 'action',
+            content: 'LLM call completed',
+          });
         },
       });
 
-      // Combine the result of the inner stream with the main data stream
       result.mergeIntoDataStream(dataStream);
+    },
+    onError: (error) => {
+      // Error messages are masked by default for security reasons.
+      // If you want to expose the error message to the client, you can do so here:
+      return error instanceof Error ? error.message : String(error);
     },
   });
 }
