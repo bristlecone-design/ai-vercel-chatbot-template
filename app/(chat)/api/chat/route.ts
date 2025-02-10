@@ -141,31 +141,31 @@ export async function POST(req: Request) {
 
           if (session.user?.id) {
             try {
-              const responseMessagesWithoutIncompleteToolCalls =
-                sanitizeResponseMessages(responseMessages);
+              const finalResponseMessages = sanitizeResponseMessages(
+                responseMessages,
+              ).map((message) => {
+                const responseMsgId = genId('msg');
+
+                if (message.role === 'assistant') {
+                  dataStream.writeMessageAnnotation({
+                    type: 'message-id',
+                    subType: 'assistant',
+                    messageIdFromServer: responseMsgId,
+                  });
+                }
+
+                return {
+                  id: responseMsgId,
+                  chatId: id,
+                  role: message.role,
+                  content: message.content,
+                  createdAt: new Date(),
+                };
+              });
+              console.log('finalResponseMessages::', finalResponseMessages);
 
               await saveMessages({
-                messages: responseMessagesWithoutIncompleteToolCalls.map(
-                  (message) => {
-                    const responseMsgId = genId('msg');
-
-                    if (message.role === 'assistant') {
-                      dataStream.writeMessageAnnotation({
-                        type: 'message-id',
-                        subType: 'assistant',
-                        messageIdFromServer: responseMsgId,
-                      });
-                    }
-
-                    return {
-                      id: responseMsgId,
-                      chatId: id,
-                      role: message.role,
-                      content: message.content,
-                      createdAt: new Date(),
-                    };
-                  },
-                ),
+                messages: finalResponseMessages,
               });
 
               if (savedMsgId) {
