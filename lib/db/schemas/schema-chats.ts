@@ -12,6 +12,11 @@ import {
 
 import { genChatId, genId } from '@/lib/id';
 
+import type {
+  MessageAnnotations,
+  MessageAttachment,
+  MessageParts,
+} from '@/types/chat-msgs';
 // https://orm.drizzle.team/docs/zod
 import { createInsertSchema } from 'drizzle-zod';
 import { users } from './schema-users';
@@ -55,14 +60,21 @@ export const message = pgTable('message', {
     .references(() => chat.id),
   role: varchar('role').notNull(),
   content: json('content').notNull(),
+  parts: json('parts').default([]),
+  annotations: json('annotations').default([]),
   attachments: json('attachment').default([]),
   createdAt: timestamp('createdAt').notNull(),
 });
 
 export type Message = InferSelectModel<typeof message>;
 
-export type MessageSave = Omit<Message, 'attachments'> & {
-  attachments?: unknown;
+export type MessageSave = Omit<
+  Message,
+  'attachments' | 'annotations' | 'parts'
+> & {
+  attachments?: MessageAttachment[];
+  annotations?: MessageAnnotations;
+  parts?: MessageParts;
 };
 
 export const messageSchema = createInsertSchema(message);

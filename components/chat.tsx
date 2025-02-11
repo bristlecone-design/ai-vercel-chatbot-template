@@ -3,8 +3,8 @@
 import { useRef, useState, type DragEvent } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useAppState } from '@/state/app-state';
-import type { ChatRequestOptions, Message } from 'ai';
-import { useChat } from 'ai/react';
+import { useChat } from '@ai-sdk/react';
+import { createIdGenerator, type ChatRequestOptions, type Message } from 'ai';
 import { AnimatePresence, motion } from 'framer-motion';
 import { toast } from 'sonner';
 import useSWR, { useSWRConfig } from 'swr';
@@ -90,15 +90,62 @@ export function Chat({
       discoverEnabled: derivedAllowedToDiscover,
     },
     initialMessages,
+
+    /**
+     * Only send the last (current) user message to the server
+     *
+     * https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat#experimental_prepare-request-body
+     */
+    experimental_prepareRequestBody({
+      messages,
+      id: generatedId,
+      requestBody,
+    }) {
+      console.log(
+        'requestBody and generatedId in experimental_prepareRequestBody',
+        { requestBody, generatedId }
+      );
+      const numOfMessages = messages.length;
+      return {
+        numOfMessages,
+        messages: [messages[numOfMessages - 1]],
+        id: id || generatedId,
+        modelId: selectedModelId,
+        discoverEnabled: derivedAllowedToDiscover,
+        ...requestBody,
+      };
+    },
+
+    // ID format for client-side messages:
+    // https://sdk.vercel.ai/docs/reference/ai-sdk-core/create-id-generator
+    generateId: createIdGenerator({
+      prefix: 'msgc',
+      size: 16,
+    }),
+
+    // https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat#on-error
+    onError: (error) => {
+      toast.error(getErrorMessage(error));
+    },
+
+    // https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat#on-tool-call
     onToolCall({ toolCall }) {
       if (toolCall.toolName === 'discover') {
         toast.info('Discovering...');
       }
     },
+
+    // https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat#on-finish
     onFinish: () => {
       mutate('/api/history');
     },
   });
+  if (messages.length > 0) {
+    console.log('chat messages and streaming data', {
+      messages,
+      streamingData,
+    });
+  }
 
   const { width: windowWidth = 1920, height: windowHeight = 1080 } =
     useWindowSize();

@@ -4,6 +4,7 @@ import { type CoreUserMessage, generateText } from 'ai';
 import { cookies } from 'next/headers';
 
 import { customModel } from '@/lib/ai';
+import type { ChatMessage } from '@/types/chat-msgs';
 
 export async function saveModelId(model: string) {
   const cookieStore = await cookies();
@@ -18,7 +19,7 @@ export async function getModelId() {
 export async function generateTitleFromUserMessage({
   message,
 }: {
-  message: CoreUserMessage;
+  message: CoreUserMessage | ChatMessage;
 }) {
   const { text: title } = await generateText({
     model: customModel('gpt-4o-mini'),

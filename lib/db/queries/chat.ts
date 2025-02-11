@@ -1,14 +1,14 @@
 import { db } from '@/lib/db/connect';
 import {
-    type Chat,
-    type MessageSave,
-    chat,
-    message,
-    users,
-    vote,
+  type Chat,
+  type MessageSave,
+  chat,
+  message,
+  users,
+  vote,
 } from '@/lib/db/schema';
 import type { UserChat } from '@/types/chat-msgs';
-import { and, asc, desc, eq, gte } from 'drizzle-orm';
+import { and, asc, count, desc, eq, gte, ne } from 'drizzle-orm';
 import type { User } from 'next-auth';
 
 import 'server-only';
@@ -106,11 +106,25 @@ export async function getChatById({
   }
 }
 
+export async function doesChatByIdExist({ id }: { id: string }) {
+  try {
+    const result = await db
+      .select({ count: count() })
+      .from(chat)
+      .where(eq(chat.id, id));
+
+    return result[0].count > 0;
+  } catch (error) {
+    console.error('Failed to check if chat by id exists in database');
+    throw error;
+  }
+}
+
 export async function saveMessages({
   messages,
 }: { messages: Array<MessageSave> }) {
   try {
-    return await db.insert(message).values(messages);
+    return await db.insert(message).values(messages).returning();
   } catch (error) {
     console.error('Failed to save messages in database', error);
     throw error;
@@ -126,6 +140,28 @@ export async function getMessagesByChatId({ id }: { id: string }) {
       .orderBy(asc(message.createdAt));
   } catch (error) {
     console.error('Failed to get messages by chat id from database', error);
+    throw error;
+  }
+}
+
+export async function getMessagesByChatIdExceptCurrentMsg({
+  chatId,
+  messageId,
+}: {
+  chatId: string;
+  messageId: string;
+}) {
+  try {
+    return await db
+      .select()
+      .from(message)
+      .where(and(eq(message.chatId, chatId), ne(message.id, messageId)))
+      .orderBy(asc(message.createdAt));
+  } catch (error) {
+    console.error(
+      'Failed to get messages by chat id except current message id from database',
+      error,
+    );
     throw error;
   }
 }

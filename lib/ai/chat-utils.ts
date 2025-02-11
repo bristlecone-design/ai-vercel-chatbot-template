@@ -100,6 +100,9 @@ export function convertToUIMessages(
   }, []);
 }
 
+/**
+ * Sanitize the messages to remove any tool call messages that do not have a corresponding tool result message.
+ */
 export function sanitizeResponseMessages(
   messages: Array<CoreToolMessage | CoreAssistantMessage>,
 ): Array<CoreToolMessage | CoreAssistantMessage> {

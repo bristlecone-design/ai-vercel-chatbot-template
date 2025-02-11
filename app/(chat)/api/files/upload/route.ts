@@ -43,13 +43,6 @@ const FileSchema = z.object({
 export async function POST(request: Request) {
   const session = await auth();
 
-  if (!session) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: StatusCodes.UNAUTHORIZED },
-    );
-  }
-
   if (request.body === null) {
     return new Response('Request body is empty', {
       status: StatusCodes.BAD_REQUEST,
@@ -57,6 +50,13 @@ export async function POST(request: Request) {
   }
 
   try {
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: StatusCodes.UNAUTHORIZED },
+      );
+    }
+
     const formData = await request.formData();
     const file = formData.get('file') as Blob;
 

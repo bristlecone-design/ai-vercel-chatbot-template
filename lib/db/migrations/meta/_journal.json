@@ -8,6 +8,20 @@
       "when": 1736554126212,
       "tag": "0000_nasty_archangel",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1739230533116,
+      "tag": "0001_melodic_shaman",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1739293903454,
+      "tag": "0002_chief_the_enforcers",
+      "breakpoints": true
     }
   ]
 }
