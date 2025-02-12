@@ -22,19 +22,19 @@ import {
   sanitizeResponseMessages,
 } from '@/lib/ai/chat-utils';
 import { allTools } from '@/lib/ai/tools/types';
-import { genId } from '@/lib/id';
-import { generateTitleFromUserMessage } from '../../../actions';
 import {
-  getChatById,
   deleteChatById,
+  getChatById,
   saveChat,
   saveMessages,
 } from '@/lib/db/queries/chat';
 import {
-  saveDocument,
   getDocumentById,
+  saveDocument,
   saveSuggestions,
 } from '@/lib/db/queries/documents';
+import { genId } from '@/lib/id';
+import { generateTitleFromUserMessage } from '../../../../actions';
 
 export const maxDuration = 300;
 

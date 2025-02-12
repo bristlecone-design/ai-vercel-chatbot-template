@@ -28,7 +28,7 @@ import {
   saveMessages,
 } from '@/lib/db/queries/chat';
 import { genId } from '@/lib/id';
-import { generateTitleFromUserMessage } from '../../../actions';
+import { generateTitleFromUserMessage } from '../../../../actions';
 
 export const maxDuration = 300;
 
