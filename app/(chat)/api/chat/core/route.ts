@@ -12,6 +12,7 @@ import { customModel, openaiModel } from '@/lib/ai';
 import { models } from '@/lib/ai/models';
 import { SYSTEM_PROMPTS } from '@/lib/ai/prompts';
 
+import { generateTitleFromUserMessage } from '@/app/(chat)/actions';
 import {
   generateUUID,
   getMostRecentUserMessage,
@@ -28,7 +29,6 @@ import {
   saveMessages,
 } from '@/lib/db/queries/chat';
 import { genId } from '@/lib/id';
-import { generateTitleFromUserMessage } from '../../../../actions';
 
 export const maxDuration = 300;
 
