@@ -1,12 +1,12 @@
 import { openai } from '@ai-sdk/openai';
 
 import { auth } from '@/app/(auth)/auth';
-import { openaiModel } from '@/lib/ai';
 import {
   getMostRecentUserMessage,
   getMostRecentUserUIMessageAttachments,
   transformUserMessageToSimpleContentList,
 } from '@/lib/ai/chat-utils';
+import { classifyDiscoveryPrompt } from '@/lib/ai/classifications';
 import { models } from '@/lib/ai/models';
 import {
   doesChatByIdExist,
@@ -24,7 +24,6 @@ import {
   convertToCoreMessages,
   createDataStreamResponse,
   createIdGenerator,
-  generateObject,
   smoothStream,
   streamText,
 } from 'ai';
@@ -158,31 +157,23 @@ export async function POST(req: Request) {
       // Determine type of user message prompt
       const classificationPrompt =
         transformUserMessageToSimpleContentList(userMessage);
-      console.log('user msg classificationPrompt::', classificationPrompt);
 
       dataStream.writeData({
         type: 'notification',
         content: 'Understanding your message...',
       } as MessageData);
 
-      // https://sdk.vercel.ai/docs/ai-sdk-core/generating-structured-data#enum
-      const { object: classification } = await generateObject({
-        // fast model for classification:
-        model: openaiModel(model.apiIdentifier, { structuredOutputs: true }),
-        output: 'enum',
-        enum: ['vision', 'question', 'other'],
-        system:
-          'Classify the user message as a question, vision or other. vision is for image, file, web url, etc. recognition and processing',
-        prompt: classificationPrompt,
-      });
-      console.log(
-        'prompt classification result',
-        JSON.stringify(classification, null, 2),
+      const classificationResult = await classifyDiscoveryPrompt(
+        classificationPrompt,
+        model,
       );
 
-      const isVision = classification === 'vision';
-      const isQuestion = classification === 'question';
-      // const isOther = classification === 'other';
+      const { classification, isQuestion, isVision } = classificationResult;
+
+      console.log(
+        'prompt classification result',
+        JSON.stringify(classificationResult, null, 2),
+      );
 
       dataStream.writeData({
         type: 'notification',
@@ -194,8 +185,11 @@ export async function POST(req: Request) {
       } as MessageData);
 
       const result = streamText({
-        model: openai('gpt-4o'),
+        model: openai(model.apiIdentifier),
         messages: allMsgHistory,
+
+        // TODO: Implement a custom middleware for the LLM chat, e.g. cache, rag, etc.
+        // TODO: Implement system instructions based on the classification
 
         // Generate a unique ID for each (server) message.
         experimental_generateMessageId: createIdGenerator({

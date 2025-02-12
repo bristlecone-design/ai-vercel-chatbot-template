@@ -1,10 +1,7 @@
 import { anthropic } from '@ai-sdk/anthropic';
 import { google } from '@ai-sdk/google';
 import { openai } from '@ai-sdk/openai';
-import {
-  type LanguageModelV1,
-  experimental_wrapLanguageModel as wrapLanguageModel,
-} from 'ai';
+import { type LanguageModelV1, wrapLanguageModel } from 'ai';
 
 import { customMiddleware } from './custom-middleware';
 
