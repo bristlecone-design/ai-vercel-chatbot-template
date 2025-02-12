@@ -15,8 +15,9 @@ import { SYSTEM_PROMPTS } from '@/lib/ai/prompts';
 import {
   generateUUID,
   getMostRecentUserMessage,
-  getMostRecentUserMessageAttachments,
+  getMostRecentUserUIMessageAttachments,
   sanitizeResponseMessages,
+  transformUserMessageToSimpleContentList,
 } from '@/lib/ai/chat-utils';
 import { getVisionToolDefinition } from '@/lib/ai/tools/tool-vision';
 import { coreBetaPlatformVisionTools } from '@/lib/ai/tools/types';
@@ -107,7 +108,8 @@ export async function POST(request: Request) {
     return new Response('No user message found', { status: 400 });
   }
 
-  const userMessageAttachments = getMostRecentUserMessageAttachments(messages);
+  const userMessageAttachments =
+    getMostRecentUserUIMessageAttachments(messages);
 
   const [chat] = await getChatById({ id });
 
@@ -156,20 +158,7 @@ export async function POST(request: Request) {
 
       console.log('userMessage type', typeof userMessage);
       const classificationPrompt =
-        typeof userMessage.content === 'string'
-          ? userMessage.content
-          : Array.isArray(userMessage.content)
-            ? userMessage.content
-                .map((content) => {
-                  if (content.type === 'text') {
-                    return content.text;
-                  }
-                  if (content.type === 'image') {
-                    return content.image;
-                  }
-                })
-                .join(' ')
-            : '';
+        transformUserMessageToSimpleContentList(userMessage);
       console.log('user msg classificationPrompt::', classificationPrompt);
 
       // https://sdk.vercel.ai/docs/ai-sdk-core/generating-structured-data#enum

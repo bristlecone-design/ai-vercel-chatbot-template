@@ -1,6 +1,12 @@
 import { openai } from '@ai-sdk/openai';
 
 import { auth } from '@/app/(auth)/auth';
+import { openaiModel } from '@/lib/ai';
+import {
+  getMostRecentUserMessage,
+  getMostRecentUserUIMessageAttachments,
+  transformUserMessageToSimpleContentList,
+} from '@/lib/ai/chat-utils';
 import { models } from '@/lib/ai/models';
 import {
   doesChatByIdExist,
@@ -11,12 +17,14 @@ import {
 import type { MessageSave } from '@/lib/db/schema';
 import { getErrorMessage } from '@/lib/errors';
 import { genId } from '@/lib/id';
-import type { ChatMessage } from '@/types/chat-msgs';
+import type { ChatMessage, MessageData } from '@/types/chat-msgs';
 import {
   type Message,
   appendClientMessage,
+  convertToCoreMessages,
   createDataStreamResponse,
   createIdGenerator,
+  generateObject,
   smoothStream,
   streamText,
 } from 'ai';
@@ -44,7 +52,7 @@ export async function POST(req: Request) {
   const {
     id: chatId,
     modelId,
-    messages,
+    messages: uiMessages,
     maxSteps = 5,
     numOfMessages = 1,
     discoverEnabled = false,
@@ -66,9 +74,8 @@ export async function POST(req: Request) {
     });
   }
 
-  const userMessage = messages.find(
-    (message) => message.role === 'user',
-  ) as Message;
+  const coreMessages = convertToCoreMessages(uiMessages);
+  const userMessage = getMostRecentUserMessage(coreMessages);
 
   if (!userMessage) {
     return new Response('No user message found', {
@@ -77,6 +84,9 @@ export async function POST(req: Request) {
   }
 
   const genUserMessageId = genId('msgc');
+
+  const userMessageAttachments =
+    getMostRecentUserUIMessageAttachments(uiMessages);
 
   /**
    * Query the DB for the chat history, if there are more than 1 message, we exclude the current user message
@@ -96,12 +106,6 @@ export async function POST(req: Request) {
     message: userMessage as ChatMessage,
   });
   // console.log('allMsgHistory:::', allMsgHistory);
-
-  // const coreMessages = convertToCoreMessages(messages);
-  // const userMessage = getMostRecentUserMessage(coreMessages);
-
-  const userMessageAttachments = userMessage.experimental_attachments || [];
-  // getMostRecentUserMessageAttachments(allMsgHistory);
 
   /**
    * Check if chat exists, if not, generate a title and save the chat
@@ -140,13 +144,60 @@ export async function POST(req: Request) {
    *
    */
   return createDataStreamResponse({
-    execute: (dataStream) => {
+    onError: (error) => {
+      // Error messages are masked by default for security reasons.
+      // If you want to expose the error message to the client, you can do so here:
+      const errMsg = getErrorMessage(error);
+      // console.log('Error in LLM chat in root entry point:::', errMsg);
+      return errMsg;
+    },
+
+    execute: async (dataStream) => {
       dataStream.writeData({ type: 'action', content: 'initialized call' });
+
+      // Determine type of user message prompt
+      const classificationPrompt =
+        transformUserMessageToSimpleContentList(userMessage);
+      console.log('user msg classificationPrompt::', classificationPrompt);
+
+      dataStream.writeData({
+        type: 'notification',
+        content: 'Understanding your message...',
+      } as MessageData);
+
+      // https://sdk.vercel.ai/docs/ai-sdk-core/generating-structured-data#enum
+      const { object: classification } = await generateObject({
+        // fast model for classification:
+        model: openaiModel(model.apiIdentifier, { structuredOutputs: true }),
+        output: 'enum',
+        enum: ['vision', 'question', 'other'],
+        system:
+          'Classify the user message as a question, vision or other. vision is for image, file, web url, etc. recognition and processing',
+        prompt: classificationPrompt,
+      });
+      console.log(
+        'prompt classification result',
+        JSON.stringify(classification, null, 2),
+      );
+
+      const isVision = classification === 'vision';
+      const isQuestion = classification === 'question';
+      // const isOther = classification === 'other';
+
+      dataStream.writeData({
+        type: 'notification',
+        content: isQuestion
+          ? `Question detected`
+          : isVision
+            ? `Vision recognition detected`
+            : `Other detected`,
+      } as MessageData);
 
       const result = streamText({
         model: openai('gpt-4o'),
         messages: allMsgHistory,
 
+        // Generate a unique ID for each (server) message.
         experimental_generateMessageId: createIdGenerator({
           prefix: 'msgs',
           size: 16,
@@ -157,7 +208,13 @@ export async function POST(req: Request) {
           functionId: 'stream-text',
         },
 
+        /**
+         * Transform the stream. This is useful for e.g. filtering, changing, or smoothing the text stream.
+         *
+         * @note The transformations are applied before the callbacks are invoked and the promises are resolved. If you e.g. have a transformation that changes all text to uppercase, the onFinish callback will receive the transformed text.
+         */
         experimental_transform: smoothStream(),
+
         // https://sdk.vercel.ai/docs/ai-sdk-core/generating-text#onchunk-callback
         onChunk({ chunk }) {
           // implement your own logic here, e.g.:
@@ -258,9 +315,10 @@ export async function POST(req: Request) {
               const errMsg = getErrorMessage(error);
               // console.error(`Failed to save chat: ${errMsg}`);
               dataStream.writeData({
-                type: 'error',
+                type: 'action',
+                subType: 'error',
                 content: errMsg,
-              });
+              } as MessageData);
               // Bubble up the error
               throw error;
             }
@@ -270,19 +328,12 @@ export async function POST(req: Request) {
           dataStream.writeData({
             type: 'action',
             content: 'LLM call completed',
-          });
+          } as MessageData);
         },
       });
 
       // Merge the parent and nested streams together
       result.mergeIntoDataStream(dataStream);
-    },
-    onError: (error) => {
-      // Error messages are masked by default for security reasons.
-      // If you want to expose the error message to the client, you can do so here:
-      const errMsg = getErrorMessage(error);
-      // console.log('Error in LLM chat in root entry point:::', errMsg);
-      return errMsg;
     },
   });
 }

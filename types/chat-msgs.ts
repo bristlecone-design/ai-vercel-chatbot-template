@@ -14,3 +14,13 @@ export type MessageAttachment = Attachment;
 export type MessageParts = ChatMessage['parts'];
 
 export type MessageAnnotations = ChatMessage['annotations'];
+
+export type MessageDataType = 'id' | 'message-id' | 'action' | 'notification';
+
+export type MessageDataSubType = 'error' | 'success' | 'warning' | 'user';
+
+export type MessageData = {
+  type: MessageDataType;
+  subType?: MessageDataSubType;
+  content: string;
+};

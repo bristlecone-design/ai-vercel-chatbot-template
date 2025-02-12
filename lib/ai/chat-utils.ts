@@ -3,6 +3,7 @@ import type {
   CoreAssistantMessage,
   CoreMessage,
   CoreToolMessage,
+  CoreUserMessage,
   LanguageModelV1Prompt,
   Message,
   ToolInvocation,
@@ -188,12 +189,31 @@ export function getMostRecentUserMessagePromptText(
   return mostRecentUserMessage?.content || '';
 }
 
-export function getMostRecentUserMessageAttachments(
+export function getMostRecentUserUIMessageAttachments(
   messages: Array<Message>,
 ): Array<Attachment> {
   const userMessages = messages.filter((message) => message.role === 'user');
   const mostRecentUserMessage = userMessages.at(-1);
   return mostRecentUserMessage?.experimental_attachments || [];
+}
+
+export function transformUserMessageToSimpleContentList(
+  message: CoreUserMessage,
+): string {
+  return typeof message.content === 'string'
+    ? message.content
+    : Array.isArray(message.content)
+      ? message.content
+          .map((content) => {
+            if (content.type === 'text') {
+              return content.text;
+            }
+            if (content.type === 'image') {
+              return content.image;
+            }
+          })
+          .join(' ')
+      : '';
 }
 
 export function getMessageIdFromAnnotations(message: Message) {

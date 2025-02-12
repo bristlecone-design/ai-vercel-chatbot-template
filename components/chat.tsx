@@ -101,10 +101,10 @@ export function Chat({
       id: generatedId,
       requestBody,
     }) {
-      console.log(
-        'requestBody and generatedId in experimental_prepareRequestBody',
-        { requestBody, generatedId }
-      );
+      // console.log(
+      //   'requestBody and generatedId in experimental_prepareRequestBody',
+      //   { requestBody, generatedId }
+      // );
       const numOfMessages = messages.length;
       return {
         numOfMessages,
@@ -140,12 +140,12 @@ export function Chat({
       mutate('/api/history');
     },
   });
-  if (messages.length > 0) {
-    console.log('chat messages and streaming data', {
-      messages,
-      streamingData,
-    });
-  }
+  // if (messages.length > 0) {
+  //   console.log('chat messages and streaming data', {
+  //     messages,
+  //     streamingData,
+  //   });
+  // }
 
   const { width: windowWidth = 1920, height: windowHeight = 1080 } =
     useWindowSize();
