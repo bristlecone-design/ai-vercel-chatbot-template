@@ -40,16 +40,16 @@ importers:
         version: 0.2.17
       '@langchain/community':
         specifier: 0.3.33
-        version: 0.3.33(@aws-crypto/sha256-js@5.2.0)(@aws-sdk/client-s3@3.758.0)(@aws-sdk/credential-provider-node@3.758.0)(@browserbasehq/sdk@2.0.0(encoding@0.1.13))(@browserbasehq/stagehand@1.6.0(@playwright/test@1.49.1)(deepmerge@4.3.1)(dotenv@16.4.7)(encoding@0.1.13)(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))(zod@3.24.2))(@ibm-cloud/watsonx-ai@1.3.0)(@langchain/core@0.3.41(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)))(@neondatabase/serverless@0.10.4)(@pinecone-database/pinecone@5.0.2)(@smithy/util-utf8@2.3.0)(@upstash/ratelimit@2.0.5(@upstash/redis@1.34.4))(@upstash/redis@1.34.4)(@vercel/kv@3.0.0)(@vercel/postgres@0.10.0)(axios@1.7.9)(cheerio@1.0.0)(crypto-js@4.2.0)(encoding@0.1.13)(fast-xml-parser@4.4.1)(ibm-cloud-sdk-core@5.1.0)(ignore@5.3.2)(jsonwebtoken@9.0.2)(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))(pg@8.13.3)(playwright@1.49.1)(ws@8.18.0(bufferutil@4.0.8))
+        version: 0.3.33(@aws-crypto/sha256-js@5.2.0)(@aws-sdk/client-s3@3.758.0)(@aws-sdk/credential-provider-node@3.758.0)(@browserbasehq/sdk@2.0.0(encoding@0.1.13))(@browserbasehq/stagehand@1.6.0(@playwright/test@1.49.1)(deepmerge@4.3.1)(dotenv@16.4.7)(encoding@0.1.13)(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))(zod@3.24.2))(@ibm-cloud/watsonx-ai@1.3.0)(@langchain/core@0.3.41(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)))(@neondatabase/serverless@0.10.4)(@pinecone-database/pinecone@5.1.0)(@smithy/util-utf8@2.3.0)(@upstash/ratelimit@2.0.5(@upstash/redis@1.34.4))(@upstash/redis@1.34.4)(@vercel/kv@3.0.0)(@vercel/postgres@0.10.0)(axios@1.7.9)(cheerio@1.0.0)(crypto-js@4.2.0)(encoding@0.1.13)(fast-xml-parser@4.4.1)(ibm-cloud-sdk-core@5.1.0)(ignore@5.3.2)(jsonwebtoken@9.0.2)(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))(pg@8.13.3)(playwright@1.49.1)(ws@8.18.0(bufferutil@4.0.8))
       '@langchain/core':
         specifier: 0.3.41
-        version: 0.3.41(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))
+        version: 0.3.41(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))
       '@langchain/openai':
         specifier: 0.4.4
-        version: 0.4.4(@langchain/core@0.3.41(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)))(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))
+        version: 0.4.4(@langchain/core@0.3.41(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)))(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))
       '@langchain/pinecone':
         specifier: 0.2.0
-        version: 0.2.0(@langchain/core@0.3.41(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)))(@pinecone-database/pinecone@5.0.2)
+        version: 0.2.0(@langchain/core@0.3.41(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)))(@pinecone-database/pinecone@5.1.0)
       '@neondatabase/serverless':
         specifier: 0.10.4
         version: 0.10.4
@@ -57,8 +57,8 @@ importers:
         specifier: 0.0.1
         version: 0.0.1
       '@pinecone-database/pinecone':
-        specifier: 5.0.2
-        version: 5.0.2
+        specifier: 5.1.0
+        version: 5.1.0
       '@radix-ui/react-accordion':
         specifier: 1.2.3
         version: 1.2.3(@types/react-dom@19.0.4(@types/react@19.0.10))(@types/react@19.0.10)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218)
@@ -232,7 +232,7 @@ importers:
         version: 1.34.4
       '@vercel/analytics':
         specifier: 1.5.0
-        version: 1.5.0(next@15.2.1-canary.1(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218)
+        version: 1.5.0(next@15.2.1-canary.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218)
       '@vercel/blob':
         specifier: 0.27.2
         version: 0.27.2
@@ -319,7 +319,7 @@ importers:
         version: 7.1.0
       geist:
         specifier: 1.3.1
-        version: 1.3.1(next@15.2.1-canary.1(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218))
+        version: 1.3.1(next@15.2.1-canary.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218))
       highlight.js:
         specifier: 11.11.1
         version: 11.11.1
@@ -340,7 +340,7 @@ importers:
         version: 0.16.21
       langchain:
         specifier: 0.3.19
-        version: 0.3.19(@langchain/core@0.3.41(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)))(axios@1.7.9)(cheerio@1.0.0)(encoding@0.1.13)(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))(ws@8.18.0(bufferutil@4.0.8))
+        version: 0.3.19(@langchain/core@0.3.41(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)))(axios@1.7.9)(cheerio@1.0.0)(encoding@0.1.13)(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))(ws@8.18.0(bufferutil@4.0.8))
       lowlight:
         specifier: 3.3.0
         version: 3.3.0
@@ -357,11 +357,11 @@ importers:
         specifier: 5.1.2
         version: 5.1.2
       next:
-        specifier: 15.2.1-canary.1
-        version: 15.2.1-canary.1(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218)
+        specifier: 15.2.1-canary.2
+        version: 15.2.1-canary.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218)
       next-auth:
         specifier: 5.0.0-beta.25
-        version: 5.0.0-beta.25(next@15.2.1-canary.1(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218)
+        version: 5.0.0-beta.25(next@15.2.1-canary.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218)
       next-themes:
         specifier: 0.4.4
         version: 0.4.4(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218)
@@ -369,8 +369,8 @@ importers:
         specifier: 1.3.0
         version: 1.3.0
       openai:
-        specifier: 4.86.0
-        version: 4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)
+        specifier: 4.86.1
+        version: 4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)
       orderedmap:
         specifier: 2.1.1
         version: 2.1.1
@@ -495,8 +495,8 @@ importers:
         specifier: 0.1.2
         version: 0.1.2(@types/react@19.0.10)(react@19.0.0-rc-65e06cb7-20241218)
       undici:
-        specifier: 7.3.0
-        version: 7.3.0
+        specifier: 7.4.0
+        version: 7.4.0
       unist-builder:
         specifier: 4.0.0
         version: 4.0.0
@@ -586,8 +586,8 @@ importers:
         specifier: 3.5.2
         version: 3.5.2
       prettier-plugin-packagejson:
-        specifier: 2.5.8
-        version: 2.5.8(prettier@3.5.2)
+        specifier: 2.5.9
+        version: 2.5.9(prettier@3.5.2)
       prettier-plugin-tailwindcss:
         specifier: 0.6.11
         version: 0.6.11(@ianvs/prettier-plugin-sort-imports@4.4.1(prettier@3.5.2))(prettier@3.5.2)
@@ -2069,56 +2069,56 @@ packages:
   '@neondatabase/serverless@0.9.5':
     resolution: {integrity: sha512-siFas6gItqv6wD/pZnvdu34wEqgG3nSE6zWZdq5j2DEsa+VvX8i/5HXJOo06qrw5axPXn+lGCxeR+NLaSPIXug==}
 
-  '@next/env@15.2.1-canary.1':
-    resolution: {integrity: sha512-JX3O7hr6C0rg3Lyq1LGyb6313m/8hdObHjNvTRW6HeYVuZMlK3/4P1t9gTT1Ie2yZtlQunEdJyhskYFneCluhg==}
+  '@next/env@15.2.1-canary.2':
+    resolution: {integrity: sha512-8bs9W8rN9ln19PA3IdglEkuRxNI+VAjY/Gxkkp24qpSO19uKHbORFz3I5DGyRzHzTRDpCRGHQDKNbcy2b0buOQ==}
 
   '@next/eslint-plugin-next@15.2.0':
     resolution: {integrity: sha512-jHFUG2OwmAuOASqq253RAEG/5BYcPHn27p1NoWZDCf4OdvdK0yRYWX92YKkL+Mk2s+GyJrmd/GATlL5b2IySpw==}
 
-  '@next/swc-darwin-arm64@15.2.1-canary.1':
-    resolution: {integrity: sha512-Jt7vZ8TCTtD6Rq0dfR2NQlBoMpXUndBIGM6SAZPuROQTieNYce4Gb5iZjTRSiTn6bXjMi5LyJbKcSNCw82Tm/w==}
+  '@next/swc-darwin-arm64@15.2.1-canary.2':
+    resolution: {integrity: sha512-PvoxT5tucaeREa7uhTxEaSW9sL4Sr8WfluVfSS+bj2axZpQ567gB/I+Eias67FPRW80cZaPMGsorNjyaq+cJuA==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [darwin]
 
-  '@next/swc-darwin-x64@15.2.1-canary.1':
-    resolution: {integrity: sha512-2emIHlwlHoaVnp5u3VJ4qMjJM3F3eqfOV5K+yYa6CCwvJrKv1Jr4az6RJdxZDfVQveBCKdyi6d1U/Z1PZM5R1w==}
+  '@next/swc-darwin-x64@15.2.1-canary.2':
+    resolution: {integrity: sha512-tPg9F3bT5MMalZpLfd+paiWWaWLvUaWAFZfIGEBgozYgIBd66pROkb+dXsJVd73IlYoBDh3mYcK7me2uYImBOA==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [darwin]
 
-  '@next/swc-linux-arm64-gnu@15.2.1-canary.1':
-    resolution: {integrity: sha512-AG2sNpZAIdY7NeWzAVKtIIkaWJuq+VmXvijn3hExn0WvI1Jk6r9ThuGDCueZpPF52WsDBFjipPJ8xP27eCpJ4g==}
+  '@next/swc-linux-arm64-gnu@15.2.1-canary.2':
+    resolution: {integrity: sha512-LmnZN/psunvUXofINdGENFNDv7yRIET2szi2FREMr1epKL3NsAQD0k4hv3pwRLwkVb8z6Rj+TXzX0pFChHOlhg==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
 
-  '@next/swc-linux-arm64-musl@15.2.1-canary.1':
-    resolution: {integrity: sha512-4UzZ9RtAz/PhOjuOV2hNW6NSHtPwU7KlD0xj1qFVEc3/cnLut4YeDWzfCCG9YSalMDatJ2YAHcj4oh+c7HW8Qw==}
+  '@next/swc-linux-arm64-musl@15.2.1-canary.2':
+    resolution: {integrity: sha512-5Ma1ATOCdgei1LRAbziBYciunyuG0uUASoiz7DDw40Ox5YuDD4Tznbg3re5ltWRwMAl9NNQa8ns3u+Q3Zs1NsQ==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
 
-  '@next/swc-linux-x64-gnu@15.2.1-canary.1':
-    resolution: {integrity: sha512-bpFuSrwzo0PBuFb3WawwiC0GLkkPxRerHpG3ZFdPHrvX/z0/nCzXvPe1AcEhHCUbGmkQ5BAEPTg2O7NQNMAD3A==}
+  '@next/swc-linux-x64-gnu@15.2.1-canary.2':
+    resolution: {integrity: sha512-R8bbqvKkVtzjN/KWogQQvWXgBTyWXcOEVgiPMXKgx7/zfybWeL+WjSXeepw4xYyDlQ1vC//HwEqLfFX41Jht4Q==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
 
-  '@next/swc-linux-x64-musl@15.2.1-canary.1':
-    resolution: {integrity: sha512-U29Avl7J3WNxXklMrnT7NfSYkySHGsRfxzEzTigwZdyIR4+/o9Rd+n5EyP/fg81pVf6BhObugfTHxkvpyQGsbw==}
+  '@next/swc-linux-x64-musl@15.2.1-canary.2':
+    resolution: {integrity: sha512-wWr41f7g3H5FcLguoAS7bvqSqaVkhK97/fk7ANG1l5yW13F9qVPboVZvgVFrRsPFZgqANxs4AmhKAjjjT+mL1g==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
 
-  '@next/swc-win32-arm64-msvc@15.2.1-canary.1':
-    resolution: {integrity: sha512-7CM11WlAoMZ5lKyHaolZ6wPFiIM1nGMGKLZESXMc6dhK9kMpdN3bHs+VfUGdQBiFABqs7LRxqP53rXDWoANwcQ==}
+  '@next/swc-win32-arm64-msvc@15.2.1-canary.2':
+    resolution: {integrity: sha512-ogzvioGSaJ9F2VWZXiLQR4K4G6fbBUdlZfKowOJyFKfBhPK+WuwJlEnzWfPAe5YjtiQU2H+eMdZdC25DXDXo6g==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
 
-  '@next/swc-win32-x64-msvc@15.2.1-canary.1':
-    resolution: {integrity: sha512-asGEmFXtbt9kl3YfvjJmez2+qb1xdHE/7ow5cBOkJ/jBn1wTx9ZbhpvuGqq5TNDx6AS4wmxfD01CjWgV0dnmAg==}
+  '@next/swc-win32-x64-msvc@15.2.1-canary.2':
+    resolution: {integrity: sha512-6sss7xGWck4DrJC7h/Gc2LFN3xh2dxnXxYmkxOD9gOq/yFdX7NSrNdCfNvXg5+6EFcTPURRg9gS9VgkzOCxp8Q==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
@@ -2153,8 +2153,8 @@ packages:
     resolution: {integrity: sha512-UCJgNZKnXPcrTblI9ui6H+HbQbyYf8bsGQAGR3f4IYW2Lw1zQ0izFrjGsCgqiP+GE837JXv43+qgkSqwWlnZtA==}
     engines: {node: '>=14.0.0'}
 
-  '@pinecone-database/pinecone@5.0.2':
-    resolution: {integrity: sha512-4Nd6sA/Ds81hem59TWYKkAR/R9cOnYMGDZvkxpay5R2dalCN979353V5Y+zFw8I+Rmi6yi3MsVjg6ls0/EXwCw==}
+  '@pinecone-database/pinecone@5.1.0':
+    resolution: {integrity: sha512-Bj64DPk0A7wBZf4Je8wVLSUXOfdrEeb5CuA1bQUril/fsJT79gmQgMeXZj14DEnnJMXWgtKQC1Dd7XApAizWpw==}
     engines: {node: '>=18.0.0'}
 
   '@pkgjs/parseargs@0.11.0':
@@ -4501,14 +4501,6 @@ packages:
   fault@1.0.4:
     resolution: {integrity: sha512-CJ0HCB5tL5fYTEA7ToAq5+kTwd++Borf1/bifxd9iT70QcXr4MRrO3Llf8Ifs70q+SJcGHFtnIE/Nw6giCtECA==}
 
-  fdir@6.4.2:
-    resolution: {integrity: sha512-KnhMXsKSPZlAhp7+IjUkRZKPb4fUyccpDrdFXbi4QL1qkmFh9kVY09Yox+n4MaOb3lHZ1Tv829C3oaaXoMYPDQ==}
-    peerDependencies:
-      picomatch: ^3 || ^4
-    peerDependenciesMeta:
-      picomatch:
-        optional: true
-
   fdir@6.4.3:
     resolution: {integrity: sha512-PMXmW2y1hDDfTSRc9gaXIuCCRpuoz3Kaz8cUelp3smouvfT632ozg2vrT6lJsHKKOF59YLbOGfAWGUcKEfRMQw==}
     peerDependencies:
@@ -5514,8 +5506,8 @@ packages:
       react: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
       react-dom: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
 
-  next@15.2.1-canary.1:
-    resolution: {integrity: sha512-5TWZHopWB8kPI+yUpRyzQ8PjNL+/kwh7+nnHgSALIWL8MMB4AWurWr+jBXA8uK04gKoLYsw43dQ565QeWE1lHg==}
+  next@15.2.1-canary.2:
+    resolution: {integrity: sha512-Vrl8pSN3I7fuUWYWSqbzRsItKYm0X0OXPwm6/DuX7Pgi6uyYT6uwpvEGiPHSGV5Up1MOOtlsCjIbEQlNJ3t1pg==}
     engines: {node: ^18.18.0 || ^19.8.0 || >= 20.0.0}
     hasBin: true
     peerDependencies:
@@ -5619,8 +5611,8 @@ packages:
     resolution: {integrity: sha512-kbpaSSGJTWdAY5KPVeMOKXSrPtr8C8C7wodJbcsd51jRnmD+GZu8Y0VoU6Dm5Z4vWr0Ig/1NKuWRKf7j5aaYSg==}
     engines: {node: '>=6'}
 
-  openai@4.86.0:
-    resolution: {integrity: sha512-ggnH3vm+o9UvVQl/MxzDgpxsH9j7UoD17AeICcLSr1NCNb8PfwgMlp/K56ErQUxpkkcIA5mNkTuJAFSnoHej8A==}
+  openai@4.86.1:
+    resolution: {integrity: sha512-x3iCLyaC3yegFVZaxOmrYJjitKxZ9hpVbLi+ZlT5UHuHTMlEQEbKXkGOM78z9qm2T5GF+XRUZCP2/aV4UPFPJQ==}
     hasBin: true
     peerDependencies:
       ws: ^8.18.0
@@ -5922,8 +5914,8 @@ packages:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
 
-  prettier-plugin-packagejson@2.5.8:
-    resolution: {integrity: sha512-BaGOF63I0IJZoudxpuQe17naV93BRtK8b3byWktkJReKEMX9CC4qdGUzThPDVO/AUhPzlqDiAXbp18U6X8wLKA==}
+  prettier-plugin-packagejson@2.5.9:
+    resolution: {integrity: sha512-lhVEpWyYPtO+g9/zQLk6CLkMqcpwR8YGO4mwbbHJaFXoXVeK0LtcgTTalp8vZVmMyHKbcv/zhA1Xp4uQKoeCww==}
     peerDependencies:
       prettier: '>= 1.16.0'
     peerDependenciesMeta:
@@ -6433,8 +6425,8 @@ packages:
   sort-object-keys@1.1.3:
     resolution: {integrity: sha512-855pvK+VkU7PaKYPc+Jjnmt4EzejQHyhhF33q31qG8x7maDzkeFhAAThdCYay11CISO+qAMwjOBP+fPZe0IPyg==}
 
-  sort-package-json@2.14.0:
-    resolution: {integrity: sha512-xBRdmMjFB/KW3l51mP31dhlaiFmqkHLfWTfZAno8prb/wbDxwBPWFpxB16GZbiPbYr3wL41H8Kx22QIDWRe8WQ==}
+  sort-package-json@2.15.0:
+    resolution: {integrity: sha512-wpKu3DvFuymcRvPqJR7VN5J6wnqR+SYZ4SZmnJa9ckpV+BuoE0XYHZYsoWaJbt6oz8OwOXb4eoMjlEBM6hwhBw==}
     hasBin: true
 
   source-map-js@1.2.1:
@@ -6642,10 +6634,6 @@ packages:
   tiny-inflate@1.0.3:
     resolution: {integrity: sha512-pkY1fj1cKHb2seWDy0B16HeWyczlJA9/WW3u3c4z/NiWDsO3DOU5D7nhTLE9CF0yXv/QZFY7sEJmj24dK+Rrqw==}
 
-  tinyglobby@0.2.10:
-    resolution: {integrity: sha512-Zc+8eJlFMvgatPZTl6A9L/yht8QqdmUNtURHaKZLmKBE12hNPSrqNkUp2cs3M/UKmNVVAMFQYSjYIVHDjW5zew==}
-    engines: {node: '>=12.0.0'}
-
   tinyglobby@0.2.12:
     resolution: {integrity: sha512-qkf4trmKSIiMTs/E63cxH+ojC2unam7rJ0WrauAzpT3ECNTxGRMlaXxVbfxMUC/w0LaYk6jQ4y/nGR9uBO3tww==}
     engines: {node: '>=12.0.0'}
@@ -6772,8 +6760,8 @@ packages:
     resolution: {integrity: sha512-BUgJXc752Kou3oOIuU1i+yZZypyZRqNPW0vqoMPl8VaoalSfeR0D8/t4iAS3yirs79SSMTxTag+ZC86uswv+Cw==}
     engines: {node: '>=18.17'}
 
-  undici@7.3.0:
-    resolution: {integrity: sha512-Qy96NND4Dou5jKoSJ2gm8ax8AJM/Ey9o9mz7KN1bb9GP+G0l20Zw8afxTnY2f4b7hmhn/z8aC2kfArVQlAhFBw==}
+  undici@7.4.0:
+    resolution: {integrity: sha512-PUQM3/es3noM24oUn10u3kNNap0AbxESOmnssmW+dOi9yGwlUSi5nTNYl3bNbTkWOF8YZDkx2tCmj9OtQ3iGGw==}
     engines: {node: '>=20.18.1'}
 
   unicode-trie@2.0.0:
@@ -7709,14 +7697,14 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@browserbasehq/stagehand@1.6.0(@playwright/test@1.49.1)(deepmerge@4.3.1)(dotenv@16.4.7)(encoding@0.1.13)(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))(zod@3.24.2)':
+  '@browserbasehq/stagehand@1.6.0(@playwright/test@1.49.1)(deepmerge@4.3.1)(dotenv@16.4.7)(encoding@0.1.13)(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))(zod@3.24.2)':
     dependencies:
       '@anthropic-ai/sdk': 0.27.3(encoding@0.1.13)
       '@browserbasehq/sdk': 2.0.0(encoding@0.1.13)
       '@playwright/test': 1.49.1
       deepmerge: 4.3.1
       dotenv: 16.4.7
-      openai: 4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)
+      openai: 4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)
       sharp: 0.33.5
       zod: 3.24.2
       zod-to-json-schema: 3.24.1(zod@3.24.2)
@@ -8185,20 +8173,20 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  '@langchain/community@0.3.33(@aws-crypto/sha256-js@5.2.0)(@aws-sdk/client-s3@3.758.0)(@aws-sdk/credential-provider-node@3.758.0)(@browserbasehq/sdk@2.0.0(encoding@0.1.13))(@browserbasehq/stagehand@1.6.0(@playwright/test@1.49.1)(deepmerge@4.3.1)(dotenv@16.4.7)(encoding@0.1.13)(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))(zod@3.24.2))(@ibm-cloud/watsonx-ai@1.3.0)(@langchain/core@0.3.41(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)))(@neondatabase/serverless@0.10.4)(@pinecone-database/pinecone@5.0.2)(@smithy/util-utf8@2.3.0)(@upstash/ratelimit@2.0.5(@upstash/redis@1.34.4))(@upstash/redis@1.34.4)(@vercel/kv@3.0.0)(@vercel/postgres@0.10.0)(axios@1.7.9)(cheerio@1.0.0)(crypto-js@4.2.0)(encoding@0.1.13)(fast-xml-parser@4.4.1)(ibm-cloud-sdk-core@5.1.0)(ignore@5.3.2)(jsonwebtoken@9.0.2)(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))(pg@8.13.3)(playwright@1.49.1)(ws@8.18.0(bufferutil@4.0.8))':
+  '@langchain/community@0.3.33(@aws-crypto/sha256-js@5.2.0)(@aws-sdk/client-s3@3.758.0)(@aws-sdk/credential-provider-node@3.758.0)(@browserbasehq/sdk@2.0.0(encoding@0.1.13))(@browserbasehq/stagehand@1.6.0(@playwright/test@1.49.1)(deepmerge@4.3.1)(dotenv@16.4.7)(encoding@0.1.13)(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))(zod@3.24.2))(@ibm-cloud/watsonx-ai@1.3.0)(@langchain/core@0.3.41(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)))(@neondatabase/serverless@0.10.4)(@pinecone-database/pinecone@5.1.0)(@smithy/util-utf8@2.3.0)(@upstash/ratelimit@2.0.5(@upstash/redis@1.34.4))(@upstash/redis@1.34.4)(@vercel/kv@3.0.0)(@vercel/postgres@0.10.0)(axios@1.7.9)(cheerio@1.0.0)(crypto-js@4.2.0)(encoding@0.1.13)(fast-xml-parser@4.4.1)(ibm-cloud-sdk-core@5.1.0)(ignore@5.3.2)(jsonwebtoken@9.0.2)(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))(pg@8.13.3)(playwright@1.49.1)(ws@8.18.0(bufferutil@4.0.8))':
     dependencies:
-      '@browserbasehq/stagehand': 1.6.0(@playwright/test@1.49.1)(deepmerge@4.3.1)(dotenv@16.4.7)(encoding@0.1.13)(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))(zod@3.24.2)
+      '@browserbasehq/stagehand': 1.6.0(@playwright/test@1.49.1)(deepmerge@4.3.1)(dotenv@16.4.7)(encoding@0.1.13)(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))(zod@3.24.2)
       '@ibm-cloud/watsonx-ai': 1.3.0
-      '@langchain/core': 0.3.41(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))
-      '@langchain/openai': 0.4.4(@langchain/core@0.3.41(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)))(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))
+      '@langchain/core': 0.3.41(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))
+      '@langchain/openai': 0.4.4(@langchain/core@0.3.41(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)))(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))
       binary-extensions: 2.3.0
       expr-eval: 2.0.2
       flat: 5.0.2
       ibm-cloud-sdk-core: 5.1.0
       js-yaml: 4.1.0
-      langchain: 0.3.19(@langchain/core@0.3.41(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)))(axios@1.7.9)(cheerio@1.0.0)(encoding@0.1.13)(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))(ws@8.18.0(bufferutil@4.0.8))
-      langsmith: 0.2.11(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))
-      openai: 4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)
+      langchain: 0.3.19(@langchain/core@0.3.41(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)))(axios@1.7.9)(cheerio@1.0.0)(encoding@0.1.13)(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))(ws@8.18.0(bufferutil@4.0.8))
+      langsmith: 0.2.11(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))
+      openai: 4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)
       uuid: 10.0.0
       zod: 3.24.2
       zod-to-json-schema: 3.24.1(zod@3.24.2)
@@ -8208,7 +8196,7 @@ snapshots:
       '@aws-sdk/credential-provider-node': 3.758.0
       '@browserbasehq/sdk': 2.0.0(encoding@0.1.13)
       '@neondatabase/serverless': 0.10.4
-      '@pinecone-database/pinecone': 5.0.2
+      '@pinecone-database/pinecone': 5.1.0
       '@smithy/util-utf8': 2.3.0
       '@upstash/ratelimit': 2.0.5(@upstash/redis@1.34.4)
       '@upstash/redis': 1.34.4
@@ -8240,14 +8228,14 @@ snapshots:
       - handlebars
       - peggy
 
-  '@langchain/core@0.3.41(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))':
+  '@langchain/core@0.3.41(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))':
     dependencies:
       '@cfworker/json-schema': 4.0.3
       ansi-styles: 5.2.0
       camelcase: 6.3.0
       decamelize: 1.2.0
       js-tiktoken: 1.0.15
-      langsmith: 0.2.11(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))
+      langsmith: 0.2.11(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))
       mustache: 4.2.0
       p-queue: 6.6.2
       p-retry: 4.6.2
@@ -8257,27 +8245,27 @@ snapshots:
     transitivePeerDependencies:
       - openai
 
-  '@langchain/openai@0.4.4(@langchain/core@0.3.41(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)))(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))':
+  '@langchain/openai@0.4.4(@langchain/core@0.3.41(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)))(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))':
     dependencies:
-      '@langchain/core': 0.3.41(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))
+      '@langchain/core': 0.3.41(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))
       js-tiktoken: 1.0.15
-      openai: 4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)
+      openai: 4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)
       zod: 3.24.2
       zod-to-json-schema: 3.24.1(zod@3.24.2)
     transitivePeerDependencies:
       - encoding
       - ws
 
-  '@langchain/pinecone@0.2.0(@langchain/core@0.3.41(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)))(@pinecone-database/pinecone@5.0.2)':
+  '@langchain/pinecone@0.2.0(@langchain/core@0.3.41(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)))(@pinecone-database/pinecone@5.1.0)':
     dependencies:
-      '@langchain/core': 0.3.41(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))
-      '@pinecone-database/pinecone': 5.0.2
+      '@langchain/core': 0.3.41(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))
+      '@pinecone-database/pinecone': 5.1.0
       flat: 5.0.2
       uuid: 10.0.0
 
-  '@langchain/textsplitters@0.1.0(@langchain/core@0.3.41(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)))':
+  '@langchain/textsplitters@0.1.0(@langchain/core@0.3.41(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)))':
     dependencies:
-      '@langchain/core': 0.3.41(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))
+      '@langchain/core': 0.3.41(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))
       js-tiktoken: 1.0.15
 
   '@neondatabase/serverless@0.10.4':
@@ -8288,34 +8276,34 @@ snapshots:
     dependencies:
       '@types/pg': 8.11.6
 
-  '@next/env@15.2.1-canary.1': {}
+  '@next/env@15.2.1-canary.2': {}
 
   '@next/eslint-plugin-next@15.2.0':
     dependencies:
       fast-glob: 3.3.1
 
-  '@next/swc-darwin-arm64@15.2.1-canary.1':
+  '@next/swc-darwin-arm64@15.2.1-canary.2':
     optional: true
 
-  '@next/swc-darwin-x64@15.2.1-canary.1':
+  '@next/swc-darwin-x64@15.2.1-canary.2':
     optional: true
 
-  '@next/swc-linux-arm64-gnu@15.2.1-canary.1':
+  '@next/swc-linux-arm64-gnu@15.2.1-canary.2':
     optional: true
 
-  '@next/swc-linux-arm64-musl@15.2.1-canary.1':
+  '@next/swc-linux-arm64-musl@15.2.1-canary.2':
     optional: true
 
-  '@next/swc-linux-x64-gnu@15.2.1-canary.1':
+  '@next/swc-linux-x64-gnu@15.2.1-canary.2':
     optional: true
 
-  '@next/swc-linux-x64-musl@15.2.1-canary.1':
+  '@next/swc-linux-x64-musl@15.2.1-canary.2':
     optional: true
 
-  '@next/swc-win32-arm64-msvc@15.2.1-canary.1':
+  '@next/swc-win32-arm64-msvc@15.2.1-canary.2':
     optional: true
 
-  '@next/swc-win32-x64-msvc@15.2.1-canary.1':
+  '@next/swc-win32-x64-msvc@15.2.1-canary.2':
     optional: true
 
   '@nodelib/fs.scandir@2.1.5':
@@ -8340,7 +8328,7 @@ snapshots:
 
   '@pinecone-database/doc-splitter@0.0.1': {}
 
-  '@pinecone-database/pinecone@5.0.2': {}
+  '@pinecone-database/pinecone@5.1.0': {}
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
@@ -9856,9 +9844,9 @@ snapshots:
     dependencies:
       crypto-js: 4.2.0
 
-  '@vercel/analytics@1.5.0(next@15.2.1-canary.1(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218)':
+  '@vercel/analytics@1.5.0(next@15.2.1-canary.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218)':
     optionalDependencies:
-      next: 15.2.1-canary.1(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218)
+      next: 15.2.1-canary.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218)
       react: 19.0.0-rc-65e06cb7-20241218
 
   '@vercel/blob@0.27.2':
@@ -10974,10 +10962,6 @@ snapshots:
     dependencies:
       format: 0.2.2
 
-  fdir@6.4.2(picomatch@4.0.2):
-    optionalDependencies:
-      picomatch: 4.0.2
-
   fdir@6.4.3(picomatch@4.0.2):
     optionalDependencies:
       picomatch: 4.0.2
@@ -11101,9 +11085,9 @@ snapshots:
 
   fuse.js@7.1.0: {}
 
-  geist@1.3.1(next@15.2.1-canary.1(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218)):
+  geist@1.3.1(next@15.2.1-canary.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218)):
     dependencies:
-      next: 15.2.1-canary.1(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218)
+      next: 15.2.1-canary.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218)
 
   gel@2.0.0:
     dependencies:
@@ -11588,15 +11572,15 @@ snapshots:
     dependencies:
       json-buffer: 3.0.1
 
-  langchain@0.3.19(@langchain/core@0.3.41(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)))(axios@1.7.9)(cheerio@1.0.0)(encoding@0.1.13)(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))(ws@8.18.0(bufferutil@4.0.8)):
+  langchain@0.3.19(@langchain/core@0.3.41(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)))(axios@1.7.9)(cheerio@1.0.0)(encoding@0.1.13)(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))(ws@8.18.0(bufferutil@4.0.8)):
     dependencies:
-      '@langchain/core': 0.3.41(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))
-      '@langchain/openai': 0.4.4(@langchain/core@0.3.41(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)))(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))
-      '@langchain/textsplitters': 0.1.0(@langchain/core@0.3.41(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)))
+      '@langchain/core': 0.3.41(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))
+      '@langchain/openai': 0.4.4(@langchain/core@0.3.41(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)))(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))
+      '@langchain/textsplitters': 0.1.0(@langchain/core@0.3.41(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)))
       js-tiktoken: 1.0.15
       js-yaml: 4.1.0
       jsonpointer: 5.0.1
-      langsmith: 0.2.11(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))
+      langsmith: 0.2.11(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2))
       openapi-types: 12.1.3
       p-retry: 4.6.2
       uuid: 10.0.0
@@ -11611,7 +11595,7 @@ snapshots:
       - openai
       - ws
 
-  langsmith@0.2.11(openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)):
+  langsmith@0.2.11(openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)):
     dependencies:
       '@types/uuid': 10.0.0
       commander: 10.0.1
@@ -11620,7 +11604,7 @@ snapshots:
       semver: 7.6.3
       uuid: 10.0.0
     optionalDependencies:
-      openai: 4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)
+      openai: 4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2)
 
   language-subtag-registry@0.3.23: {}
 
@@ -12153,10 +12137,10 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
-  next-auth@5.0.0-beta.25(next@15.2.1-canary.1(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218):
+  next-auth@5.0.0-beta.25(next@15.2.1-canary.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218):
     dependencies:
       '@auth/core': 0.37.2
-      next: 15.2.1-canary.1(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218)
+      next: 15.2.1-canary.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218)
       react: 19.0.0-rc-65e06cb7-20241218
 
   next-themes@0.4.4(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218):
@@ -12164,9 +12148,9 @@ snapshots:
       react: 19.0.0-rc-65e06cb7-20241218
       react-dom: 19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218)
 
-  next@15.2.1-canary.1(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218):
+  next@15.2.1-canary.2(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218))(react@19.0.0-rc-65e06cb7-20241218):
     dependencies:
-      '@next/env': 15.2.1-canary.1
+      '@next/env': 15.2.1-canary.2
       '@swc/counter': 0.1.3
       '@swc/helpers': 0.5.15
       busboy: 1.6.0
@@ -12176,14 +12160,14 @@ snapshots:
       react-dom: 19.0.0-rc-65e06cb7-20241218(react@19.0.0-rc-65e06cb7-20241218)
       styled-jsx: 5.1.6(react@19.0.0-rc-65e06cb7-20241218)
     optionalDependencies:
-      '@next/swc-darwin-arm64': 15.2.1-canary.1
-      '@next/swc-darwin-x64': 15.2.1-canary.1
-      '@next/swc-linux-arm64-gnu': 15.2.1-canary.1
-      '@next/swc-linux-arm64-musl': 15.2.1-canary.1
-      '@next/swc-linux-x64-gnu': 15.2.1-canary.1
-      '@next/swc-linux-x64-musl': 15.2.1-canary.1
-      '@next/swc-win32-arm64-msvc': 15.2.1-canary.1
-      '@next/swc-win32-x64-msvc': 15.2.1-canary.1
+      '@next/swc-darwin-arm64': 15.2.1-canary.2
+      '@next/swc-darwin-x64': 15.2.1-canary.2
+      '@next/swc-linux-arm64-gnu': 15.2.1-canary.2
+      '@next/swc-linux-arm64-musl': 15.2.1-canary.2
+      '@next/swc-linux-x64-gnu': 15.2.1-canary.2
+      '@next/swc-linux-x64-musl': 15.2.1-canary.2
+      '@next/swc-win32-arm64-msvc': 15.2.1-canary.2
+      '@next/swc-win32-x64-msvc': 15.2.1-canary.2
       '@opentelemetry/api': 1.9.0
       '@playwright/test': 1.49.1
       sharp: 0.33.5
@@ -12268,7 +12252,7 @@ snapshots:
     dependencies:
       mimic-fn: 2.1.0
 
-  openai@4.86.0(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2):
+  openai@4.86.1(encoding@0.1.13)(ws@8.18.0(bufferutil@4.0.8))(zod@3.24.2):
     dependencies:
       '@types/node': 18.19.67
       '@types/node-fetch': 2.6.12
@@ -12580,9 +12564,9 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
-  prettier-plugin-packagejson@2.5.8(prettier@3.5.2):
+  prettier-plugin-packagejson@2.5.9(prettier@3.5.2):
     dependencies:
-      sort-package-json: 2.14.0
+      sort-package-json: 2.15.0
       synckit: 0.9.2
     optionalDependencies:
       prettier: 3.5.2
@@ -13196,7 +13180,7 @@ snapshots:
 
   sort-object-keys@1.1.3: {}
 
-  sort-package-json@2.14.0:
+  sort-package-json@2.15.0:
     dependencies:
       detect-indent: 7.0.1
       detect-newline: 4.0.1
@@ -13205,7 +13189,7 @@ snapshots:
       is-plain-obj: 4.1.0
       semver: 7.6.3
       sort-object-keys: 1.1.3
-      tinyglobby: 0.2.10
+      tinyglobby: 0.2.12
 
   source-map-js@1.2.1: {}
 
@@ -13450,11 +13434,6 @@ snapshots:
 
   tiny-inflate@1.0.3: {}
 
-  tinyglobby@0.2.10:
-    dependencies:
-      fdir: 6.4.2(picomatch@4.0.2)
-      picomatch: 4.0.2
-
   tinyglobby@0.2.12:
     dependencies:
       fdir: 6.4.3(picomatch@4.0.2)
@@ -13600,7 +13579,7 @@ snapshots:
 
   undici@6.21.0: {}
 
-  undici@7.3.0: {}
+  undici@7.4.0: {}
 
   unicode-trie@2.0.0:
     dependencies:
